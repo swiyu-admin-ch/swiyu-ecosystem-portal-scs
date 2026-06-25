@@ -1,0 +1,26 @@
+@use "../../../../../../styles/sw-variables" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "../../../../../../styles/sw-wizard-actions" as *;
+
+.sw-selection-card-group {
+  display: flex;
+  align-items: flex-start;
+  gap: $sw-spc-xs;
+  align-self: stretch;
+}
+
+.sw-error-title {
+  color: $ob-error-dark;
+}
+
+button.sw-selection-card:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+
+  * {
+    pointer-events: none;
+    cursor: inherit;
+  }
+}
+
+@include sw-wizard-actions();

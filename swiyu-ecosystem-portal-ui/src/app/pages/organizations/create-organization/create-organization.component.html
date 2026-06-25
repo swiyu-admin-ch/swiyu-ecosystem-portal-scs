@@ -1,0 +1,78 @@
+<div class="ob-flex">
+  <div class="flex-justify-end">
+    <button
+      (click)="cancel()"
+      [attr.aria-label]="'app_ctl_btn_close' | translate"
+      mat-icon-button
+      obButton="tertiary"
+      type="button"
+    >
+      <mat-icon class="close" svgIcon="xmark_circle" />
+    </button>
+  </div>
+  <div class="modal-content">
+    <h2>{{ "app_site_register_title" | translate }}</h2>
+    <p [innerHTML]="'app_site_register_body' | translate"></p>
+    <form data-cy="formCreateOrganization" class="sw-form-container" [formGroup]="form">
+      <div>
+        <mat-form-field floatLabel="always" obErrorMessages>
+          <mat-label>{{ "app_site_register_form_entityName" | translate }}</mat-label>
+          <input
+            type="text"
+            data-cy="orgName"
+            maxlength="{{ maxLengthOrgName }}"
+            [formControl]="form.controls.orgName"
+            matInput
+          />
+          <mat-hint align="end">{{ lengthHint$ | async }}</mat-hint>
+          <mat-error />
+        </mat-form-field>
+        <mat-form-field floatLabel="always" obErrorMessages>
+          <mat-label>{{ "app_site_register_form_contactEmail" | translate }}</mat-label>
+          <input data-cy="technicalEmail" [formControl]="form.controls.technicalEmail" type="email" matInput />
+          <mat-error />
+        </mat-form-field>
+      </div>
+      <div>
+        <p>{{ "app_site_register_hint_conditionsCheck" | translate }}</p>
+        <div class="links-container">
+          <div>
+            <a mat-button obButton="primary" [href]="'app_site_register_link_tos_url' | translate" target="_blank">
+              {{ "app_site_register_link_tos_hint" | translate }}
+            </a>
+          </div>
+          <div>
+            <a
+              mat-button
+              obButton="primary"
+              [href]="'app_site_register_link_privacyPolicy_url' | translate"
+              target="_blank"
+            >
+              {{ "app_site_register_link_privacyPolicy_hint" | translate }}
+            </a>
+          </div>
+        </div>
+      </div>
+      <div>
+        <mat-checkbox [formControl]="form.controls.agbChecked" data-cy="agbChecked"
+          >{{ "app_site_register_btn_conditionsCheck" | translate }}
+        </mat-checkbox>
+      </div>
+      <div class="form-actions">
+        <button data-cy="btnCancelOrganization" (click)="cancel()" mat-button obButton="secondary" type="button">
+          {{ "app_site_register_btn_cancel" | translate }}
+        </button>
+        <button
+          data-cy="btnCreateOrganization"
+          (click)="save()"
+          [disabled]="!form.valid"
+          mat-button
+          obButton="primary"
+          type="button"
+        >
+          {{ "app_site_register_btn_register" | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

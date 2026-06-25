@@ -1,0 +1,109 @@
+<form id="dids-form" [formGroup]="form" obUnsavedChanges>
+  <div class="sw-form-container">
+    <div class="sw-form-sub-container">
+      <h1
+        [attr.aria-label]="
+          ('eportal_accessibility_step_prefix' | translate: { current: stepNumber, total: totalSteps }) +
+          ('eportal_onboardingTR_selectDID_pageTitle' | translate)
+        "
+      >
+        {{ "eportal_onboardingTR_selectDID_pageTitle" | translate }}
+      </h1>
+      <div>
+        {{ "eportal_onboardingTR_selectDID_introText" | translate }}
+      </div>
+    </div>
+    <div>
+      <h3>{{ "eportal_onboardingTR_selectDID_sectionTitle" | translate }}</h3>
+      <div>
+        {{ "eportal_onboardingTR_selectDID_sectionIntro" | translate }}
+      </div>
+    </div>
+    <div class="sw-form-sub-container-sm">
+      <table mat-table class="ob-table ob-table-plain" [dataSource]="availableDids" data-cy="tablDid">
+        <ng-container matColumnDef="checked">
+          <th *matHeaderCellDef mat-header-cell scope="col">{{ "eportal_global_adminDID_labelChoose" | translate }}</th>
+          <td *matCellDef="let element" mat-cell>
+            <mat-checkbox
+              [aria-label]="element.did"
+              [value]="element.did"
+              (change)="toggleDid($event)"
+              [checked]="form.value.dids?.includes(element.did)"
+            />
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="did">
+          <th *matHeaderCellDef mat-header-cell scope="col">{{ "eportal_global_adminDID_labelDID" | translate }}</th>
+          <td *matCellDef="let element" mat-cell>{{ element.did }}</td>
+        </ng-container>
+        <ng-container matColumnDef="description">
+          <th *matHeaderCellDef mat-header-cell scope="col">
+            {{ "eportal_global_adminDID_labelDescription" | translate }}
+          </th>
+          <td *matCellDef="let element" mat-cell>{{ element?.description }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th *matHeaderCellDef mat-header-cell scope="col">{{ "eportal_global_adminDID_labelStatus" | translate }}</th>
+          <td *matCellDef="let element" mat-cell>
+            <app-identifier-base-onboarding-status
+              [identifierStatus]="element.status"
+            ></app-identifier-base-onboarding-status>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th *matHeaderCellDef mat-header-cell scope="col">
+            {{ "eportal_global_adminDID_labelDetails" | translate }}
+          </th>
+          <td *matCellDef="let element" mat-cell>
+            <a
+              mat-icon-button
+              obButton="secondary"
+              type="button"
+              [attr.aria-label]="'app_site_dids_btn_viewDetails' | translate"
+              matTooltip="{{ 'app_site_dids_btn_viewDetails' | translate }}"
+              target="_blank"
+              [routerLink]="AppRoutes.identifierDetail(this.wizardService.partnerId ?? '', element.id)"
+              [attr.data-cy]="'linkDetails' + element.id"
+            >
+              <mat-icon svgIcon="chevron_right" />
+            </a>
+          </td>
+        </ng-container>
+        <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: displayedColumns" mat-row [attr.data-cy]="'rowDid' + row.did"></tr>
+      </table>
+      @if (form.controls.dids.hasError("required") && form.controls.dids.touched) {
+        <div class="sw-form-error">
+          <mat-icon [svgIcon]="'exclamation_circle'" color="warn" />
+          <span class="caption">{{ "eportal_global_adminDID_error_labelChoose" | translate }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</form>
+
+<div class="actions">
+  <button
+    (click)="wizardService.navigateToPreviousStep()"
+    data-cy="btnDidSelectionPrevious"
+    mat-button
+    obButton="secondary"
+    type="button"
+  >
+    {{ "eportal_global_btnSec_back" | translate }}
+  </button>
+  <div class="actions-2">
+    <button (click)="wizardService.saveAndNext()" data-cy="btnNext" mat-button obButton="primary" type="button">
+      {{ "app_site_onboarding_trust_dids_cta" | translate }}
+    </button>
+    <button
+      (click)="wizardService.onSaveAndContinueLater()"
+      data-cy="btnDidSelectionLeave"
+      mat-button
+      obButton="secondary"
+      type="button"
+    >
+      {{ "eportal_global_btnSec_continueLater" | translate }}
+    </button>
+  </div>
+</div>

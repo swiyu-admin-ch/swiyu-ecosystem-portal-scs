@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="test:app" type="CompoundRunConfigurationType">
+    <toRun name="test:ui" type="JavaScriptTestRunnerJest" />
+    <toRun name="test:backend" type="JUnit" />
+    <method v="2" />
+  </configuration>
+</component>

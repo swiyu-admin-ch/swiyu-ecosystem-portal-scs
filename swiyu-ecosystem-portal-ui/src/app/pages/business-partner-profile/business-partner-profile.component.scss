@@ -1,0 +1,34 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "../../../styles/sw-variables" as *;
+
+.section-navigation {
+  display: flex;
+  padding-top: $sw-spc-default;
+  padding-bottom: $sw-spc-default;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $sw-spc-default;
+
+  a {
+    padding: 0;
+  }
+}
+
+.main-component {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $sw-spc-xl;
+}
+
+.info-cards-row {
+  display: flex;
+  gap: $sw-spc-md;
+  flex-wrap: wrap;
+}
+
+.actions {
+  display: flex;
+  gap: $sw-spc-sm;
+  justify-content: flex-end;
+}

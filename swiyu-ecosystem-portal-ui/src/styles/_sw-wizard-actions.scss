@@ -1,0 +1,16 @@
+@mixin sw-wizard-actions {
+  .actions {
+    max-width: 912px;
+    margin: auto;
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+
+    .actions-2 {
+      display: flex;
+      margin-left: auto;
+      gap: var(--sw-spc-sm);
+    }
+  }
+}

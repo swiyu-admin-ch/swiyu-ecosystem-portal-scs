@@ -1,0 +1,260 @@
+<div class="sw-wizard-lvl-1">
+  @if (!registrationCompleted()) {
+    <div class="sw-wizard-lvl-2">
+      <h1
+        [attr.aria-label]="
+          ('eportal_accessibility_step_prefix' | translate: { current: stepNumber, total: totalSteps }) +
+          ('eportal_onboarding_development_pageTitle' | translate)
+        "
+      >
+        {{ "eportal_onboarding_development_pageTitle" | translate }}
+      </h1>
+      <span>{{ "eportal_onboarding_development_introText" | translate }}</span>
+    </div>
+    <div class="sw-wizard-lvl-3">
+      <h3>{{ "eportal_onboarding_development_sectionTitle_continue" | translate }}</h3>
+
+      <form [formGroup]="setupForm" class="sw-setup-form">
+        <div formControlName="setupVariant" role="radiogroup" obSelectableGroup class="sw-radio-card-container">
+          <app-radio-card
+            [value]="SetupVariant.EXPERT"
+            (cardSelect)="selectSetupVariant(SetupVariant.EXPERT)"
+            [hasError]="setupForm.controls.setupVariant.hasError('required') && setupForm.controls.setupVariant.touched"
+            [checked]="setupForm.get('setupVariant')?.value === SetupVariant.EXPERT"
+            [dataCy]="'cardExpert'"
+          >
+            <mat-icon cardIcon svgIcon="devhandover_expert" />
+            <h6>{{ "eportal_onboarding_development_card_setup_expert" | translate }}</h6>
+          </app-radio-card>
+
+          <app-radio-card
+            [value]="SetupVariant.SELF"
+            (cardSelect)="selectSetupVariant(SetupVariant.SELF)"
+            [hasError]="setupForm.controls.setupVariant.hasError('required') && setupForm.controls.setupVariant.touched"
+            [checked]="setupForm.get('setupVariant')?.value === SetupVariant.SELF"
+            [dataCy]="'cardSelf'"
+          >
+            <mat-icon cardIcon svgIcon="devhandover_self" />
+            <h6>{{ "eportal_onboarding_development_card_setup" | translate }}</h6>
+          </app-radio-card>
+        </div>
+      </form>
+
+      @if (setupForm.controls.setupVariant.hasError("required") && setupForm.controls.setupVariant.touched) {
+        <div class="sw-form-error">
+          <mat-icon [svgIcon]="'exclamation_circle'" color="warn" />
+          <span class="caption">{{ "eportal_onboarding_development_error_continue" | translate }}</span>
+        </div>
+      }
+    </div>
+    @if (variantStepCompleted()) {
+      @if (setupForm.get("setupVariant")?.value === SetupVariant.SELF) {
+        <app-process [title]="'eportal_onboarding_development_sectionTitle_overviewDID' | translate">
+          <app-process-step
+            [step]="1"
+            [subtitle]="'eportal_onboarding_development_swiyuAPI_cardSubtitle' | translate"
+            [title]="'eportal_onboarding_development_swiyuAPI_cardTitle' | translate"
+          >
+            <ng-container processStepAlert>
+              <ob-alert type="warning">{{ "eportal_onboarding_development_swiyuAPI_cardAlert" | translate }}</ob-alert>
+            </ng-container>
+            <div class="process-step-container">
+              <div>{{ "eportal_onboarding_development_swiyuAPI_cardText" | translate }}</div>
+              <div>
+                <div><p class="swiyu-api">swiyucorebusiness_status</p></div>
+                <div><p class="swiyu-api">swiyucorebusiness_identifier</p></div>
+                <div><p class="swiyu-api">swiyucorebusiness_trust</p></div>
+              </div>
+            </div>
+            <ng-container processStepLinks>
+              <div class="bottom-links">
+                <a class="link" [href]="appConfig.portalUrl" target="_blank">
+                  <div class="text">{{ "eportal_global_link_SelvServicePortal" | translate }}</div>
+                  <mat-icon [svgIcon]="'link_external'"></mat-icon>
+                </a>
+                <a
+                  class="link"
+                  [href]="'eportal_global_link_TechDocumentation_url_cookbook_ssp' | translate"
+                  target="_blank"
+                >
+                  <div class="text">{{ "eportal_global_link_TechDocumentation" | translate }}</div>
+                  <mat-icon [svgIcon]="'link_external'"></mat-icon>
+                </a>
+              </div>
+            </ng-container>
+          </app-process-step>
+
+          <app-process-step
+            [step]="2"
+            [subtitle]="'eportal_onboarding_development_preparation_cardSubtitle' | translate"
+            [title]="'eportal_onboarding_development_preparation_cardTitle' | translate"
+          >
+            <div>{{ "eportal_onboarding_development_preparation_cardText" | translate }}</div>
+
+            <ng-container processStepLinks>
+              <div class="bottom-links">
+                <a class="link" [href]="'eportal_global_link_DIDtoolbox_url' | translate" target="_blank">
+                  <div class="text">{{ "eportal_global_link_DIDtoolbox" | translate }}</div>
+                  <mat-icon [svgIcon]="'link_external'"></mat-icon>
+                </a>
+                <a
+                  class="link"
+                  [href]="'eportal_global_link_TechDocumentation_url_cookbook_didgeneration' | translate"
+                  target="_blank"
+                >
+                  <div class="text">{{ "eportal_global_link_TechDocumentation" | translate }}</div>
+                  <mat-icon [svgIcon]="'link_external'"></mat-icon>
+                </a>
+              </div>
+            </ng-container>
+          </app-process-step>
+
+          <app-process-step
+            [step]="3"
+            [subtitle]="'eportal_onboarding_development_toolbox_cardSubtitle' | translate"
+            [title]="'eportal_onboarding_development_toolbox_cardTitle' | translate"
+          >
+            <ng-container processStepAlert>
+              <ob-alert type="warning">{{ "eportal_onboarding_development_toolbox_cardAlert" | translate }}</ob-alert>
+            </ng-container>
+
+            <div>{{ "eportal_onboarding_development_toolbox_cardText" | translate }}</div>
+
+            <ng-container processStepLinks>
+              <div class="bottom-links">
+                <a
+                  class="link"
+                  [href]="'eportal_global_link_TechDocumentation_url_cookbook_didgeneration' | translate"
+                  target="_blank"
+                >
+                  <div class="text">{{ "eportal_global_link_TechDocumentation" | translate }}</div>
+                  <mat-icon [svgIcon]="'link_external'"></mat-icon>
+                </a>
+              </div>
+            </ng-container>
+          </app-process-step>
+        </app-process>
+        <div class="sw-wizard-lvl-1">
+          <div class="card-container">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>
+                  {{ "eportal_onboarding_development_requiredInformation_cardTitle" | translate }}
+                </mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div style="display: flex; flex-direction: column; align-items: flex-start; row-gap: 15px">
+                  <app-clipboard
+                    [label]="'eportal_onboarding_development_requiredInformation_apiBaseRegistryUrlLabel' | translate"
+                    [value]="appConfig.identifierRegistryApiUrl ?? ''"
+                  >
+                  </app-clipboard>
+                  <app-clipboard
+                    [label]="'eportal_onboarding_development_requiredInformation_businessPartnerIdLabel' | translate"
+                    [value]="wizardService.partner()?.id ?? ''"
+                  >
+                  </app-clipboard>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>
+                  {{ "eportal_onboarding_development_availableDids_cardTitle" | translate }}
+                </mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div style="display: flex; flex-direction: column; align-items: flex-start; row-gap: 15px">
+                  <app-clipboard
+                    [label]="'eportal_onboarding_development_availableDids_didSpaceIdLabel' | translate"
+                    [value]="wizardService.identifierEntryId() ?? ''"
+                  >
+                  </app-clipboard>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <p>{{ "eportal_onboarding_development_adminOverview_hintText" | translate }}</p>
+        </div>
+      }
+      @if (setupForm.get("setupVariant")?.value === SetupVariant.EXPERT) {
+        <app-process [title]="'eportal_onboarding_development_sectionTitle_handover' | translate">
+          <ng-container processHeader>
+            <a mat-button obButton="secondary" type="button" [attr.href]="mailtoLink()">
+              <mat-icon svgIcon="mail" />
+              {{ "eportal_onboarding_development_btnSec_emailTemplate" | translate }}
+            </a>
+          </ng-container>
+          <app-process-step [step]="1" [title]="'eportal_onboarding_development_invitation_cardTitle' | translate">
+            <div>{{ "eportal_onboarding_development_invitation_cardText" | translate }}</div>
+            <ng-container processStepLinks>
+              <div class="bottom-links">
+                <a class="link" [href]="eportalInviteLink" target="_blank">
+                  <div class="text">{{ "eportal_global_link_invitation" | translate }}</div>
+                  <mat-icon [svgIcon]="'link_external'"></mat-icon>
+                </a>
+              </div>
+            </ng-container>
+          </app-process-step>
+
+          <app-process-step [step]="2" [title]="'eportal_onboarding_development_handover_cardTitle' | translate">
+            <div>{{ "eportal_onboarding_development_handover_cardText" | translate }}</div>
+            <ng-container processStepLinks>
+              <div class="bottom-links">
+                <a
+                  class="link"
+                  [href]="'eportal_global_link_TechDocumentation_url_cookbook' | translate"
+                  target="_blank"
+                >
+                  <div class="text">{{ "eportal_global_link_TechDocumentation" | translate }}</div>
+                  <mat-icon [svgIcon]="'link_external'"></mat-icon>
+                </a>
+              </div>
+            </ng-container>
+          </app-process-step>
+
+          <app-process-step [step]="3" [title]="'eportal_onboarding_development_setup_cardTitle' | translate">
+            <div>{{ "eportal_onboarding_development_setup_cardText" | translate }}</div>
+          </app-process-step>
+        </app-process>
+      }
+    }
+  }
+
+  @if (registrationCompleted()) {
+    <div animate.enter="enter-animation">
+      <div class="sw-wizard-lvl-2">
+        <h1
+          [attr.aria-label]="
+            ('eportal_accessibility_step_prefix' | translate: { current: stepNumber, total: totalSteps }) +
+            ('eportal_onboarding_finalisation_pageTitle' | translate)
+          "
+        >
+          {{ "eportal_onboarding_finalisation_pageTitle" | translate }}
+        </h1>
+        <span>{{ "eportal_onboarding_finalisation_introText" | translate }}</span>
+      </div>
+      <div class="sw-wizard-lvl-3"></div>
+    </div>
+  }
+  <div class="actions">
+    <div class="actions-2">
+      @if (!registrationCompleted()) {
+        <button type="button" mat-button obButton="primary" (click)="wizardService.saveAndNext()" data-cy="btnNext">
+          {{ "eportal_global_btnPrim_continue" | translate }}
+        </button>
+      }
+
+      @if (registrationCompleted()) {
+        <a
+          [routerLink]="AppRoutes.businessPartnerOverviewV2()"
+          data-cy="btnBackToOverview"
+          mat-button
+          obButton="primary"
+          >{{ "eportal_onboardingTR_awaitVerification_btnPrim_adminOverview" | translate }}
+        </a>
+      }
+    </div>
+  </div>
+</div>

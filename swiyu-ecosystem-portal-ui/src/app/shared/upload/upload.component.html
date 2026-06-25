@@ -1,0 +1,72 @@
+<div class="sw-upload-container">
+  @if (uploadedFiles().length === 0 && !uploadItem()) {
+    <ob-drop-zone [accept]="['.pdf']" [maxFileSize]="10" [multiple]="false" (uploadEvent)="onFilesChosen($event)" />
+  } @else {
+    <div class="sw-file-info">
+      <div>{{ "eportal_global_uploadArea_title" | translate }}</div>
+
+      @if (uploadItem(); as item) {
+        <div class="sw-file-details">
+          <div class="sw-font-size-lg">
+            <mat-icon svgIcon="file_pdf" />
+          </div>
+
+          <span>{{ item.file.name }}</span>
+
+          @if (item.state === "uploading") {
+            <div class="sw-upload-status">
+              <ob-spinner />
+            </div>
+          }
+
+          @if (item.state === "error") {
+            <button
+              type="button"
+              mat-icon-button
+              obButton="tertiary"
+              (click)="retryUpload.emit()"
+              [attr.aria-label]="'eportal_global_retry' | translate"
+              [matTooltip]="'eportal_global_retry' | translate"
+            >
+              <mat-icon svgIcon="refresh" />
+            </button>
+
+            <button
+              type="button"
+              mat-icon-button
+              obButton="tertiary"
+              (click)="removeUpload.emit()"
+              [attr.aria-label]="'eportal_global_remove' | translate"
+              [matTooltip]="'eportal_global_remove' | translate"
+            >
+              <mat-icon svgIcon="delete" />
+            </button>
+          }
+        </div>
+      }
+
+      @for (doc of uploadedFiles(); track doc.id) {
+        <div class="sw-file-details">
+          <div class="sw-font-size-lg">
+            <mat-icon svgIcon="file_pdf" />
+          </div>
+
+          <span>{{ doc.name }}</span>
+
+          @if (doc.canBeDeleted) {
+            <button
+              (click)="deleteDocument.emit(doc)"
+              [attr.aria-label]="'eportal_onboardingTR_formalProof_deleteDocument_aria' | translate"
+              mat-icon-button
+              obButton="tertiary"
+              type="button"
+              [matTooltip]="'eportal_onboardingTR_formalProof_deleteDocument_aria' | translate"
+            >
+              <mat-icon svgIcon="delete" />
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

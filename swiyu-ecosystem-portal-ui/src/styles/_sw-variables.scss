@@ -1,0 +1,25 @@
+$sw-spc-xxl: 96px;
+$sw-spc-xl: 64px;
+$sw-spc-lg: 48px;
+$sw-spc-default: 32px;
+$sw-spc-md: 24px;
+$sw-spc-sm: 16px;
+$sw-spc-xs: 8px;
+$sw-spc-xxs: 4px;
+
+$sw-frm-fld-spc-section: 32px;
+$sw-frm-fld-spc: 20px;
+
+$sw-purple-100: #ede9fe;
+$sw-purple-600: #7c3aed;
+
+:root {
+  --sw-spc-xxl: #{$sw-spc-xxl};
+  --sw-spc-xl: #{$sw-spc-xl};
+  --sw-spc-lg: #{$sw-spc-lg};
+  --sw-spc-default: #{$sw-spc-default};
+  --sw-spc-md: #{$sw-spc-md};
+  --sw-spc-sm: #{$sw-spc-sm};
+  --sw-spc-xs: #{$sw-spc-xs};
+  --sw-spc-xxs: #{$sw-spc-xxs};
+}

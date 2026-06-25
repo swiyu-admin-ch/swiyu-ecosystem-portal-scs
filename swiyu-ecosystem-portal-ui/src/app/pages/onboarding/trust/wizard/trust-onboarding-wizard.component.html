@@ -1,0 +1,37 @@
+<div class="sw-wizard">
+  @if (service.submissionId && service.partnerId) {
+    <mat-horizontal-stepper #stepper [linear]="false" class="sw-stepper">
+      <ng-template matStepperIcon="edit">
+        <mat-icon [svgIcon]="'pencil'" />
+      </ng-template>
+
+      <ng-template matStepperIcon="done">
+        <mat-icon [svgIcon]="'checkmark'" />
+      </ng-template>
+      <mat-step
+        [completed]="service.currentStepIndex() > 0"
+        [label]="'app_site_onboarding_trust_organisation-information_step' | translate"
+      />
+      <mat-step
+        [completed]="service.currentStepIndex() > 1"
+        [label]="'app_site_onboarding_trust_dids_step' | translate"
+      />
+      <mat-step
+        [completed]="service.currentStepIndex() > 2"
+        [label]="'app_site_onboarding_trust_documents_step' | translate"
+      />
+      <mat-step
+        [completed]="service.currentStepIndex() > 3"
+        [label]="'app_site_onboarding_trust_technical-verification_step' | translate"
+      />
+      @if (service.appConfigService.isFunctionalityAutomaticApprovalEnabled) {
+        <mat-step [label]="'eportal_site_onboarding_trust_final_automatic_step' | translate" />
+      } @else {
+        <mat-step [label]="'app_site_onboarding_trust_final_step' | translate" />
+      }
+    </mat-horizontal-stepper>
+    <div class="step-content-container">
+      <router-outlet (activate)="onStepActivated($event)" />
+    </div>
+  }
+</div>

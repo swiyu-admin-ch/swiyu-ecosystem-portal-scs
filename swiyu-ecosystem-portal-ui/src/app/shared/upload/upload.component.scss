@@ -1,0 +1,46 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.sw-upload-container {
+  width: 100%;
+}
+
+.sw-file-info {
+  display: flex;
+  padding: var(--Padding-pad-xl, 32px);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  align-self: stretch;
+  border-radius: 10px;
+  border: 1px dashed $ob-gray-darker;
+  background: $ob-gray-extra-light;
+
+  .sw-file-details {
+    display: flex;
+    align-items: center;
+    gap: var(--Spacing-spc-sm, 16px);
+    font-size: 16px;
+    align-self: stretch;
+
+    span {
+      display: flex;
+      flex: 1;
+    }
+  }
+}
+
+.sw-font-size-lg {
+  font-size: $ob-font-size-xl;
+  display: flex;
+}
+
+.sw-upload-status {
+  display: flex;
+  align-items: center;
+}

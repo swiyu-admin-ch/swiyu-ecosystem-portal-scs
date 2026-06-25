@@ -1,0 +1,20 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "../../../../../../styles/sw-variables" as *;
+@use "../../../../../../styles/sw-component" as *;
+@use "../../../../../../styles/sw-wizard-actions" as *;
+
+.form-container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 0 $sw-frm-fld-spc;
+}
+
+.form-spacer {
+  margin-bottom: $sw-frm-fld-spc-section;
+}
+
+.span-full {
+  grid-column: span 12;
+}
+
+@include sw-wizard-actions();

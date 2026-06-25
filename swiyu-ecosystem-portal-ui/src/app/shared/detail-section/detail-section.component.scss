@@ -1,0 +1,65 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "../../../styles/sw-variables" as *;
+
+.detail-section {
+  padding: 1rem;
+}
+
+mat-card {
+  flex: 1;
+  min-width: 600px;
+  display: flex;
+  flex-direction: column;
+  padding: $sw-spc-md;
+  border-radius: $ob-border-radius-base;
+  border: 1px solid $ob-gray-lighter;
+  background: white;
+}
+
+mat-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+mat-card-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+mat-card-content {
+  padding: 0;
+  margin: 0;
+}
+
+.sw-form-sub-container {
+  display: flex;
+  flex-direction: column;
+  gap: $sw-spc-sm;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.field-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $sw-spc-xxs;
+}
+
+.field-label {
+  font-weight: 500;
+  color: #666666;
+}
+
+.field-value {
+  font-weight: 400;
+  word-break: break-all;
+}

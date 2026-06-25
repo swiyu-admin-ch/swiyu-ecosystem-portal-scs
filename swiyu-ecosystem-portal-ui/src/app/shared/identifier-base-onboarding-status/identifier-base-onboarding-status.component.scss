@@ -1,0 +1,23 @@
+@use "@oblique/oblique/styles/scss/core/palette" as obp;
+
+.NotInitialized {
+  &.mat-mdc-chip.mat-mdc-standard-chip {
+    background-color: obp.$ob-secondary-100;
+    color: obp.$ob-secondary-900;
+  }
+}
+
+.UserDeactivated,
+.DeactivatedByMigrationBecauseOfUnsupportedFormat {
+  &.mat-mdc-chip.mat-mdc-standard-chip {
+    background-color: obp.$ob-red-100;
+    color: obp.$ob-red-900;
+  }
+}
+
+.Initialized {
+  &.mat-mdc-chip.mat-mdc-standard-chip {
+    background-color: obp.$ob-green-100;
+    color: obp.$ob-green-900;
+  }
+}

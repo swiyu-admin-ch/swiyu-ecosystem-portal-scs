@@ -1,0 +1,17 @@
+.profile-action-content {
+  width: 300px;
+}
+
+:host {
+  .sw-flex-left {
+    flex-wrap: wrap;
+  }
+
+  mat-card-actions {
+    justify-content: flex-start;
+
+    [matIconButton] {
+      margin-left: auto;
+    }
+  }
+}

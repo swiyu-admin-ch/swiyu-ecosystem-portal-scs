@@ -1,0 +1,64 @@
+@if (appConfigService.isFunctionalityAutomaticApprovalEnabled) {
+  <div class="sw-wizard-lvl-2">
+    <h1
+      [attr.aria-label]="
+        ('eportal_accessibility_step_prefix' | translate: { current: stepNumber, total: totalSteps }) +
+        ('eportal_onboardingTR_automaticVerification_submitted_pageTitle' | translate)
+      "
+    >
+      {{ "eportal_onboardingTR_automaticVerification_submitted_pageTitle" | translate }}
+    </h1>
+    <div class="profile-container">
+      <span class="caption">
+        {{ "eportal_global_label_selectedProfile" | translate }}
+      </span>
+      <span>
+        {{ wizardService.businessPartner()?.name }}
+      </span>
+    </div>
+    <div class="sw-wizard-lvl-3">
+      <span>{{ "eportal_onboardingTR_success_copy_TE" | translate }}</span>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="actions-2">
+      <a
+        [routerLink]="AppRoutes.businessPartnerDetail(wizardService.partnerId!)"
+        data-cy="btnBackToProfileOverview"
+        mat-button
+        obButton="primary"
+        >{{ "eportal_global_btn_ToProfileOverview" | translate }}
+      </a>
+    </div>
+  </div>
+} @else {
+  <div class="sw-wizard-lvl-2">
+    <h1
+      [attr.aria-label]="
+        ('eportal_accessibility_step_prefix' | translate: { current: stepNumber, total: totalSteps }) +
+        ('eportal_onboardingTR_awaitVerification_submitted_pageTitle' | translate)
+      "
+    >
+      {{ "eportal_onboardingTR_awaitVerification_submitted_pageTitle" | translate }}
+    </h1>
+    <div class="profile-container">
+      <span class="caption">
+        {{ "eportal_global_label_selectedProfile" | translate }}
+      </span>
+      <span>
+        {{ wizardService.businessPartner()?.name }}
+      </span>
+    </div>
+    <div class="sw-wizard-lvl-3">
+      <span>{{ "eportal_onboardingTR_awaitVerification_submitted_infoText1" | translate }}</span>
+      <span>{{ "eportal_onboardingTR_awaitVerification_submitted_infoText2" | translate }}</span>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="actions-2">
+      <a [routerLink]="AppRoutes.businessPartnerOverviewV2()" data-cy="btnBackToOverview" mat-button obButton="primary"
+        >{{ "eportal_onboardingTR_awaitVerification_btnPrim_adminOverview" | translate }}
+      </a>
+    </div>
+  </div>
+}

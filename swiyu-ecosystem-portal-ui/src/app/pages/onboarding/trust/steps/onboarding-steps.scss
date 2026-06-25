@@ -1,0 +1,34 @@
+.actions {
+  margin-top: var(--sw-spc-md);
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  align-self: stretch;
+
+  .actions-2 {
+    display: flex;
+    margin-left: auto;
+    gap: var(--sw-spc-sm);
+  }
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.terms-container {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  gap: var(--Form-Field-frm-fld-spc, 20px);
+}
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.space-between {
+  justify-content: space-between;
+}

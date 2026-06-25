@@ -1,0 +1,71 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "./_sw-variables.scss" as *;
+
+/**
+ * Styles for the onboarding wizards.
+ */
+.sw-wizard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: stretch;
+
+  .sw-wizard-lvl-1 {
+    display: flex;
+    align-items: flex-start;
+    align-self: stretch;
+    flex-direction: column;
+    gap: $sw-spc-xl;
+    max-width: 912px;
+    margin: auto;
+  }
+
+  .sw-wizard-lvl-2 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $sw-spc-sm;
+    align-self: stretch;
+  }
+
+  .sw-wizard-lvl-3 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $sw-spc-md;
+    align-self: stretch;
+  }
+
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 22.5%;
+  }
+}
+
+.sw-stepper {
+  display: flex;
+  align-self: stretch;
+}
+
+// need global definition of style to replace ::ng-deep
+app-trust-onboarding-wizard .mat-horizontal-stepper-wrapper {
+  gap: $sw-spc-xl;
+}
+
+.sw-form-error {
+  display: flex;
+  flex-direction: row;
+  padding: $sw-spc-xs;
+  align-items: center;
+  gap: $sw-spc-xxs;
+  align-self: stretch;
+  border-radius: 6px;
+  color: $ob-error-dark;
+  background-color: $ob-error-light;
+
+  mat-icon {
+    font-size: $ob-font-size-lg;
+  }
+}

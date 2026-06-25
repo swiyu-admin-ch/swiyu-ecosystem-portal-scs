@@ -1,0 +1,385 @@
+<form id="profile-creation-form" [formGroup]="form" class="sw-wizard-lvl-1" obUnsavedChanges>
+  <div class="sw-wizard-lvl-2">
+    <h1
+      [attr.aria-label]="
+        ('eportal_accessibility_step_prefix' | translate: { current: stepNumber, total: totalSteps }) +
+        ('eportal_onboarding_profile_pageTitle' | translate)
+      "
+    >
+      {{ "eportal_onboarding_profile_pageTitle" | translate }}
+    </h1>
+    <span>{{ "eportal_onboarding_profile_introText" | translate }}</span>
+  </div>
+  <div id="partner-type" class="sw-wizard-lvl-3">
+    <div class="sw-form-header">
+      <h3>{{ "eportal_onboarding_profile_sectionTitle_select" | translate }}</h3>
+      <app-info-icon>
+        <h3>{{ "eportal_onboarding_profile_actorType_infoTitle" | translate }}</h3>
+        <p>{{ "eportal_onboarding_profile_actorType_infoText" | translate }}</p>
+      </app-info-icon>
+    </div>
+    <div class="sw-radio-card-container" obSelectableGroup>
+      <app-radio-card
+        [dataCy]="'partnerTypeBusiness'"
+        [value]="PartnerTypeSelection.Business"
+        (cardSelect)="form.controls.partnerType.setValue(PartnerTypeSelection.Business)"
+        [checked]="form.controls.partnerType.value === PartnerTypeSelection.Business"
+        [hasError]="form.controls.partnerType.hasError('required') && form.controls.partnerType.touched"
+        [disabled]="partnerTypeBusinessDisabled()"
+      >
+        <mat-icon cardIcon svgIcon="building" />
+        <h6>{{ "eportal_onboarding_profile_card_business" | translate }}</h6>
+      </app-radio-card>
+      <app-radio-card
+        [dataCy]="'partnerTypeGov'"
+        [value]="PartnerTypeSelection.GovernmentalInstitution"
+        (cardSelect)="form.controls.partnerType.setValue(PartnerTypeSelection.GovernmentalInstitution)"
+        [checked]="form.controls.partnerType.value === PartnerTypeSelection.GovernmentalInstitution"
+        [hasError]="form.controls.partnerType.hasError('required') && form.controls.partnerType.touched"
+        [disabled]="partnerTypeGovDisabled()"
+      >
+        <mat-icon cardIcon svgIcon="antique-building" />
+        <h6>{{ "eportal_onboarding_profile_card_government" | translate }}</h6>
+      </app-radio-card>
+
+      <app-radio-card
+        [dataCy]="'partnerTypeIndividual'"
+        [value]="PartnerTypeSelection.Individual"
+        (cardSelect)="form.controls.partnerType.setValue(PartnerTypeSelection.Individual)"
+        [checked]="form.controls.partnerType.value === PartnerTypeSelection.Individual"
+        [hasError]="form.controls.partnerType.hasError('required') && form.controls.partnerType.touched"
+        [disabled]="partnerTypeIndividualDisabled()"
+      >
+        <mat-icon cardIcon svgIcon="person" />
+        <h6>{{ "eportal_onboarding_profile_card_individual" | translate }}</h6>
+      </app-radio-card>
+    </div>
+    @if (form.controls.partnerType.hasError("required") && form.controls.partnerType.touched) {
+      <div class="sw-form-error">
+        <mat-icon
+          [svgIcon]="'exclamation_circle'"
+          color="warn"
+          [matTooltip]="
+            (isPreview()
+              ? 'eportal_onboarding_profile_infoText_organisation_preview'
+              : 'eportal_onboarding_profile_infoText_organisation'
+            ) | translate
+          "
+        />
+        <span class="caption">{{ "eportal_onboarding_error_selectProfile" | translate }}</span>
+      </div>
+    }
+  </div>
+  @if (firstStepCompleted()) {
+    @if (showAllowlistProcess()) {
+      <!-- Allowlist Process für Government ohne Allowlist -->
+      <app-process [title]="'eportal_GOV_profile_sectionTitle' | translate">
+        <ng-container processHeader>
+          <a
+            mat-button
+            obButton="secondary"
+            type="button"
+            target="_blank"
+            [attr.href]="'eportal_global_btn_FAQ_url' | translate"
+          >
+            <mat-icon svgIcon="link_external" />
+            {{ "eportal_global_btn_FAQ" | translate }}
+          </a>
+        </ng-container>
+
+        <app-process-step
+          [step]="1"
+          [title]="'eportal_GOV_profile_submit_cardTitle' | translate"
+          [description]="'eportal_GOV_profile_submit_cardText' | translate"
+        />
+        <app-process-step
+          [step]="2"
+          [title]="'eportal_GOV_profile_access_cardTitle' | translate"
+          [description]="'eportal_GOV_profile_access_cardText' | translate"
+        />
+        <app-process-step
+          [step]="3"
+          [title]="'eportal_GOV_profile_setup_cardTitle' | translate"
+          [description]="'eportal_GOV_profile_setup_cardText' | translate"
+        />
+      </app-process>
+    } @else {
+      <div id="partner-details" class="sw-wizard-lvl-3 form-container ob-grid">
+        @if (
+          createPartnerNotificationShown() &&
+          form.controls.partnerType.value !== PartnerTypeSelection.GovernmentalInstitution
+        ) {
+          <div class="ob-full">
+            <app-stateful-alert
+              (closed)="createPartnerNotificationShown.set(false)"
+              storageKey="createPartnerNotification"
+            >
+              <ng-container notification-content>
+                <p>
+                  {{ "eportal_onboarding_profile_info" | translate }}
+                </p>
+              </ng-container>
+            </app-stateful-alert>
+          </div>
+        }
+        <div class="sw-form-header">
+          <h3>{{ "eportal_onboarding_profile_sectionTitle_organisation" | translate }}</h3>
+          <div>
+            <app-info-icon>
+              <h3>{{ "eportal_onboarding_profile_organisation_infoTitle" | translate }}</h3>
+              <p>{{ "eportal_onboarding_profile_organisation_infoText" | translate }}</p>
+            </app-info-icon>
+          </div>
+        </div>
+        @if (form.controls.partnerType.value !== PartnerTypeSelection.Individual) {
+          <div class="ob-span-6 ob-flex">
+            <mat-form-field>
+              <mat-label>{{ "eportal_onboarding_profile_inputLabel_uid" | translate }}</mat-label>
+              <input
+                matInput
+                [formControl]="form.controls.uid"
+                [placeholder]="'eportal_onboarding_profile_inputLabel_uid' | translate"
+                data-cy="uid"
+              />
+              <mat-error>
+                @if (form.controls.uid.hasError("required")) {
+                  {{ "eportal_onboarding_profile_inputLabel_uid_error_required" | translate }}
+                } @else if (form.controls.uid.hasError("swissUid")) {
+                  {{ "eportal_onboarding_profile_inputLabel_uid_error_uidFormat" | translate }}
+                }
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div>
+            <app-info-icon>
+              <h3>{{ "eportal_onboarding_profile_uid_infoTitle" | translate }}</h3>
+              <p>{{ "eportal_onboarding_profile_uid_infoText" | translate }}</p>
+            </app-info-icon>
+          </div>
+        }
+        <div class="ob-full form-spacer">
+          <mat-form-field>
+            <mat-label>{{ "eportal_onboarding_profile_inputLabel_name" | translate }}</mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.name"
+              [placeholder]="'eportal_onboarding_profile_inputLabel_name' | translate"
+              data-cy="name"
+            />
+            <mat-error>{{ "eportal_onboarding_profile_error_inputLabel_name" | translate }}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="ob-full">
+          <mat-form-field>
+            <mat-label>{{ "eportal_onboarding_profile_inputLabel_street" | translate }}</mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.street"
+              [placeholder]="'eportal_onboarding_profile_inputLabel_street' | translate"
+              data-cy="street"
+            />
+            <mat-error>
+              {{ "eportal_onboarding_profile_error_inputLabel_street" | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="ob-span-5">
+          <mat-form-field>
+            <mat-label>{{ "eportal_onboarding_profile_inputLabel_postalCode" | translate }}</mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.zipCode"
+              [placeholder]="'eportal_onboarding_profile_inputLabel_postalCode' | translate"
+              data-cy="postalCode"
+            />
+            <mat-error>
+              @if (form.controls.zipCode.hasError("required")) {
+                {{ "eportal_onboarding_profile_inputLabel_postalCode_error" | translate }}
+              } @else if (form.controls.zipCode.hasError("swissZipCode")) {
+                {{ "eportal_onboarding_profile_inputLabel_postalCode_error_zipFormat" | translate }}
+              }
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="ob-span-7">
+          <mat-form-field>
+            <mat-label>{{ "eportal_onboarding_profile_inputLabel_city" | translate }}</mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.city"
+              [placeholder]="'eportal_onboarding_profile_inputLabel_city' | translate"
+              data-cy="city"
+            />
+            <mat-error>{{ "eportal_onboarding_profile_error_inputLabel_city" | translate }}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="ob-full">
+          <mat-form-field>
+            <mat-label>{{ "eportal_onboarding_profile_inputLabel_country" | translate }}</mat-label>
+            <mat-select readonly [formControl]="form.controls.country" data-cy="countrySelect">
+              @for (country of countryService.countries; track country) {
+                <mat-option [value]="country">
+                  {{ countryService.getCountryTranslationKey(country) | translate }}
+                </mat-option>
+              }
+            </mat-select>
+            <mat-error>{{ "eportal_onboarding_profile_error_inputLabel_country" | translate }}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div id="partner-contact" class="sw-wizard-lvl-2 ob-grid form-container">
+        <div class="sw-form-header">
+          <h3>{{ "eportal_onboarding_profile_sectionTitle_contact" | translate }}</h3>
+          <app-info-icon>
+            <h3>{{ "eportal_onboarding_profile_contact_infoTitle" | translate }}</h3>
+            <p>{{ "eportal_onboarding_profile_contact_infoText" | translate }}</p>
+          </app-info-icon>
+        </div>
+        <div class="ob-span-6">
+          <mat-form-field>
+            <mat-label>{{ "eportal_onboarding_profile_inputLabel_phone" | translate }}</mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.phone"
+              [placeholder]="'eportal_onboarding_profile_inputLabel_phone' | translate"
+              data-cy="phone"
+            />
+            <mat-hint>
+              {{ "eportal_global_hint_phone" | translate }}
+            </mat-hint>
+            <mat-error>
+              @if (form.controls.phone.hasError("required")) {
+                {{ "eportal_global_inputLabel_error_phone" | translate }}
+              } @else if (form.controls.phone.hasError("swissPhoneNumber")) {
+                {{ "eportal_global_inputLabel_error_phone_format" | translate }}
+              } @else if (form.controls.phone.hasError("internationalPhoneNumber")) {
+                {{ "eportal_global_inputLabel_error_phone_format_international" | translate }}
+              }
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="ob-span-6">
+          <mat-form-field>
+            <mat-label>{{ "eportal_onboarding_profile_inputLabel_email" | translate }} </mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.email"
+              [placeholder]="'eportal_onboarding_profile_inputLabel_email' | translate"
+              data-cy="email"
+            />
+            <mat-error>{{ "eportal_onboarding_profile_error_inputLabel_email" | translate }}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div id="terms-and-conditions" class="sw-wizard-lvl-2">
+        <div>
+          <mat-checkbox
+            appCheckboxA11y
+            [appCheckboxInvalid]="
+              form.controls.confirmedCorrectness.hasError('required') && form.controls.confirmedCorrectness.touched
+            "
+            appCheckboxDescribedBy="confirmedCorrectness-error"
+            [formControl]="form.controls.confirmedCorrectness"
+            data-cy="confirmedCorrectness"
+            >{{ "eportal_onboarding_profile_confirmation" | translate }}
+          </mat-checkbox>
+          @if (form.controls.confirmedCorrectness.hasError("required") && form.controls.confirmedCorrectness.touched) {
+            <div id="confirmedCorrectness-error" class="sw-form-error">
+              <mat-icon svgIcon="exclamation_circle" color="warn" aria-hidden="true" />
+              <span>{{ "eportal_global_error_confirm" | translate }}</span>
+            </div>
+          }
+        </div>
+        <div>
+          <mat-checkbox
+            appCheckboxA11y
+            [appCheckboxInvalid]="
+              form.controls.readTermsAndConditions.hasError('required') && form.controls.readTermsAndConditions.touched
+            "
+            appCheckboxDescribedBy="profile-terms-error"
+            [formControl]="form.controls.readTermsAndConditions"
+            data-cy="termsAndConditions"
+          >
+            <span [innerHTML]="'eportal_onboardingTR_addDetails_termsAndConditions' | translate"></span>
+          </mat-checkbox>
+          @if (
+            form.controls.readTermsAndConditions.hasError("required") && form.controls.readTermsAndConditions.touched
+          ) {
+            <div id="profile-terms-error" class="sw-form-error">
+              <mat-icon svgIcon="exclamation_circle" color="warn" aria-hidden="true" />
+              <span>{{ "eportal_onboardingTR_addDetails_error_termsAndConditions" | translate }}</span>
+            </div>
+          }
+        </div>
+        <div>
+          <mat-checkbox
+            appCheckboxA11y
+            [appCheckboxInvalid]="
+              form.controls.readDataProtection.hasError('required') && form.controls.readDataProtection.touched
+            "
+            appCheckboxDescribedBy="profile-privacy-error"
+            [formControl]="form.controls.readDataProtection"
+            data-cy="dataProtection"
+          >
+            <span [innerHTML]="'eportal_onboardingTR_addDetails_privacyPolicy' | translate"></span>
+          </mat-checkbox>
+          @if (form.controls.readDataProtection.hasError("required") && form.controls.readDataProtection.touched) {
+            <div id="profile-privacy-error" class="sw-form-error">
+              <mat-icon svgIcon="exclamation_circle" color="warn" aria-hidden="true" />
+              <span>{{ "eportal_onboardingTR_addDetails_error_privacyPolicy" | translate }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+
+  <div class="actions">
+    <button
+      (click)="wizardService.navigateToPreviousStep()"
+      data-cy="btnPrevious"
+      mat-button
+      obButton="secondary"
+      type="button"
+    >
+      {{ "eportal_global_btnSec_back" | translate }}
+    </button>
+    <div class="actions-2">
+      @if (firstStepCompleted() && showAllowlistProcess()) {
+        <a
+          mat-button
+          obButton="primary"
+          data-cy="btnAllowlistEmail"
+          type="button"
+          [attr.href]="'eportal_GOV_onboarding_mailTemplate' | translate"
+        >
+          <mat-icon svgIcon="mail" />
+          {{ "eportal_GOV_profile_btnPrim" | translate }}
+        </a>
+      } @else {
+        <button (click)="wizardService.saveAndNext()" data-cy="btnNext" mat-button obButton="primary" type="button">
+          @if (firstStepCompleted()) {
+            @if (form.controls.partnerType.value === PartnerTypeSelection.GovernmentalInstitution) {
+              {{ "eportal_global_btnPrim_continueDeveloper" | translate }}
+            } @else if (isPaymentEnabled()) {
+              {{ "eportal_global_btnPrim_continuePaymentOpt" | translate }}
+            } @else {
+              {{ "eportal_global_btnPrim_continuePaymentOpt_preview" | translate }}
+            }
+          } @else {
+            {{ "eportal_global_btnPrim_continue" | translate }}
+          }
+        </button>
+      }
+      <button
+        (click)="wizardService.onSaveAndContinueLater()"
+        data-cy="btnSaveAndBack"
+        mat-button
+        obButton="secondary"
+        type="button"
+      >
+        {{ "eportal_global_btnSec_cancel" | translate }}
+      </button>
+    </div>
+  </div>
+</form>

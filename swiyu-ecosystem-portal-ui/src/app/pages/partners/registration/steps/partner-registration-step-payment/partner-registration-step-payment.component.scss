@@ -1,0 +1,7 @@
+@use "../../../../../../styles/sw-wizard-actions" as *;
+
+ob-alert {
+  align-self: stretch;
+}
+
+@include sw-wizard-actions();

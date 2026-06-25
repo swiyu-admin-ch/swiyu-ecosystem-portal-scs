@@ -1,0 +1,33 @@
+<div class="sw-wizard-lvl-1">
+  <h1
+    [attr.aria-label]="
+      ('eportal_accessibility_step_prefix' | translate: { current: stepNumber, total: totalSteps }) +
+      ('eportal_onboarding_payment_pageTitle' | translate)
+    "
+  >
+    {{ "eportal_onboarding_payment_pageTitle" | translate }}
+  </h1>
+  <ob-alert [type]="'success'">
+    <ng-container>
+      <p>
+        {{ "eportal_onboarding_payment_info" | translate }}
+      </p>
+    </ng-container>
+  </ob-alert>
+  <div class="actions">
+    <button
+      (click)="wizardService.navigateToPreviousStep()"
+      data-cy="btnPrevious"
+      mat-button
+      obButton="secondary"
+      type="button"
+    >
+      {{ "eportal_global_btnSec_back" | translate }}
+    </button>
+    <div class="actions-2">
+      <button (click)="wizardService.saveAndNext()" data-cy="btnNext" mat-button obButton="primary" type="button">
+        {{ "eportal_global_btnPrim_continueDeveloper" | translate }}
+      </button>
+    </div>
+  </div>
+</div>

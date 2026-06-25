@@ -1,0 +1,43 @@
+app:
+  resourceId: swiyu-ecosystem-portal-scs
+  governmental-allowlist:
+    partner-id: 40f377d5-cd11-458a-944b-0c4f73f2ddaa # DEV/REF
+  functionality:
+    automatic-approval-enabled: true
+    payment-enabled: true
+    allow-partner-base-onboarding-business-enabled: true
+    allow-partner-base-onboarding-individual-enabled: true
+    allow-partner-base-onboarding-governmental-enabled: true
+    primary-environment-enabled: true
+  frontend:
+    portal-url: "https://eportal-r.admin.ch/start"
+    trust-api-url: "http://localhost:8200/"
+    identifier-registry-api-url: "http://localhost:8200/identifier-registry-api-url"
+    status-registry-api-url: "http://localhost:8200/status-registry-api-url"
+    api-gateway-auth-url: "http://localhost:8200/api-gateway-auth-url"
+    identifier-registry-url: "http://localhost:8200/identifier-registry-url"
+    auth:
+      require-https: false
+    banner: "test"
+    eportal:
+      environment: REF
+      pams-app-id: 301346
+    environments:
+      primary-base-url: http://localhost:4501/
+    eportal-url: "https://eportal-r.admin.ch"
+  client-api:
+    core-business-service-base-url: http://localhost:8200
+
+jeap:
+  security:
+    oauth2:
+      resourceserver:
+        authorization-server:
+          issuer: https://dummy.url
+          jwk-set-uri: https://dummy.url/.well-known/jwks.json
+          introspection:
+            client-id: dummy-client-id
+            client-secret: dummy-secret
+
+http:
+  max-redirects: 5

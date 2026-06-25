@@ -1,0 +1,11 @@
+.notification-container {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+}
+
+.notification-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}

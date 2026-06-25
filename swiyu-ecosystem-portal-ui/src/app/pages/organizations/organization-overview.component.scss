@@ -1,0 +1,94 @@
+.ob-grid,
+.ob-flex {
+  flex-direction: column;
+}
+
+.fab-manual {
+  position: fixed;
+  top: 60px;
+  right: 16px;
+  width: 45px;
+  height: 45px;
+  z-index: 1000;
+}
+
+// Aligned with oblique breakpoint for service navigation, but seems that theres not var for it
+// in @oblique/oblique/styles/scss/core/variables
+$break-point: 906px;
+
+.drawer-trust-container {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.multi-line-button {
+  line-height: 1.6;
+  height: auto !important;
+}
+
+.mat-column-actions {
+  width: 1px; // "fit-content" for a table cell
+}
+
+.mat-column-onboardingAction {
+  width: 300px; // "fit-content" for a table cell
+}
+
+.mat-mdc-no-data-row {
+  height: 100%;
+}
+
+.main-component {
+  flex: 1;
+  padding-top: 16px;
+  padding-right: 16px;
+}
+
+.drawer-side {
+  padding: 16px;
+  width: 400px;
+}
+
+.mat-drawer-container {
+  height: 100%;
+  padding-right: 24px;
+  padding-top: 16px;
+}
+
+.side-component {
+  padding: 16px;
+  width: 400px;
+  border-color: #e0e0e0;
+  border-style: solid;
+  border-width: 0 0 0 1px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 40px;
+  @media (max-width: $break-point) {
+    display: none;
+  }
+}
+
+.no-data-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 500px;
+  @media (max-width: $break-point) {
+    width: 100%;
+  }
+}
+
+.mat-drawer {
+  background-color: white !important;
+  @media (max-width: $break-point) {
+    width: 100%;
+  }
+}

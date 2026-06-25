@@ -1,0 +1,471 @@
+<form id="organisation-details-form" [formGroup]="form" obUnsavedChanges>
+  <div class="sw-form-container">
+    <div class="sw-form-sub-container">
+      <h1
+        [attr.aria-label]="
+          ('eportal_accessibility_step_prefix' | translate: { current: stepNumber, total: totalSteps }) +
+          ('app_site_onboarding_trust_organisation-information_title' | translate)
+        "
+      >
+        {{ "app_site_onboarding_trust_organisation-information_title" | translate }}
+      </h1>
+      <p>
+        {{ "eportal_onboardingTR_addDetails_introText_TE" | translate }}
+      </p>
+      @if (appConfigService.isFunctionalityAutomaticApprovalEnabled) {
+        <p [innerHTML]="'eportal_onboardingTR_addDetails_introText_TE_warning_autoApproval' | translate"></p>
+      }
+    </div>
+    @if (wizardService.businessPartner()?.type !== PartnerTypeSelection.GovernmentalInstitution) {
+      <div class="sw-form-sub-container">
+        <div class="sw-form-header">
+          <h3>{{ "app_site_onboarding_trust_organisation-information_profile-type" | translate }}</h3>
+          <app-info-icon>
+            <h3>{{ "eportal_onboarding_profile_actorType_infoTitle" | translate }}</h3>
+            <p>{{ "eportal_onboarding_profile_actorType_infoText" | translate }}</p>
+          </app-info-icon>
+        </div>
+        <div class="sw-radio-card-container" obSelectableGroup data-cy="partnerTypeRadioGroup" role="radiogroup">
+          <app-radio-card
+            [dataCy]="'businessPartnerType'"
+            [value]="PartnerTypeSelection.Business"
+            (cardSelect)="form.controls.partnerType.setValue(PartnerTypeSelection.Business)"
+            [checked]="form.controls.partnerType.value === PartnerTypeSelection.Business"
+            [hasError]="form.controls.partnerType.hasError('required') && form.controls.partnerType.touched"
+          >
+            <mat-icon cardIcon svgIcon="building" />
+            <h6>{{ "eportal_onboarding_profile_card_business" | translate }}</h6>
+          </app-radio-card>
+          <app-radio-card
+            [dataCy]="'governmentPartnerType'"
+            [value]="PartnerTypeSelection.GovernmentalInstitution"
+            (cardSelect)="form.controls.partnerType.setValue(PartnerTypeSelection.GovernmentalInstitution)"
+            [checked]="form.controls.partnerType.value === PartnerTypeSelection.GovernmentalInstitution"
+            [hasError]="form.controls.partnerType.hasError('required') && form.controls.partnerType.touched"
+            [disabled]="partnerTypeGovDisabled()"
+          >
+            <mat-icon cardIcon svgIcon="antique-building" />
+            <h6>{{ "eportal_onboarding_profile_card_government" | translate }}</h6>
+          </app-radio-card>
+
+          <app-radio-card
+            [dataCy]="'individualPartnerType'"
+            [value]="PartnerTypeSelection.Individual"
+            (cardSelect)="form.controls.partnerType.setValue(PartnerTypeSelection.Individual)"
+            [checked]="form.controls.partnerType.value === PartnerTypeSelection.Individual"
+            [hasError]="form.controls.partnerType.hasError('required') && form.controls.partnerType.touched"
+          >
+            <mat-icon cardIcon svgIcon="person" />
+            <h6>{{ "eportal_onboarding_profile_card_individual" | translate }}</h6>
+          </app-radio-card>
+        </div>
+        @if (form.controls.partnerType.hasError("required")) {
+          <div class="sw-form-error">
+            <mat-icon [svgIcon]="'exclamation_circle'" color="warn" />
+            <span class="caption">
+              {{ "eportal_onboarding_error_selectProfile" | translate }}
+            </span>
+          </div>
+        }
+      </div>
+    }
+    <div class="sw-form-sub-container">
+      <div class="sw-form-header">
+        <h3>{{ "app_site_onboarding_trust_organisation-information_organisation-details" | translate }}</h3>
+        <app-info-icon>
+          <h3>{{ "eportal_onboarding_profile_organisation_infoTitle" | translate }}</h3>
+          <p>{{ "eportal_onboarding_profile_organisation_infoText" | translate }}</p>
+        </app-info-icon>
+      </div>
+
+      <!--Organization data-->
+      <div class="ob-grid sw-grid-form-container">
+        @if (form.controls.partnerType.value === PartnerTypeSelection.Business) {
+          <div class="ob-full">
+            <mat-radio-group [formControl]="form.controls.hasUid" data-cy="isCommercialGroup">
+              <mat-radio-button [value]="true" data-cy="isCommercialRadioBtn"
+                >{{
+                  "app_site_onboarding_trust_organisation-information_commercial-register-entry-available" | translate
+                }}
+              </mat-radio-button>
+              <mat-radio-button [value]="false" data-cy="isNotCommercialRadioBtn"
+                >{{
+                  "app_site_onboarding_trust_organisation-information_no-commercial-register-entry-available"
+                    | translate
+                }}
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+        }
+        <div class="ob-span-6">
+          <mat-form-field>
+            <mat-label>{{ "app_site_onboarding_trust_organisation-information_swiss-uid" | translate }}</mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.uid"
+              type="text"
+              [placeholder]="'app_site_onboarding_trust_organisation-information_swiss-uid' | translate"
+              data-cy="companyUid"
+            />
+            <mat-error class="ob-full">
+              @if (form.controls.uid.hasError("required")) {
+                {{ "eportal_onboarding_profile_inputLabel_uid_error_required" | translate }}
+              } @else if (form.controls.uid.hasError("swissUid")) {
+                {{ "eportal_onboarding_profile_inputLabel_uid_error_uidFormat" | translate }}
+              }
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div>
+          <app-info-icon>
+            <h3>{{ "eportal_onboarding_profile_uid_infoTitle" | translate }}</h3>
+            <p>{{ "eportal_onboarding_profile_uid_infoText" | translate }}</p>
+          </app-info-icon>
+        </div>
+
+        <div class="ob-span-11">
+          <mat-form-field>
+            <mat-label
+              >{{ "app_site_onboarding_trust_organisation-information_organisation-name" | translate }}
+            </mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.entityDefaultName"
+              [placeholder]="'app_site_onboarding_trust_organisation-information_organisation-name' | translate"
+              data-cy="organizationName"
+            />
+            <mat-hint>
+              {{ "eportal_onboarding_profile_inputLabel_name_hint" | translate }}
+            </mat-hint>
+            @if (form.controls.entityDefaultName.hasError("required")) {
+              <mat-error class="ob-full">
+                {{ "eportal_onboarding_profile_inputLabel_name_error" | translate }}
+              </mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <div>
+          <app-info-icon>
+            <h3>{{ "eportal_onboarding_profile_language_infoTitle" | translate }}</h3>
+            <p>{{ "eportal_onboarding_profile_language_infoText" | translate }}</p>
+          </app-info-icon>
+        </div>
+      </div>
+
+      <!-- Entity Address -->
+      <div [formGroup]="form.controls.entityAddress" class="ob-grid sw-grid-form-container">
+        <mat-form-field class="ob-full">
+          <mat-label
+            >{{ "app_site_onboarding_trust_organisation-information_street-and-house-number" | translate }}
+          </mat-label>
+          <input
+            matInput
+            [formControl]="form.controls.entityAddress.controls.street"
+            [placeholder]="'app_site_onboarding_trust_organisation-information_street-and-house-number' | translate"
+            data-cy="street"
+          />
+        </mat-form-field>
+        <mat-form-field class="ob-span-4">
+          <mat-label>{{ "app_site_onboarding_trust_organisation-information_postal-code" | translate }}</mat-label>
+          <input
+            matInput
+            [formControl]="form.controls.entityAddress.controls.postalCode"
+            [placeholder]="'app_site_onboarding_trust_organisation-information_postal-code' | translate"
+            data-cy="zipCode"
+          />
+          <mat-error class="ob-full">
+            @if (form.controls.entityAddress.controls.postalCode.hasError("required")) {
+              {{ "eportal_onboarding_profile_inputLabel_postalCode_error" | translate }}
+            } @else if (form.controls.entityAddress.controls.postalCode.hasError("swissZipCode")) {
+              {{ "eportal_onboarding_profile_inputLabel_postalCode_error_zipFormat" | translate }}
+            }
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="ob-span-8">
+          <mat-label>{{ "app_site_onboarding_trust_organisation-information_city" | translate }}</mat-label>
+          <input
+            matInput
+            [formControl]="form.controls.entityAddress.controls.city"
+            [placeholder]="'app_site_onboarding_trust_organisation-information_city' | translate"
+            data-cy="city"
+          />
+          <mat-error class="ob-full">
+            {{ "eportal_onboarding_profile_inputLabel_city_error" | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="ob-full">
+          <mat-label>{{ "app_site_onboarding_trust_organisation-information_country" | translate }}</mat-label>
+          <mat-select readonly [formControl]="form.controls.entityAddress.controls.country" data-cy="countrySelect">
+            @for (country of countryService.countries; track country) {
+              <mat-option [value]="country">
+                {{ countryService.getCountryTranslationKey(country) | translate }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div [formGroup]="form.controls.contactPerson" class="sw-form-sub-container">
+      <div class="sw-form-header">
+        <h3>{{ "app_site_onboarding_trust_organisation-information_contact-person" | translate }}</h3>
+        <app-info-icon>
+          <h3>{{ "eportal_onboarding_profile_contact_infoTitle" | translate }}</h3>
+          <p>{{ "eportal_onboarding_profile_contact_infoText" | translate }}</p>
+        </app-info-icon>
+      </div>
+      <div class="ob-grid sw-grid-form-container">
+        <mat-form-field class="ob-span-6">
+          <mat-label>{{ "app_site_onboarding_trust_organisation-information_first-name" | translate }}</mat-label>
+          <input
+            matInput
+            [formControl]="form.controls.contactPerson.controls.firstName"
+            [placeholder]="'app_site_onboarding_trust_organisation-information_first-name' | translate"
+            data-cy="contactFirstName"
+          />
+          <mat-error class="ob-full">
+            {{ "eportal_global_inputLabel_error_name" | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="ob-span-6">
+          <mat-label>{{ "app_site_onboarding_trust_organisation-information_last-name" | translate }}</mat-label>
+          <input
+            matInput
+            [formControl]="form.controls.contactPerson.controls.lastName"
+            [placeholder]="'app_site_onboarding_trust_organisation-information_last-name' | translate"
+            data-cy="contactLastName"
+          />
+          <mat-error class="ob-full">
+            {{ "eportal_global_inputLabel_error_surname" | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="ob-span-6">
+          <mat-label>{{ "app_site_onboarding_trust_organisation-information_phone" | translate }}</mat-label>
+          <input
+            matInput
+            [formControl]="form.controls.contactPerson.controls.phone"
+            [placeholder]="'app_site_onboarding_trust_organisation-information_phone' | translate"
+            data-cy="contactPhone"
+          />
+          <mat-hint>{{ "eportal_global_hint_phone" | translate }}</mat-hint>
+
+          <mat-error>
+            @if (form.controls.contactPerson.controls.phone.hasError("required")) {
+              {{ "eportal_global_inputLabel_error_phone" | translate }}
+            } @else if (form.controls.contactPerson.controls.phone.hasError("swissPhoneNumber")) {
+              {{ "eportal_global_inputLabel_error_phone_format" | translate }}
+            } @else if (form.controls.contactPerson.controls.phone.hasError("internationalPhoneNumber")) {
+              {{ "eportal_global_inputLabel_error_phone_format_international" | translate }}
+            }
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="ob-span-6">
+          <mat-label>{{ "app_site_onboarding_trust_organisation-information_email" | translate }}</mat-label>
+          <input
+            matInput
+            [formControl]="form.controls.contactPerson.controls.email"
+            [placeholder]="'app_site_onboarding_trust_organisation-information_email' | translate"
+            data-cy="contactEmail"
+          />
+          <mat-error class="ob-full">
+            {{ "eportal_global_inputLabel_error_email" | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="ob-span-6">
+          <mat-label
+            >{{ "app_site_onboarding_trust_organisation-information_correspondence-language" | translate }}
+          </mat-label>
+          <mat-select
+            [formControl]="form.controls.contactPerson.controls.correspondingLanguage"
+            data-cy="contactLanguageSelect"
+          >
+            @for (lang of languages; track lang) {
+              <mat-option [value]="lang">
+                {{ lang | fullLang | translate }}
+              </mat-option>
+            }
+          </mat-select>
+          <mat-error>
+            {{ "eportal_global_inputLabel_error_correspLanguage" | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    @if (form.controls.partnerType.value !== PartnerTypeSelection.Individual) {
+      <div class="sw-form-sub-container">
+        <div class="sw-form-header">
+          <h3>{{ "eportal_onboardingTR_addDetails_sectionTitle_authSignatories" | translate }}</h3>
+        </div>
+        <p>{{ "eportal_onboardingTR_addDetails_sectionIntro_authSignatory" | translate }}</p>
+
+        <div class="ob-grid sw-grid-form-container">
+          <mat-form-field class="ob-half">
+            <mat-label>{{ "eportal_onboardingTR_addDetails_inputLabel_typeSignature" | translate }}</mat-label>
+            <mat-select [formControl]="form.controls.signingRule" data-cy="signatoryPolicy">
+              @for (signingRule of signingRuleOptions; track signingRule) {
+                <mat-option [value]="signingRule">
+                  {{ `eportal_onboardingTR_addDetails_inputLabel_typeSignature_option_${signingRule}` | translate }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        @for (signatory of form.controls.signatories.controls; track signatory; let i = $index) {
+          <div [formGroup]="signatory" class="sw-grid-form-container">
+            <div class="sw-form-header space-between">
+              @switch (i) {
+                @case (0) {
+                  <h3>{{ "eportal_onboardingTR_addDetails_sectionTitle_signFirst" | translate }}</h3>
+                }
+                @case (1) {
+                  <h3>{{ "eportal_onboardingTR_addDetails_sectionTitle_signSecond" | translate }}</h3>
+                }
+                @case (2) {
+                  <h3>{{ "eportal_onboardingTR_addDetails_sectionTitle_signThird" | translate }}</h3>
+                }
+              }
+
+              @if (i === 0) {
+                <button
+                  data-cy="copyContactSignatory"
+                  mat-button
+                  obButton="secondary"
+                  type="button"
+                  (click)="copyContactPerson()"
+                >
+                  <mat-icon svgIcon="copy" />
+                  {{ "eportal_global_btnSec_copyContact" | translate }}
+                </button>
+              }
+            </div>
+
+            <div class="ob-grid sw-grid-form-container">
+              <mat-form-field class="ob-span-6">
+                <mat-label>{{ "eportal_global_inputLabel_name" | translate }}</mat-label>
+                <input
+                  matInput
+                  [attr.data-cy]="`signatory${i}FirstName`"
+                  [formControl]="signatory.controls.firstName"
+                  [placeholder]="'eportal_global_inputLabel_name' | translate"
+                />
+                <mat-error>{{ "eportal_global_inputLabel_error_name" | translate }}</mat-error>
+              </mat-form-field>
+              <mat-form-field class="ob-span-6">
+                <mat-label>{{ "eportal_global_inputLabel_surname" | translate }}</mat-label>
+                <input
+                  matInput
+                  [attr.data-cy]="`signatory${i}LastName`"
+                  [formControl]="signatory.controls.lastName"
+                  [placeholder]="'eportal_global_inputLabel_surname' | translate"
+                />
+                <mat-error>{{ "eportal_global_inputLabel_error_surname" | translate }}</mat-error>
+              </mat-form-field>
+              <mat-form-field class="ob-span-6">
+                <mat-label>{{ "eportal_onboarding_profile_inputLabel_phone" | translate }}</mat-label>
+                <input
+                  matInput
+                  [attr.data-cy]="`signatory${i}Phone`"
+                  [formControl]="signatory.controls.phone"
+                  [placeholder]="'eportal_onboarding_profile_inputLabel_phone' | translate"
+                />
+                <mat-hint>{{ "eportal_global_hint_phone" | translate }}</mat-hint>
+                <mat-error>
+                  @if (signatory.controls.phone.hasError("required")) {
+                    {{ "eportal_global_inputLabel_error_phone" | translate }}
+                  } @else if (signatory.controls.phone.hasError("swissPhoneNumber")) {
+                    {{ "eportal_global_inputLabel_error_phone_format" | translate }}
+                  } @else if (signatory.controls.phone.hasError("internationalPhoneNumber")) {
+                    {{ "eportal_global_inputLabel_error_phone_format_international" | translate }}
+                  }
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="ob-span-6">
+                <mat-label>{{ "eportal_onboarding_profile_inputLabel_email" | translate }}</mat-label>
+                <input
+                  matInput
+                  [attr.data-cy]="`signatory${i}Email`"
+                  [formControl]="signatory.controls.email"
+                  [placeholder]="'eportal_onboarding_profile_inputLabel_email' | translate"
+                />
+
+                @if (signatory.controls.email.hasError("required")) {
+                  <mat-error>{{ "eportal_global_inputLabel_error_email" | translate }}</mat-error>
+                }
+                @if (signatory.controls.email.hasError("email")) {
+                  <mat-error>{{ "eportal_global_inputLabel_error_emailFormat" | translate }}</mat-error>
+                }
+              </mat-form-field>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <div class="terms-container">
+      <div>
+        <mat-checkbox
+          appCheckboxA11y
+          [appCheckboxInvalid]="
+            form.controls.readTermsAndConditions.hasError('required') && form.controls.readTermsAndConditions.touched
+          "
+          appCheckboxDescribedBy="org-terms-error"
+          [formControl]="form.controls.readTermsAndConditions"
+          data-cy="termsAndConditions"
+        >
+          <span [innerHTML]="'eportal_onboardingTR_addDetails_termsAndConditions' | translate"></span>
+        </mat-checkbox>
+        @if (
+          form.controls.readTermsAndConditions.hasError("required") && form.controls.readTermsAndConditions.touched
+        ) {
+          <div id="org-terms-error" class="sw-form-error">
+            <mat-icon svgIcon="exclamation_circle" color="warn" aria-hidden="true" />
+            <span>{{ "eportal_onboardingTR_addDetails_error_termsAndConditions" | translate }}</span>
+          </div>
+        }
+      </div>
+      <div>
+        <mat-checkbox
+          appCheckboxA11y
+          [appCheckboxInvalid]="
+            form.controls.readPrivacyPolicy.hasError('required') && form.controls.readPrivacyPolicy.touched
+          "
+          appCheckboxDescribedBy="org-privacy-error"
+          [formControl]="form.controls.readPrivacyPolicy"
+          data-cy="dataProtection"
+        >
+          <span [innerHTML]="'eportal_onboardingTR_addDetails_privacyPolicy' | translate"></span>
+        </mat-checkbox>
+        @if (form.controls.readPrivacyPolicy.hasError("required") && form.controls.readPrivacyPolicy.touched) {
+          <div id="org-privacy-error" class="sw-form-error">
+            <mat-icon svgIcon="exclamation_circle" color="warn" aria-hidden="true" />
+            <span>{{ "eportal_onboardingTR_addDetails_error_privacyPolicy" | translate }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</form>
+<div class="actions">
+  <div class="actions-2">
+    <button
+      (click)="wizardService.saveAndNext()"
+      data-cy="btnOrganizationInfoNext"
+      mat-button
+      obButton="primary"
+      type="button"
+    >
+      {{ "app_site_onboarding_trust_organisation-information_cta" | translate }}
+    </button>
+    <button
+      (click)="wizardService.onSaveAndContinueLater()"
+      data-cy="btnOrganizationInfoLeave"
+      mat-button
+      obButton="secondary"
+      type="button"
+    >
+      {{ "eportal_global_btnSec_continueLater" | translate }}
+    </button>
+  </div>
+</div>

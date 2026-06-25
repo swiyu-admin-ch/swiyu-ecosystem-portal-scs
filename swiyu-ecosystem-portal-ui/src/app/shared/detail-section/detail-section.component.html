@@ -1,0 +1,76 @@
+<mat-card appearance="outlined" class="detail-section">
+  <mat-card-header>
+    <mat-card-title>
+      <h2>{{ title() }}</h2>
+    </mat-card-title>
+    @if (editable()) {
+      <button
+        (click)="edit.emit()"
+        [attr.aria-label]="'app_site_did-details_aria_edit' | translate"
+        disabled
+        mat-icon-button
+        obButton="secondary"
+        type="button"
+      >
+        <mat-icon svgIcon="pencil"></mat-icon>
+      </button>
+    }
+  </mat-card-header>
+  <mat-card-content>
+    <form id="partner-detail-form" [formGroup]="group()" class="sw-form-sub-container" obUnsavedChanges>
+      @for (field of fields(); track field.key) {
+        @if (isEditing() && field.type !== "readonly") {
+          <mat-form-field appearance="outline" class="w-100 density-compact">
+            <mat-label>{{ field.label | translate }}</mat-label>
+            <input [formControlName]="field.key" [type]="field.type === 'date' ? 'date' : 'text'" matInput />
+          </mat-form-field>
+        } @else {
+          <div class="field-row">
+            @if (field.type === "array" && group().get(field.key)?.value) {
+              <span class="caption">{{ field.label | translate }}</span>
+              <div class="field-row">
+                @for (value of group().get(field.key)?.value; track value) {
+                  <div>
+                    @if (field.canCopy) {
+                      <app-clipboard [value]="value" />
+                    } @else {
+                      <span>
+                        {{ value || "-" }}
+                      </span>
+                    }
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="field-row">
+                <span class="caption">{{ field.label | translate }}</span>
+                @if (field.canCopy) {
+                  <app-clipboard
+                    [value]="
+                      field.type === 'date'
+                        ? (group().get(field.key)?.value | date: 'shortDate')
+                        : group().get(field.key)?.value
+                    "
+                  />
+                } @else {
+                  <span>
+                    {{
+                      field.type === "date"
+                        ? (group().get(field.key)?.value | date: "shortDate")
+                        : group().get(field.key)?.value || "-"
+                    }}
+                  </span>
+                }
+              </div>
+            }
+          </div>
+        }
+      }
+      @if (link()) {
+        <a [href]="getTranslatedUrl()" icon="right">
+          {{ link()!.label | translate }}
+        </a>
+      }
+    </form>
+  </mat-card-content>
+</mat-card>

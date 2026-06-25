@@ -1,0 +1,96 @@
+app:
+  governmental-allowlist:
+    partner-id: 40f377d5-cd11-458a-944b-0c4f73f2ddaa # DEV/REF
+  frontend:
+    portal-url: "https://ref-selfservice.api.admin.ch/api-selfservice/apis"
+    trust-api-url: "http://localhost:8200/"
+    identifier-registry-api-url: "http://localhost:8200/identifier-registry-api-url/"
+    status-registry-api-url: "http://localhost:8200/status-registry-api-url"
+    api-gateway-auth-url: "http://localhost:8200/api-gateway-auth-url"
+    identifier-registry-url: "http://localhost:8200/identifier-registry-url"
+    auth:
+      require-https: false
+    token-refresh-enabled: false
+    banner: "Local"
+    environments:
+      primary-base-url: "localhost:4501"
+      integration-base-url: "https://www.google.ch"
+    eportal:
+      pams-app-id: 301346
+      environment: REF
+    eportal-url: "https://eportal-r.admin.ch"
+  client-api:
+    core-business-service-base-url: "http://localhost:8200"
+  functionality:
+    automatic-approval-enabled: true
+    payment-enabled: false
+    allow-partner-base-onboarding-business-enabled: true
+    allow-partner-base-onboarding-individual-enabled: true
+    allow-partner-base-onboarding-governmental-enabled: true
+    primary-environment-enabled: true
+
+spring:
+  autoconfigure:
+    exclude:
+      - ch.admin.bit.jeap.monitor.metrics.health.HealthMetricsAutoConfig
+
+jeap:
+  monitor:
+    prometheus:
+      user: "prometheus"
+      password: "{noop}test"
+  swagger:
+    status: OPEN
+  security:
+    oauth2:
+      resourceserver:
+        authorization-server:
+          issuer: https://swiyu-oauth-mock-server-d.apps.p-szb-ros-shrd-npr-01.cloud.admin.ch
+          jwk-set-uri: https://swiyu-oauth-mock-server-d.apps.p-szb-ros-shrd-npr-01.cloud.admin.ch/.well-known/jwks.json
+          introspection:
+            client-secret: "secret"
+            uri: https://swiyu-oauth-mock-server-d.apps.p-szb-ros-shrd-npr-01.cloud.admin.ch/oauth2/introspect
+#         Uncomment the following lines to use the local mock server
+#          issuer: http://localhost:8480
+#          jwk-set-uri: http://localhost:8480/.well-known/jwks.json
+#          introspection:
+#            client-secret: "secret"
+#            uri: http://localhost:8480/oauth2/introspect
+#         Uncomment the following lines to use the dev keycloak server
+#          issuer: https://auth-d.trust-infra.swiyu.admin.ch/realms/bj-swiyu-ecosystem
+#          jwk-set-uri: https://swiyu-oauth-server-d.apps.p-szb-ros-shrd-npr-01.cloud.admin.ch/realms/bj-swiyu-ecosystem/protocol/openid-connect/certs
+#          introspection:
+#            client-secret: "" # copy from keycloak
+
+logging:
+  level:
+    ch.admin.bj.swiyu: DEBUG
+    org:
+      flywaydb:
+        core: INFO
+      hibernate:
+        SQL: WARN # set to debug if you want to see sql
+      springframework: WARN
+    apache:
+      http:
+        client: DEBUG
+
+management:
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+
+server:
+  port: 8501 # custom port under local development so no conflicts with other services
+  shutdown: immediate
+
+cors:
+  allowed-origins:
+    - 'http://127.0.0.1:8501'
+    - 'http://127.0.0.1:4501'
+    - 'http://localhost:8501'
+    - 'http://localhost:4501'
+
+features:
+  EIDARTFE_1122: true

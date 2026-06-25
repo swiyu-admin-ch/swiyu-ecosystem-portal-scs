@@ -1,0 +1,68 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+
+:host {
+  width: 100%;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 20em;
+}
+
+.paginator-aligned {
+  display: flex;
+  align-items: center;
+}
+
+.sectionNavigation {
+  display: flex;
+  padding-top: var(--sw-spc-default, 2rem);
+  padding-bottom: var(--sw-spc-default, 2rem);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sw-spc-default, 2rem);
+}
+
+.name-row {
+  padding-bottom: var(--sw-spc-default, 2rem);
+}
+
+.page-header {
+  padding-bottom: var(--sw-spc-xxl, 2rem);
+}
+
+.did-alerts {
+  padding-bottom: var(--sw-spc-sm, 2rem);
+}
+
+.general-alerts {
+  padding-bottom: var(--sw-spc-sm, 2rem);
+}
+
+.table-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sw-spc-default);
+}
+
+.table-footer {
+  display: flex;
+  align-items: center;
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sw-spc-sm);
+}
+
+.table-paginator-wrapper {
+  flex: 1;
+  justify-content: end;
+}
+
+.icon-primary-color {
+  color: white;
+}

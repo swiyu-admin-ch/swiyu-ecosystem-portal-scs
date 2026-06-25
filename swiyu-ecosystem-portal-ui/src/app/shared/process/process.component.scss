@@ -1,0 +1,27 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+
+.explainer-container {
+  display: flex;
+  flex-direction: column;
+  padding: var(--sw-spc-lg) var(--sw-spc-default);
+  align-items: flex-start;
+  gap: var(--sw-spc-default);
+  align-self: stretch;
+  background: $ob-gray-extra-light;
+
+  .title-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: var(--sw-spc-sm);
+    justify-content: space-between;
+  }
+
+  .steps-container {
+    display: grid;
+    grid-template-columns: repeat(var(--steps-per-row), 1fr);
+    gap: var(--sw-spc-sm);
+    align-self: stretch;
+    background: $ob-gray-extra-light;
+  }
+}

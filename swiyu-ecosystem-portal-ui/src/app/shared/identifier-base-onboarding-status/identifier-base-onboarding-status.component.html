@@ -1,0 +1,28 @@
+<mat-chip-set>
+  @switch (identifierStatus()) {
+    @case (IdentifierStatus.NotInitialized) {
+      <mat-chip class="NotInitialized">
+        <mat-icon matChipAvatar svgIcon="clock" />
+        {{ "eportal_global_identifier_status_NotInitialized" | translate }}
+      </mat-chip>
+    }
+    @case (IdentifierStatus.Initialized) {
+      <mat-chip class="Initialized">
+        <mat-icon matChipAvatar svgIcon="checkmark_circle" />
+        {{ "eportal_global_identifier_status_Initialized" | translate }}
+      </mat-chip>
+    }
+    @case (IdentifierStatus.UserDeactivated) {
+      <mat-chip class="UserDeactivated">
+        <mat-icon matChipAvatar svgIcon="exclamation_circle" />
+        {{ "eportal_global_identifier_status_UserDeactivated" | translate }}
+      </mat-chip>
+    }
+    @case (IdentifierStatus.DeactivatedByMigrationBecauseOfUnsupportedFormat) {
+      <mat-chip class="DeactivatedByMigrationBecauseOfUnsupportedFormat">
+        <mat-icon matChipAvatar svgIcon="exclamation_circle" />
+        {{ "eportal_global_identifier_status_DeactivatedByMigrationBecauseOfUnsupportedFormat" | translate }}
+      </mat-chip>
+    }
+  }
+</mat-chip-set>

@@ -1,0 +1,15 @@
+@use "./sw-variables";
+@use "./oblique-overrides";
+@use "./sw-layout";
+@use "./sw-flex";
+@use "./sw-typography";
+@use "./sw-form";
+@use "./sw-component";
+@use "./sw-selection-card";
+
+/**
+ We do not want the steps in our onboarding wizards to be clickable: EID-5719
+ */
+mat-step-header {
+  pointer-events: none;
+}

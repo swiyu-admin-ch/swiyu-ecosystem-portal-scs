@@ -1,0 +1,29 @@
+@use "@oblique/oblique/styles/scss/core/mixins/typography";
+
+.subtitle1 {
+  @include typography.ob-subtitle1();
+}
+
+.subtitle2 {
+  @include typography.ob-subtitle2();
+}
+
+.body1 {
+  @include typography.ob-body1();
+}
+
+.body2 {
+  @include typography.ob-body2();
+}
+
+.button {
+  @include typography.ob-button();
+}
+
+.caption {
+  @include typography.ob-caption();
+}
+
+.overline {
+  @include typography.ob-overline();
+}

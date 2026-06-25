@@ -1,0 +1,52 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "../../../../../../styles/sw-variables" as *;
+@use "../../../../../../styles/sw-component" as *;
+@use "../../../../../../styles/sw-wizard-actions" as *;
+
+.setup-form {
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.card-container {
+  display: flex;
+  flex-direction: row;
+  column-gap: 15px;
+  align-self: stretch;
+  margin-top: $sw-spc-lg;
+
+  & mat-card {
+    flex: 1;
+  }
+}
+
+.enter-animation {
+  animation: slide-fade 300ms;
+}
+
+@keyframes slide-fade {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@include sw-wizard-actions();
+
+.process-step-container {
+  gap: $sw-spc-xs;
+  display: flex;
+  flex-direction: column;
+}
+
+.swiyu-api {
+  display: inline;
+  border-radius: $sw-spc-xs;
+  background: #dfe4e9;
+  padding: 0 $sw-spc-xs;
+}

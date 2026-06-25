@@ -1,0 +1,101 @@
+<mat-drawer-container class="mat-drawer-container">
+  <mat-drawer-content class="main-component">
+    <!-- Back Button -->
+    <div class="section-navigation">
+      <a [routerLink]="AppRoutes.businessPartnerDetail(businessPartnerId())" mat-button obButton="tertiary">
+        <mat-icon svgIcon="chevron_left" />
+        {{ "eportal_global_btn_backToProfilePage" | translate }}
+      </a>
+    </div>
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1>{{ "eportal_verifyAdditionalDIDs_pageTitle" | translate }}</h1>
+    </div>
+    <div>
+      {{ "eportal_verifyAdditionalDIDs_introText" | translate }}
+    </div>
+
+    <app-process [title]="'eportal_verifyAdditionalDIDs_sectionTitle_proofOfPossession' | translate">
+      <app-process-step [step]="1" [title]="'eportal_verifyAdditionalDIDs_prepareData_cardTitle' | translate">
+        <div>{{ "eportal_verifyAdditionalDIDs_prepareData_cardText" | translate }}</div>
+
+        <ng-container processStepLinks>
+          <div class="bottom-links">
+            <a
+              class="link"
+              [href]="'eportal_global_link_TechDocumentation_url_cookbook_popadditional' | translate"
+              target="_blank"
+            >
+              <div class="text">{{ "eportal_global_link_TechDocumentation" | translate }}</div>
+              <mat-icon [svgIcon]="'link_external'"></mat-icon>
+            </a>
+          </div>
+        </ng-container>
+      </app-process-step>
+
+      <app-process-step
+        [step]="2"
+        [title]="'eportal_verifyAdditionalDIDs_createProofOfPossession_cardTitle' | translate"
+      >
+        <ng-container processStepAlert>
+          <ob-alert type="warning">{{
+            "eportal_verifyAdditionalDIDs_createProofOfPossession_cardAlert" | translate
+          }}</ob-alert>
+        </ng-container>
+
+        <div>{{ "eportal_verifyAdditionalDIDs_createProofOfPossession_cardText" | translate }}</div>
+
+        <ng-container processStepLinks>
+          <div class="bottom-links">
+            <a class="link" [href]="'eportal_global_link_DIDtoolbox_url' | translate" target="_blank">
+              <div class="text">{{ "eportal_global_link_DIDtoolbox" | translate }}</div>
+              <mat-icon [svgIcon]="'link_external'"></mat-icon>
+            </a>
+            <a class="link" [href]="'eportal_global_link_TechDocumentation_url' | translate" target="_blank">
+              <div class="text">{{ "eportal_global_link_TechDocumentation" | translate }}</div>
+              <mat-icon [svgIcon]="'link_external'"></mat-icon>
+            </a>
+          </div>
+        </ng-container>
+      </app-process-step>
+
+      <app-process-step
+        [step]="3"
+        [title]="'eportal_verifyAdditionalDIDs_submitProofOfPossession_cardTitle' | translate"
+      >
+        <div>{{ "eportal_verifyAdditionalDIDs_submitProofOfPossession_cardText" | translate }}</div>
+
+        <ng-container processStepLinks>
+          <div class="bottom-links">
+            <a
+              class="link"
+              [href]="'eportal_global_link_TechDocumentation_url_cookbook_popadditional' | translate"
+              target="_blank"
+            >
+              <div class="text">{{ "eportal_global_link_TechDocumentation" | translate }}</div>
+              <mat-icon [svgIcon]="'link_external'"></mat-icon>
+            </a>
+          </div>
+        </ng-container>
+      </app-process-step>
+    </app-process>
+
+    <!-- Required Info -->
+    <div class="info-cards-row">
+      <app-detail-section
+        [fields]="requiredInfoFields"
+        [group]="requiredInfoForm"
+        [title]="'eportal_verifyAdditionalDIDs_sectionTitle_requiredInfo' | translate"
+        data-cy="cardRequiredInfo"
+      />
+    </div>
+
+    <!-- Action Button -->
+    <div class="actions">
+      <a [routerLink]="AppRoutes.businessPartnerDetail(businessPartnerId())" mat-button obButton="primary" tabindex="0">
+        {{ "eportal_global_btn_backToProfilePage" | translate }}
+      </a>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>

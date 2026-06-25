@@ -1,0 +1,65 @@
+<div>
+  <nav class="section-navigation">
+    <a [routerLink]="AppRoutes.businessPartnerDetail(businessPartnerId())" mat-button obButton="tertiary" tabindex="0">
+      <mat-icon svgIcon="chevron_left" />
+      {{ "eportal_global_btn_backToProfilePage" | translate }}
+    </a>
+  </nav>
+
+  @if (isLoading()) {
+    <ob-spinner></ob-spinner>
+  } @else if (error()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+  } @else if (partner()) {
+    <mat-drawer-container>
+      <mat-drawer-content class="main-component">
+        <!-- Page Header -->
+        <div class="page-header">
+          <h1>{{ "eportal_swiyuProfile_pageTitle" | translate }}</h1>
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="info-cards-row">
+          <app-detail-section
+            (edit)="onEdit('details')"
+            [fields]="detailsFields"
+            [group]="detailsForm"
+            [isEditing]="isEditing('details')"
+            [title]="'eportal_swiyuProfile_section_details' | translate"
+          >
+          </app-detail-section>
+
+          <app-detail-section
+            (edit)="onEdit('address')"
+            [fields]="addressFields"
+            [group]="addressForm"
+            [isEditing]="isEditing('address')"
+            [title]="'eportal_swiyuProfile_section_address' | translate"
+          >
+          </app-detail-section>
+
+          <app-detail-section
+            (edit)="onEdit('contact')"
+            [fields]="contactFields"
+            [group]="contactForm"
+            [isEditing]="isEditing('contact')"
+            [title]="'eportal_swiyuProfile_section_contact' | translate"
+          >
+          </app-detail-section>
+        </div>
+
+        <!-- Action Button -->
+        <div class="actions">
+          <a
+            [routerLink]="AppRoutes.businessPartnerDetail(businessPartnerId())"
+            mat-button
+            obButton="primary"
+            tabindex="0"
+          >
+            {{ "eportal_global_btn_backToProfilePage" | translate }}
+          </a>
+        </div>
+      </mat-drawer-content>
+    </mat-drawer-container>
+  }
+</div>

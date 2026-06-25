@@ -1,0 +1,170 @@
+app:
+  client-api:
+    core-business-service-base-url: ${CORE_BUSINESS_SERVICE_BASE_URL:}
+  governmental-allowlist:
+    partner-id: ${GOVERNMENTAL_ALLOWLIST_PARTNER_ID:}
+  functionality:
+    automatic-approval-enabled: ${FUNCTIONALITY_AUTOMATIC_APPROVAL_ENABLED:}
+    payment-enabled: ${FUNCTIONALITY_PAYMENT_ENABLED:}
+    allow-partner-base-onboarding-business-enabled: ${FUNCTIONALITY_ALLOW_PARTNER_BASE_ONBOARDING:}
+    allow-partner-base-onboarding-individual-enabled: ${FUNCTIONALITY_ALLOW_PARTNER_BASE_ONBOARDING_INDIVIDUAL:}
+    allow-partner-base-onboarding-governmental-enabled: ${FUNCTIONALITY_ALLOW_PARTNER_BASE_ONBOARDING_GOVERNMENTAL:}
+    primary-environment-enabled: ${FUNCTIONALITY_PRIMARY_ENVIRONMENT_ENABLED:}
+  frontend:
+    banner: ${BANNER:}
+    product-label: ${PRODUCT_LABEL:}
+    token-refresh-enabled: ${TOKEN_REFRESH_ENABLED:true}
+    portal-url: ${SELF_SERVICE_PORTAL_URL:}
+    trust-api-url: ${TRUST_API_URL:}
+    identifier-registry-api-url: ${IDENTIFIER_REGISTRY_API_URL:}
+    status-registry-api-url: ${STATUS_REGISTRY_API_URL:}
+    api-gateway-auth-url: ${API_GATEWAY_AUTH_URL:}
+    identifier-registry-url: ${IDENTIFIER_REGISTRY_URL:}
+    max-business-partner-per-customer: ${PARTNER_LIMIT:50}
+    auth:
+      issuer: ${jeap.security.oauth2.resourceserver.authorization-server.issuer:}
+      client-id: ${jeap.security.oauth2.resourceserver.resource-id}
+      scope: openid profile email offline_access
+      response-type: code
+      require-https: true
+    eportal:
+      pams-app-id: ${PAMS_APP_ID:}
+      info-contact-email: ecosystem@swiyu.admin.ch
+      environment: ${PAMS_ENVIRONMENT:}
+    environments:
+      primaryBaseUrl: ${ENVIRONMENT_PRIMARY_BASE_URL:}
+      integrationBaseUrl: ${ENVIRONMENT_INTEGRATION_BASE_URL:""} # can be empty
+    eportal-url: ${EPORTAL_URL:}
+    product-label-color: ${PRODUCT_LABEL_COLOR:}
+
+info:
+  build:
+    artifact: "@project.artifactId@"
+    description: "@project.description@"
+    name: "@project.name@"
+    version: "@project.version@"
+
+jeap:
+  health:
+    metric:
+      contributor-metrics:
+        enabled: true
+  monitor:
+    prometheus:
+      user: "${PROMETHEUS_USER}"
+      password: "{noop}${PROMETHEUS_PASSWORD}"
+  security:
+    oauth2:
+      resourceserver:
+        introspection:
+          mode: lightweight
+        authorization-server:
+          issuer: ${ISSUER}
+          jwk-set-uri: ${JWK_SET_URI}
+          introspection:
+            client-id: ${spring.application.name:} # client id for introspection is configured in keycloak with the spring application name
+            client-secret: ${AUTH_INTROSPECTION_CLIENT_SECRET:}
+          claim-set-converter-name: unusedBusinessPartnerRoleRemovalConverter
+        resource-id: ${RESOURCE_ID:bj-swiyu-ecosystem}
+        system-name: ti # trust-infrastructure
+  swagger:
+    status: OPEN
+  rest:
+    tracing:
+      uri-filter-pattern: .*/actuator/.*
+      full-response-details-in-message: false
+logging:
+  level:
+    ch.admin.bit.jeap: INFO
+    ch.admin.bit.jeap.log.RestRequestTracer: DEBUG
+
+    org:
+      springframework:
+        web:
+          servlet:
+            resource:
+              ResourceHttpRequestHandler: INFO
+          filter:
+            CommonsRequestLoggingFilter: INFO
+    springfox:
+      documentation:
+        spring:
+          web:
+            readers:
+              operation:
+                CachingOperationNameGenerator: ERROR
+server:
+  port: 8080
+  compression:
+    enabled: true
+  # Temporary increase of header size to be able to login and remove too many business partners
+  max-http-request-header-size: 20000
+
+spring:
+  application:
+    name: swiyu-ecosystem-portal-scs
+  http:
+    client:
+      connect-timeout: 10000 # 10 seconds
+      read-timeout: 30000 # 30 seconds
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+  jmx:
+    default-domain: ${spring.application.name}
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  session:
+    store-type: none
+  data:
+    rest:
+      base-path: /api
+      max-page-size: 100
+      default-page-size: 20
+  main:
+    banner-mode: console
+  batch:
+    job:
+      enabled: false # do not trigger any jobs on startup
+  devtools:
+    livereload:
+      port: 35730 # changed so we do not interfere with other VBS projects
+  cloud:
+    discovery:
+      client:
+        health-indicator:
+          enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    jolokia:
+      enabled: true
+    health:
+      show-details: always
+      show-components: when_authorized
+    flyway:
+      enabled: true
+
+springdoc:
+  show-actuator: "${INTEGRATED_WEB_DOCS_ENABLE:true}"
+  swagger-ui:
+    enabled: "${INTEGRATED_WEB_DOCS_ENABLE:true}"
+    disable-swagger-default-url: true
+    oauth:
+      client-id: ${app.resourceId}
+    operations-sorter: alpha # sort methods within an API in swagger ui by paths
+    tags-sorter: alpha
+  default-produces-media-type: application/json
+
+http:
+  max-redirects: 5
+
+features:
+  EIDARTFE_1122: ${FEATURES_EIDARTFE_1122:false}

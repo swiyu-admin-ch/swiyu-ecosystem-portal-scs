@@ -1,0 +1,346 @@
+<div class="sw-wizard-lvl-1">
+  <div class="sw-wizard-lvl-2">
+    <h1
+      [attr.aria-label]="
+        ('eportal_accessibility_step_prefix' | translate: { current: stepNumber, total: totalSteps }) +
+        ('eportal_onboarding_product_pageTitle' | translate)
+      "
+    >
+      {{ "eportal_onboarding_product_pageTitle" | translate }}
+    </h1>
+    <span>{{ "eportal_onboarding_product_introText" | translate }}</span>
+  </div>
+  <div class="sw-wizard-lvl-3">
+    <h3>{{ "eportal_onboarding_product_sectionTitle_environment" | translate }}</h3>
+    <div class="sw-selection-card-group" obSelectableGroup>
+      <button
+        type="button"
+        class="sw-selection-card"
+        [attr.aria-label]="'eportal_onboarding_product_infrastructure_cardTitle' | translate"
+        [attr.aria-pressed]="selection() === EnvironmentSelection.PRIMARY"
+        [class.sw-selection-card--selected]="selection() === EnvironmentSelection.PRIMARY"
+        [disabled]="!isPrimaryEnvironmentEnabled()"
+        (click)="selectEnvironment(EnvironmentSelection.PRIMARY)"
+        data-cy="btnPrimaryEnvironment"
+      >
+        <mat-card
+          role="checkbox"
+          obSelectable
+          [attr.aria-checked]="selection() === EnvironmentSelection.PRIMARY"
+          [class.ob-selected]="selection() === EnvironmentSelection.PRIMARY"
+          [class.sw-selection-card--selected]="selection() === EnvironmentSelection.PRIMARY"
+        >
+          <img
+            class="env-selection-image"
+            mat-card-image
+            ngSrc="assets/images/default.png"
+            alt=""
+            width="896"
+            height="896"
+          />
+          <mat-card-title>{{ "eportal_onboarding_product_infrastructure_cardTitle" | translate }}</mat-card-title>
+          <mat-card-content class="content">
+            <span>{{ "eportal_onboarding_product_infrastructure_cardDescription" | translate }}</span>
+            <span class="label">{{ "eportal_onboarding_product_infrastructure_cardLabel" | translate }}</span>
+          </mat-card-content>
+        </mat-card>
+      </button>
+      <button
+        type="button"
+        class="sw-selection-card"
+        [attr.aria-label]="'eportal_onboarding_product_playground_cardTitle' | translate"
+        [attr.aria-pressed]="selection() === EnvironmentSelection.INTEGRATION"
+        [class.sw-selection-card--selected]="selection() === EnvironmentSelection.INTEGRATION"
+        (click)="selectEnvironment(EnvironmentSelection.INTEGRATION)"
+        data-cy="btnIntegrationEnvironment"
+      >
+        <mat-card
+          role="checkbox"
+          obSelectable
+          [attr.aria-checked]="selection() === EnvironmentSelection.INTEGRATION"
+          [class.ob-selected]="selection() === EnvironmentSelection.INTEGRATION"
+          [class.sw-selection-card--selected]="selection() === EnvironmentSelection.INTEGRATION"
+        >
+          <img
+            class="env-selection-image"
+            mat-card-image
+            ngSrc="assets/images/preview.png"
+            alt=""
+            width="896"
+            height="896"
+          />
+          <mat-card-title>{{ "eportal_onboarding_product_playground_cardTitle" | translate }}</mat-card-title>
+          <mat-card-content class="content">
+            <span>{{ "eportal_onboarding_product_playground_cardDescription" | translate }}</span>
+            <span class="label">{{ "eportal_onboarding_product_playground_cardLabel" | translate }}</span>
+          </mat-card-content>
+        </mat-card>
+      </button>
+    </div>
+    @if (environmentSelectionError()) {
+      <div class="sw-form-error">
+        <mat-icon [svgIcon]="'exclamation_circle'" color="warn" />
+        <span class="caption">{{ "eportal_onboarding_error_environment" | translate }}</span>
+      </div>
+    }
+  </div>
+  @if (showProducts()) {
+    <form [formGroup]="trustLevelForm" class="sw-wizard-lvl-3" obSelectableGroup>
+      <h3 [class.sw-error-title]="trustLevelForm.invalid && trustLevelForm.touched">
+        {{ "eportal_onboarding_product_sectionTitle_trustLevel" | translate }}
+      </h3>
+      @if (isPreview()) {
+        <div class="sw-selection-card-group">
+          <!-- Preview product selection card. Includes hints about it being preview and not production as well as it being free  -->
+          <button
+            class="sw-selection-card sw-selection-card--preview"
+            [attr.aria-label]="'eportal_onboarding_product_card_cardTitle_TE' | translate"
+            [attr.aria-pressed]="trustLevelForm.get('trustLevel')?.value === TrustLevel.TRUST"
+            (click)="trustLevelForm.get('trustLevel')?.setValue(TrustLevel.TRUST)"
+            data-cy="btnPreviewPartner"
+          >
+            <mat-card
+              role="checkbox"
+              obSelectable
+              aria-checked="false"
+              [attr.aria-checked]="trustLevelForm.get('trustLevel')?.value === TrustLevel.TRUST"
+              [class.ob-selected]="trustLevelForm.get('trustLevel')?.value === TrustLevel.TRUST"
+              [class.sw-selection-card--selected]="trustLevelForm.get('trustLevel')?.value === TrustLevel.TRUST"
+              [class.sw-selection-card--error]="trustLevelForm.invalid && trustLevelForm.touched"
+            >
+              <img
+                mat-card-image
+                ngSrc="assets/images/trust.png"
+                alt=""
+                loading="lazy"
+                fetchpriority="auto"
+                height="2742"
+                width="1406"
+              />
+              <ob-alert [type]="'warning'" class="stretch"
+                >{{ "eportal_onboarding_product_cardLabel_TE" | translate }}
+              </ob-alert>
+              <mat-card-title class="stretch"
+                >{{ "eportal_onboarding_product_card_cardTitle_TE" | translate }}
+              </mat-card-title>
+              <mat-card-subtitle class="stretch"
+                >{{ "eportal_onboarding_product_card_cardSubtitle_TE" | translate }}
+              </mat-card-subtitle>
+              <mat-card-content class="content">
+                <div class="card-features">
+                  <div class="card-feature">
+                    <mat-icon [svgIcon]="'checkmark_circle'" />
+                    <span>{{ "eportal_onboarding_product_cardFeature_1_TE" | translate }}</span>
+                  </div>
+                  <div class="card-feature">
+                    <mat-icon [svgIcon]="'checkmark_circle'" />
+                    <span>{{ "eportal_onboarding_product_cardFeature_2_TE" | translate }}</span>
+                  </div>
+                  <div class="card-feature">
+                    <mat-icon [svgIcon]="'checkmark_circle'" />
+                    <span>{{ "eportal_onboarding_product_cardFeature_3_TE" | translate }}</span>
+                  </div>
+                </div>
+                <div class="card-features">
+                  <div class="card-feature">
+                    <mat-icon [svgIcon]="'checkmark_circle'" />
+                    <span>{{ "eportal_onboarding_product_cardFeature_5_TE" | translate }}</span>
+                  </div>
+                  <div class="card-feature">
+                    <mat-icon [svgIcon]="'checkmark_circle'" />
+                    <span>{{ "eportal_onboarding_product_cardFeature_6_TE" | translate }}</span>
+                  </div>
+                </div>
+              </mat-card-content>
+              <div class="content">
+                <span class="caption">{{ "eportal_onboarding_product_cardSubline_TE" | translate }}</span>
+                <span class="label">{{ "eportal_onboarding_product_cardPrice_TE" | translate }}</span>
+              </div>
+            </mat-card>
+          </button>
+        </div>
+      } @else {
+        <mat-slide-toggle [checked]="showGovPricing()" (change)="showGovPricing.set(!showGovPricing())">{{
+          "eportal_onboarding_product_gov_slider" | translate
+        }}</mat-slide-toggle>
+        <div class="sw-selection-card-group">
+          <!-- Production product selection cards. Choice between base onboarding and trust-onboarding -->
+          <button
+            class="sw-selection-card"
+            [attr.aria-label]="'eportal_onboarding_product_card_cardTitle_BrTr' | translate"
+            [attr.aria-pressed]="trustLevelForm.get('trustLevel')?.value === TrustLevel.TRUST"
+            (click)="trustLevelForm.get('trustLevel')?.setValue(TrustLevel.TRUST)"
+            data-cy="btnTrustedPartner"
+          >
+            <mat-card
+              role="checkbox"
+              obSelectable
+              aria-checked="false"
+              [class.ob-selected]="trustLevelForm.get('trustLevel')?.value === TrustLevel.TRUST"
+              [class.sw-selection-card--selected]="trustLevelForm.get('trustLevel')?.value === TrustLevel.TRUST"
+              [class.sw-selection-card--error]="trustLevelForm.invalid && trustLevelForm.touched"
+            >
+              <img
+                mat-card-image
+                ngSrc="assets/images/trust.png"
+                alt=""
+                loading="lazy"
+                fetchpriority="auto"
+                height="2742"
+                width="1406"
+              />
+              <ob-alert [type]="'success'" class="stretch"
+                >{{ "eportal_onboarding_product_cardLabel_BrTr" | translate }}
+              </ob-alert>
+              <mat-card-title class="stretch"
+                >{{ "eportal_onboarding_product_card_cardTitle_BrTr" | translate }}
+              </mat-card-title>
+              <mat-card-subtitle class="stretch"
+                >{{ "eportal_onboarding_product_card_cardSubtitle_BrTr" | translate }}
+              </mat-card-subtitle>
+              <mat-card-content class="content">
+                <div class="card-features">
+                  <div class="card-feature">
+                    <mat-icon [svgIcon]="'checkmark_circle'" />
+                    <span>{{ "eportal_onboarding_product_cardFeature_1" | translate }}</span>
+                  </div>
+                  <div class="card-feature">
+                    <mat-icon [svgIcon]="'checkmark_circle'" />
+                    <span>{{ "eportal_onboarding_product_cardFeature_2" | translate }}</span>
+                  </div>
+                  <div class="card-feature">
+                    <mat-icon [svgIcon]="'checkmark_circle'" />
+                    <span>{{ "eportal_onboarding_product_cardFeature_3" | translate }}</span>
+                  </div>
+                  <div class="card-feature">
+                    <mat-icon [svgIcon]="'checkmark_circle'" />
+                    <span>{{ "eportal_onboarding_product_cardFeature_4" | translate }}</span>
+                  </div>
+                </div>
+                <div class="card-features">
+                  <div class="card-feature">
+                    <mat-icon [svgIcon]="'checkmark_circle'" />
+                    <span>{{ "eportal_onboarding_product_cardFeature_5" | translate }}</span>
+                  </div>
+                  <div class="card-feature">
+                    <mat-icon [svgIcon]="'checkmark_circle'" />
+                    <span>{{ "eportal_onboarding_product_cardFeature_6" | translate }}</span>
+                  </div>
+                </div>
+              </mat-card-content>
+              <div class="content">
+                <span class="caption">{{ "eportal_onboarding_product_cardSubline_BrTr" | translate }}</span>
+                @if (showGovPricing()) {
+                  <span class="label">{{ "eportal_onboarding_product_cardPrice_TE" | translate }}</span>
+                } @else {
+                  <span class="label">{{ "eportal_onboarding_product_cardPrice_BrTr" | translate }}</span>
+                }
+              </div>
+            </mat-card>
+          </button>
+          <button
+            class="sw-selection-card"
+            [attr.aria-label]="'eportal_onboarding_product_card_cardTitle_Br' | translate"
+            [attr.aria-pressed]="trustLevelForm.get('trustLevel')?.value === TrustLevel.BASIC"
+            (click)="trustLevelForm.get('trustLevel')?.setValue(TrustLevel.BASIC)"
+            data-cy="btnBasicPartner"
+          >
+            <mat-card
+              role="checkbox"
+              obSelectable
+              aria-checked="false"
+              [class.ob-selected]="trustLevelForm.get('trustLevel')?.value === TrustLevel.BASIC"
+              [class.sw-selection-card--selected]="trustLevelForm.get('trustLevel')?.value === TrustLevel.BASIC"
+              [class.sw-selection-card--error]="trustLevelForm.invalid && trustLevelForm.touched"
+            >
+              <img
+                mat-card-image
+                ngSrc="assets/images/basic.png"
+                alt=""
+                loading="lazy"
+                fetchpriority="auto"
+                height="2742"
+                width="1406"
+              />
+              <ob-alert [type]="'info'" class="sw-alert stretch"
+                >{{ "eportal_onboarding_product_cardLabel_Br" | translate }}
+              </ob-alert>
+              <mat-card-title class="stretch"
+                >{{ "eportal_onboarding_product_card_cardTitle_Br" | translate }}
+              </mat-card-title>
+              <mat-card-subtitle class="stretch"
+                >{{ "eportal_onboarding_product_card_cardSubtitle_Br" | translate }}
+              </mat-card-subtitle>
+              <mat-card-content class="content">
+                <div class="card-features">
+                  <div class="card-feature">
+                    <mat-icon [svgIcon]="'checkmark_circle'" />
+                    <span>{{ "eportal_onboarding_product_cardFeature_1" | translate }}</span>
+                  </div>
+                  <div class="card-feature">
+                    <mat-icon [svgIcon]="'checkmark_circle'" />
+                    <span>{{ "eportal_onboarding_product_cardFeature_2" | translate }}</span>
+                  </div>
+                  <div class="card-feature">
+                    <mat-icon [svgIcon]="'checkmark_circle'" />
+                    <span>{{ "eportal_onboarding_product_cardFeature_3" | translate }}</span>
+                  </div>
+                  <div class="card-feature">
+                    <mat-icon [svgIcon]="'checkmark_circle'" />
+                    <span>{{ "eportal_onboarding_product_cardFeature_4" | translate }}</span>
+                  </div>
+                </div>
+              </mat-card-content>
+              <div class="content">
+                <span class="caption">{{ "eportal_onboarding_product_cardSubline_Br" | translate }}</span>
+
+                @if (showGovPricing()) {
+                  <span class="label">{{ "eportal_onboarding_product_cardPrice_TE" | translate }}</span>
+                } @else {
+                  <span class="label">{{ "eportal_onboarding_product_cardPrice_Br" | translate }}</span>
+                }
+              </div>
+            </mat-card>
+          </button>
+        </div>
+      }
+      @if (trustLevelForm.controls.trustLevel.hasError("required") && trustLevelForm.controls.trustLevel.touched) {
+        <div class="sw-form-error">
+          <mat-icon [svgIcon]="'exclamation_circle'" color="warn" />
+          <span class="caption">{{ "eportal_onboarding_error_trustLevel" | translate }}</span>
+        </div>
+      }
+    </form>
+  }
+  <div class="actions">
+    <button
+      (click)="wizardService.navigateToPreviousStep()"
+      data-cy="btnDidSelectionPrevious"
+      mat-button
+      obButton="secondary"
+      type="button"
+    >
+      {{ "eportal_global_btnSec_back" | translate }}
+    </button>
+    <div class="actions-2">
+      @if (!showProducts()) {
+        <button (click)="proceedToProducts()" data-cy="btnNext" mat-button obButton="primary" type="button">
+          {{ "eportal_global_btnPrim_continue" | translate }}
+        </button>
+      } @else {
+        <button (click)="proceedFromProductSelection()" data-cy="btnNext" mat-button obButton="primary" type="button">
+          {{ "eportal_global_btnPrim_continueProfileCreate" | translate }}
+        </button>
+      }
+      <button
+        (click)="wizardService.onSaveAndContinueLater()"
+        data-cy="btnSaveAndBack"
+        mat-button
+        obButton="secondary"
+        type="button"
+      >
+        {{ "eportal_global_btnSec_cancel" | translate }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+app:
+  frontend:
+    portal-url: "https://eportal-r.admin.ch/start"
+    trust-api-url: "https://trust-reg-api-d.trust-infra.swiyu.admin.ch/"
+    identifier-registry-api-url: "https://identifier-reg-api-d.trust-infra.swiyu.admin.ch/"
+    status-registry-api-url: "https://status-reg-api-d.trust-infra.swiyu.admin.ch/"
+    identifier-registry-url: "https://identifier-reg-d.trust-infra.swiyu.admin.ch"
+    auth:
+      require-https: false
+    token-refresh-enabled: false
+    banner: "Local"
+
+  client-api:
+    core-business-service-base-url: https://swiyu-core-business-service-d.apps.p-szb-ros-shrd-npr-01.cloud.admin.ch/
+
+jeap:
+  swagger:
+    status: OPEN
+  security:
+    oauth2:
+      resourceserver:
+        authorization-server:
+          issuer: https://swiyu-oauth-mock-server-d.apps.p-szb-ros-shrd-npr-01.cloud.admin.ch
+          jwk-set-uri: https://swiyu-oauth-mock-server-d.apps.p-szb-ros-shrd-npr-01.cloud.admin.ch/.well-known/jwks.json
+
+logging:
+  level:
+    ch.admin.bj.swiyu: DEBUG
+    org:
+      flywaydb:
+        core: INFO
+      hibernate:
+        SQL: WARN # set to debug if you want to see sql
+      springframework: WARN
+    apache:
+      http:
+        client: DEBUG
+
+management:
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+
+server:
+  port: 8501 # custom port under local development so no conflicts with other services
+  shutdown: immediate
+
+cors:
+  allowed-origins:
+    - 'http://127.0.0.1:8501'
+    - 'http://127.0.0.1:4501'
+    - 'http://localhost:8501'
+    - 'http://localhost:4501'

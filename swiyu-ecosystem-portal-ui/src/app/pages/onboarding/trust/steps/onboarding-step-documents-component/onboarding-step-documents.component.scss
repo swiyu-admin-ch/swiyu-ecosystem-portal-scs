@@ -1,0 +1,10 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+
+.doi-download-container {
+  display: flex;
+  column-gap: var(--sw-spc-sm);
+}
+
+.doi-download-button-container {
+  margin-top: 5px;
+}

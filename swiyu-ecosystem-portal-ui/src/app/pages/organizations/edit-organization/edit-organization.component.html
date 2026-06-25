@@ -1,0 +1,53 @@
+<div class="ob-flex">
+  <div class="flex-justify-end">
+    <button
+      (click)="cancel()"
+      [attr.aria-label]="'app_ctl_btn_close' | translate"
+      mat-icon-button
+      obButton="tertiary"
+      type="button"
+    >
+      <mat-icon class="close" svgIcon="xmark_circle" />
+    </button>
+  </div>
+  <div class="modal-content">
+    <h2>{{ "app_site_updateOrganization_title" | translate }}</h2>
+    <p [innerHTML]="'app_site_updateOrganization_body' | translate"></p>
+    <form data-cy="formEditOrganization" class="form-container" [formGroup]="form">
+      <div class="form-fields-container">
+        <mat-form-field floatLabel="always" obErrorMessages>
+          <mat-label>{{ "app_site_register_form_entityName" | translate }}</mat-label>
+          <input
+            type="text"
+            data-cy="orgName"
+            [maxlength]="maxLengthOrgName"
+            [formControl]="form.controls.orgName"
+            matInput
+          />
+          <mat-hint align="end">{{ lengthHint$ | async }}</mat-hint>
+          <mat-error />
+        </mat-form-field>
+        <mat-form-field floatLabel="always" obErrorMessages>
+          <mat-label>{{ "app_site_register_form_contactEmail" | translate }}</mat-label>
+          <input [formControl]="form.controls.technicalEmail" data-cy="technicalEmail" type="email" matInput />
+          <mat-error />
+        </mat-form-field>
+      </div>
+      <div class="form-actions">
+        <button data-cy="btnCreateOrganization" (click)="cancel()" mat-button obButton="secondary" type="button">
+          {{ "app_site_register_btn_cancel" | translate }}
+        </button>
+        <button
+          data-cy="btnEditOrganization"
+          (click)="save()"
+          [disabled]="!form.valid"
+          mat-button
+          obButton="primary"
+          type="button"
+        >
+          {{ "app_ctl_btn_save" | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

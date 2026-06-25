@@ -1,0 +1,33 @@
+.ob-grid,
+.ob-flex {
+  flex-direction: column;
+}
+
+.close {
+  width: 30px;
+  height: 30px;
+  color: #596978;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  margin: 3% 10% 3% 10%;
+}
+
+.flex-justify-end {
+  display: flex;
+  justify-content: end;
+}
+
+.links-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: end;
+  column-gap: 10px;
+}

@@ -1,0 +1,23 @@
+<!--Represents static notification content instead of traditional notification overlay-->
+@if (isNotificationActive) {
+  <ob-alert [type]="type()">
+    <div class="notification-container">
+      <div class="notification-text">
+        <strong>
+          <ng-content select="[notification-title]" />
+        </strong>
+        <ng-content select="[notification-content]" />
+      </div>
+      <button
+        (click)="close()"
+        [attr.aria-label]="'app_ctl_btn_close' | translate"
+        [matTooltip]="'app_ctl_btn_close' | translate"
+        mat-icon-button
+        obButton="tertiary"
+        type="button"
+      >
+        <mat-icon svgIcon="xmark_circle" />
+      </button>
+    </div>
+  </ob-alert>
+}

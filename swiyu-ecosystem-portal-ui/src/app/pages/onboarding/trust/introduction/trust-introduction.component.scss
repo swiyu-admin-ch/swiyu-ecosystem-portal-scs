@@ -1,0 +1,32 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+
+.introduction {
+  width: 100%;
+  display: flex;
+  padding: var(--Spacing-spc-lg, 48px) var(--Padding-pad-body, 32px) var(--Spacing-spc-xxl, 96px)
+    var(--Padding-pad-body, 32px);
+  flex-direction: column;
+  align-items: center;
+  gap: $ob-spacing-xl;
+  align-self: stretch;
+}
+
+.introduction-top {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sw-spc-default);
+
+  .introduction-partner-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .introduction-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--sw-spc-sm);
+    align-self: stretch;
+    margin-bottom: var(--sw-spc-xxl);
+  }
+}

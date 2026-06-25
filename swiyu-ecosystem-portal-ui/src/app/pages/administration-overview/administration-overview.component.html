@@ -1,0 +1,110 @@
+<div>
+  <div class="ob-flex" id="notificationArea">
+    <app-stateful-alert
+      #maxOrganizationAmountBeenReached
+      [storageKey]="'notificationMaxOrg'"
+      [visible]="hasMaxOrganizationAmountBeenReached"
+      type="error"
+    >
+      <ng-container notification-title>
+        {{ "eportal_adminOverview_notification_organizationAmountLimit_title" | translate }}
+      </ng-container>
+      <ng-container notification-content>
+        <p
+          [innerHTML]="
+            'eportal_adminOverview_notification_organizationAmountLimit_body'
+              | translate
+                : {
+                    maxBusinessPartnerPerCustomer: appConfigService.maxBusinessPartnerPerCustomer,
+                  }
+          "
+        ></p>
+      </ng-container>
+    </app-stateful-alert>
+  </div>
+
+  <div class="sw-flex-space-between page-header">
+    <h1>{{ "eportal_adminOverview_pageTitle" | translate }}</h1>
+    <a
+      (click)="navigateToBusinessPartnerRegistration()"
+      (keydown)="navigateToBusinessPartnerRegistration()"
+      mat-button
+      obButton="secondary"
+      tabindex="0"
+      data-cy="addOrganization"
+    >
+      <mat-icon svgIcon="plus" />
+      {{ "eportal_global_btnSec_addProfileForNewOrg" | translate }}
+    </a>
+  </div>
+
+  <div class="ob-flex">
+    <ng-container>
+      <table
+        [dataSource]="dataSource"
+        class="ob-table"
+        mat-table
+        matSort
+        matSortActive="name"
+        matSortDirection="asc"
+        noda
+      >
+        <ng-container matColumnDef="id">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>
+            {{ "eportal_adminOverview_table_business-partner-id" | translate }}
+          </th>
+          <td *matCellDef="let element" mat-cell>{{ element.id }}</td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>
+            {{ "eportal_adminOverview_table_business-partner-name" | translate }}
+          </th>
+          <td *matCellDef="let element" mat-cell>{{ element.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="trustVerificationStatus">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>
+            {{ "eportal_adminOverview_table_business-partner-trustVerificationStatus" | translate }}
+          </th>
+          <td *matCellDef="let element" class="align-right" mat-cell>
+            <app-business-partner-trust-chip [businessPartner]="element"></app-business-partner-trust-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="details">
+          <th *matHeaderCellDef mat-header-cell>{{ "eportal_adminOverview_table_details" | translate }}</th>
+          <td *matCellDef="let element" class="text-center" mat-cell>
+            <a
+              [attr.aria-label]="'eportal_adminOverview_details_go-to-details_tooltip' | translate"
+              [matTooltip]="'eportal_adminOverview_details_go-to-details_tooltip' | translate"
+              [routerLink]="AppRoutes.businessPartnerDetail(element.id)"
+              mat-icon-button
+              obButton="secondary"
+            >
+              <mat-icon svgIcon="chevron_right" />
+            </a>
+          </td>
+        </ng-container>
+
+        @let displayColumns = ["name", "id", "trustVerificationStatus", "details"];
+        <tr *matHeaderRowDef="displayColumns" mat-header-row></tr>
+        <tr
+          *matRowDef="let row; columns: displayColumns"
+          [routerLink]="AppRoutes.businessPartnerDetail(row.id)"
+          mat-row
+        ></tr>
+        <tr *matNoDataRow class="mat-row">
+          <td class="mat-cell" colspan="9999">{{ "eportal_global_table_noEntry" | translate }}</td>
+        </tr>
+      </table>
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        [pageSize]="10"
+        [length]="totalElements"
+        [showFirstLastButtons]="true"
+        [style.visibility]="(totalElements || 0) > 10 ? 'visible' : 'hidden'"
+        aria-label="{{ 'eportal_adminOverview_paginator_aria_label' | translate }}"
+      />
+    </ng-container>
+  </div>
+</div>

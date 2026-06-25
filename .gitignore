@@ -1,0 +1,32 @@
+# Created by .ignore support plugin (hsz.mobi)
+target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### VSCode ###
+.vscode
+
+### IntelliJ IDEA ###
+*.iws
+*.iml
+*.ipr
+.idea/*
+!.idea/runConfigurations/
+!.idea/codeStyles
+!.idea/codeStyles/*.xml
+/.idea/codeStyles/
+
+### Custom Ignore
+*.versionsBackup
+/docker/.localstack/data
+/swiyu-ecosystem-portal-service/tmp/
+/docker/legacy-database/dump/
+/qodana.yaml
+/.jpb/

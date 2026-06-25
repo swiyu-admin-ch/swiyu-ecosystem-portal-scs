@@ -1,0 +1,55 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "../../../styles/sw-variables" as *;
+
+:host {
+  flex: 1;
+}
+
+.error-card {
+  border-color: $ob-error-dark;
+}
+
+.error-card.mat-mdc-card.ob-selectable[role="checkbox"]::before {
+  border-color: $ob-error-dark;
+}
+
+.disabled-card.mat-mdc-card.ob-selectable[role="checkbox"]::before {
+  border-color: $ob-gray;
+}
+
+.card-content {
+  display: flex;
+  align-items: start;
+  gap: $sw-spc-sm;
+  place-content: center;
+  align-self: stretch;
+  flex-direction: row;
+  color: $ob-default;
+}
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; // vertical centering
+  align-self: stretch; // ⬅ fills header height
+  flex: 1;
+}
+
+.disabled-card {
+  pointer-events: none;
+
+  .card-content {
+    color: $ob-gray;
+  }
+}
+
+mat-card {
+  height: 100%;
+}
+
+.h6 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0 0 0.25em;
+}

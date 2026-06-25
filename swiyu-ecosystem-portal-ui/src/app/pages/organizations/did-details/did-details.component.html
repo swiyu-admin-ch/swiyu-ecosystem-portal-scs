@@ -1,0 +1,112 @@
+<div>
+  <!-- Back Button / Navigation -->
+  <nav class="section-navigation">
+    <a [routerLink]="AppRoutes.businessPartnerDetail(businessPartnerId())" mat-button obButton="tertiary" tabindex="0">
+      <mat-icon svgIcon="chevron_left" />
+      {{ "app_site_did-details_back-button" | translate }}
+    </a>
+  </nav>
+
+  @if (isLoading()) {
+    <ob-spinner></ob-spinner>
+  } @else if (error()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+  } @else if (data()) {
+    <mat-drawer-container>
+      <mat-drawer-content class="main-component">
+        <!-- Page Header -->
+        <div class="page-header">
+          <h1>{{ "app_site_did-details_title" | translate }}</h1>
+        </div>
+
+        <!-- Description Field -->
+        <div class="description-section">
+          <mat-form-field [class.readonly]="!isEditingDescription()" appearance="outline" class="description-field">
+            <mat-label>{{ "app_site_did-details_description_label" | translate }}</mat-label>
+            <input
+              (ngModelChange)="description.set($event)"
+              [ngModel]="description()"
+              [placeholder]="'app_site_did-details_description_placeholder' | translate"
+              [readonly]="!isEditingDescription()"
+              matInput
+              maxlength="255"
+            />
+          </mat-form-field>
+
+          @if (isEditingDescription()) {
+            <button
+              (click)="saveDescription()"
+              [attr.aria-label]="'app_site_did-details_aria_save' | translate"
+              [disabled]="!isDescriptionValid()"
+              mat-icon-button
+              obButton="tertiary"
+            >
+              <mat-icon svgIcon="checkmark"></mat-icon>
+            </button>
+            <button
+              (click)="cancelEditDescription()"
+              [attr.aria-label]="'app_site_did-details_aria_cancel' | translate"
+              mat-icon-button
+              obButton="tertiary"
+            >
+              <mat-icon svgIcon="xmark_circle"></mat-icon>
+            </button>
+          } @else {
+            <button
+              (click)="editDescription()"
+              [attr.aria-label]="'app_site_did-details_aria_edit' | translate"
+              mat-icon-button
+              obButton="tertiary"
+            >
+              <mat-icon svgIcon="pencil"></mat-icon>
+            </button>
+          }
+        </div>
+
+        <!-- Two Column Layout: DID Information & API URLs -->
+        <div class="ob-flex">
+          <!-- DID Information Card -->
+          <app-detail-section
+            [fields]="didInformationFields"
+            [group]="didInformationForm"
+            [isEditing]="false"
+            [link]="didInformationLink"
+            [title]="'app_site_did-details_card_did-information_title' | translate"
+          />
+
+          <!-- API URLs Card -->
+          <app-detail-section
+            [fields]="apiUrlsFields"
+            [group]="apiUrlsForm"
+            [isEditing]="false"
+            [link]="apiUrlsLink"
+            [title]="'app_site_did-details_card_api-urls_title' | translate"
+          />
+        </div>
+
+        <!-- Profile Information Section -->
+        <div class="profile-info-section">
+          <app-detail-section
+            [fields]="profileInfoFields"
+            [group]="profileInfoForm"
+            [isEditing]="false"
+            [title]="'app_site_did-details_profile_title' | translate"
+          >
+          </app-detail-section>
+        </div>
+
+        <!-- Action Button -->
+        <div class="actions">
+          <a
+            [routerLink]="AppRoutes.businessPartnerDetail(businessPartnerId())"
+            mat-button
+            obButton="primary"
+            tabindex="0"
+          >
+            {{ "app_site_did-details_actions_go-to-profile" | translate }}
+          </a>
+        </div>
+      </mat-drawer-content>
+    </mat-drawer-container>
+  }
+</div>

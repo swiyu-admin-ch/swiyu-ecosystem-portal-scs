@@ -1,0 +1,143 @@
+<form id="documents-form" [formGroup]="form" obUnsavedChanges>
+  <div class="sw-form-container">
+    <div class="sw-form-sub-container">
+      <h1
+        [attr.aria-label]="
+          ('eportal_accessibility_step_prefix' | translate: { current: stepNumber, total: totalSteps }) +
+          ('eportal_onboardingTR_formalProof_pageTitle' | translate)
+        "
+      >
+        {{ "eportal_onboardingTR_formalProof_pageTitle" | translate }}
+      </h1>
+      <p>
+        {{ "eportal_onboardingTR_formalProof_introText" | translate }}
+      </p>
+      @if (appConfigService.isFunctionalityAutomaticApprovalEnabled) {
+        <p [innerHTML]="'eportal_onboardingTR_formalProof_introText_warning_autoApproval' | translate"></p>
+      }
+    </div>
+    <div class="sw-form-sub-container">
+      <div>
+        <h3>{{ "eportal_onboardingTR_formalProof_sectionTitle_declarationOfIntent" | translate }}</h3>
+        <div>
+          {{ "eportal_onboardingTR_formalProof_sectionText_declarationOfIntent" | translate }}
+        </div>
+      </div>
+      <div class="doi-download-container">
+        <div class="doi-download-button-container">
+          <button
+            mat-button
+            obButton="primary"
+            (click)="downloadDoi()"
+            type="button"
+            data-cy="linkDownloadDeclarationOfIntent"
+          >
+            <mat-icon svgIcon="download" />
+            {{ "eportal_onboardingTR_formalProof_btnPrim_download" | translate }}
+          </button>
+        </div>
+        <div>
+          <mat-form-field>
+            <mat-label>{{ "eportal_onboardingTR_formalProof_doi_language" | translate }} </mat-label>
+            <mat-select [formControl]="form.controls.doiLanguage" data-cy="contactLanguageSelect">
+              @for (lang of languages; track lang) {
+                <mat-option [value]="lang">
+                  {{ lang | fullLang | translate }}
+                </mat-option>
+              }
+            </mat-select>
+            <mat-error>
+              {{ "eportal_global_inputLabel_error_correspLanguage" | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="sw-form-sub-container">
+      <h3>{{ "eportal_onboardingTR_formalProof_sectionTitle_electronicSignature" | translate }}</h3>
+      <p [innerHTML]="'eportal_onboardingTR_formalProof_sectionText_electronicSignature' | translate"></p>
+      @if (appConfigService.isFunctionalityAutomaticApprovalEnabled) {
+        <p
+          [innerHTML]="
+            'eportal_onboardingTR_formalProof_sectionText_electronicSignature_warning_autoApproval' | translate
+          "
+        ></p>
+      }
+      <div class="sw-form-sub-container-sm">
+        <app-upload
+          data-cy="declarationOfIntentUpload"
+          [uploadedFiles]="form.controls.uploadedFiles.value ?? []"
+          [uploadItem]="uploadItem"
+          (filesChosen)="onFileChosen($event)"
+          (retryUpload)="retryUpload()"
+          (removeUpload)="removeUpload()"
+          (deleteDocument)="deleteDocument($event)"
+        />
+
+        @if (form.controls.uploadedFiles.errors && form.controls.uploadedFiles.touched) {
+          @for (errorKey of Object.keys(form.controls.uploadedFiles.errors); track errorKey) {
+            @if (errorKey === "required") {
+              <div class="sw-form-error">
+                <mat-icon [svgIcon]="'exclamation_circle'" color="warn" />
+                <span class="caption">{{ "eportal_global_uploadArea_error_electronicSignature" | translate }}</span>
+              </div>
+            } @else {
+              <div class="sw-form-error">
+                <mat-icon [svgIcon]="'exclamation_circle'" color="warn" />
+                <span class="caption">{{ form.controls.uploadedFiles.errors[errorKey] | translate }}</span>
+              </div>
+            }
+          }
+        }
+      </div>
+    </div>
+    @if (showAdditionalDocuments()) {
+      <div class="sw-form-sub-container" data-cy="additionalDocumentsSection">
+        <h3>{{ "eportal_onboardingTR_formalProof_sectionTitle_additionalDocuments" | translate }}</h3>
+        <p>{{ "eportal_onboardingTR_formalProof_sectionText_additionalDocuments" | translate }}</p>
+        <div class="sw-form-sub-container-sm">
+          <app-upload
+            data-cy="additionalDocumentsUpload"
+            [uploadedFiles]="form.controls.otherDocuments.value ?? []"
+            [uploadItem]="otherUploadItem"
+            (filesChosen)="onOtherFileChosen($event)"
+            (retryUpload)="retryOtherUpload()"
+            (removeUpload)="removeOtherUpload()"
+            (deleteDocument)="deleteDocument($event)"
+          />
+          @if (form.controls.otherDocuments.hasError("required") && form.controls.otherDocuments.touched) {
+            <div class="sw-form-error" data-cy="additionalDocumentsError">
+              <mat-icon [svgIcon]="'exclamation_circle'" color="warn" />
+              <span class="caption">{{ "eportal_global_uploadArea_error_additionalDocuments" | translate }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</form>
+<div class="actions">
+  <button
+    (click)="wizardService.navigateToPreviousStep()"
+    data-cy="btnDocumentPrevious"
+    mat-button
+    obButton="secondary"
+    type="button"
+  >
+    {{ "eportal_global_btnSec_back" | translate }}
+  </button>
+  <div class="actions-2">
+    <button (click)="wizardService.saveAndNext()" data-cy="btnNext" mat-button obButton="primary" type="button">
+      {{ "eportal_global_btnPrim_continueToTechnicalProof" | translate }}
+    </button>
+    <button
+      (click)="wizardService.onSaveAndContinueLater()"
+      data-cy="btnDocumentLeave"
+      mat-button
+      obButton="secondary"
+      type="button"
+    >
+      {{ "eportal_global_btnSec_continueLater" | translate }}
+    </button>
+  </div>
+</div>

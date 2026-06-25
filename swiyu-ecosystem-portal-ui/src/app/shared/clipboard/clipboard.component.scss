@@ -1,0 +1,16 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "../../../styles/sw-variables" as *;
+
+.clipboard-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: $sw-spc-sm;
+}
+
+.clipboard-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $sw-spc-xxs;
+}

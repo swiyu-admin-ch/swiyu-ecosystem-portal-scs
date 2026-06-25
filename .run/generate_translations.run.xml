@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="generate:translations" type="js.build_tools.npm">
+    <package-json value="$PROJECT_DIR$/swiyu-ecosystem-portal-ui/package.json" />
+    <command value="run" />
+    <scripts>
+      <script value="generate:translations" />
+    </scripts>
+    <node-interpreter value="project" />
+    <envs />
+    <method v="2" />
+  </configuration>
+</component>

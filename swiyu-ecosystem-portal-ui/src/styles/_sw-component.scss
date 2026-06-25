@@ -1,0 +1,44 @@
+@use "./_sw-variables.scss" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+
+.sw-setup-form {
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.sw-radio-card-container {
+  display: flex;
+  align-items: stretch;
+  gap: $sw-spc-xs;
+  align-self: stretch;
+}
+
+mat-card.radio-card mat-icon {
+  border: 0.9px solid $ob-default;
+  border-radius: 50%;
+  padding: 12px;
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// did-details description field — Angular Material internals cannot be reached via encapsulated styles
+app-did-details .description-field {
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    border-color: rgba(0, 0, 0, 38%) !important;
+  }
+
+  &.readonly input {
+    color: rgba(0, 0, 0, 50%);
+  }
+}

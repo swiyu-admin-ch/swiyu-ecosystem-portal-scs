@@ -1,0 +1,10 @@
+<section class="explainer-container" [attr.aria-labelledby]="titleId">
+  <div class="title-container">
+    <h3 [id]="titleId">{{ title() }}</h3>
+    <ng-content select="[processHeader]"></ng-content>
+  </div>
+
+  <section class="steps-container" [style.--steps-per-row]="resolvedStepsPerRow()">
+    <ng-content select="app-process-step"></ng-content>
+  </section>
+</section>

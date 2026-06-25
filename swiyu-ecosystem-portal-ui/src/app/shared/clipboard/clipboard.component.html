@@ -1,0 +1,17 @@
+<div class="clipboard-container">
+  <div class="clipboard-content">
+    @if (label()) {
+      <span class="caption">{{ label() }}</span>
+    }
+    <span>{{ value() }}</span>
+  </div>
+  <button
+    (click)="copyToClipboard()"
+    [matTooltip]="'app_site_did-details_aria_copy' | translate"
+    [attr.aria-label]="'app_site_did-details_aria_copy' | translate"
+    mat-icon-button
+    obButton="secondary"
+  >
+    <mat-icon svgIcon="copy"></mat-icon>
+  </button>
+</div>

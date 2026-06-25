@@ -1,0 +1,123 @@
+<mat-drawer-container class="mat-drawer-container">
+  <mat-drawer-content class="main-component">
+    <!-- Back Button -->
+    <div class="section-navigation">
+      <a [routerLink]="AppRoutes.businessPartnerDetail(businessPartnerId())" mat-button obButton="tertiary">
+        <mat-icon svgIcon="chevron_left" />
+        {{ "eportal_global_btn_backToProfilePage" | translate }}
+      </a>
+    </div>
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1>{{ "eportal_onboarding_didInstruction_pageTitle" | translate }}</h1>
+    </div>
+    <div>
+      {{ "eportal_onboarding_didInstruction_introText" | translate }}
+    </div>
+
+    <app-process [title]="'eportal_onboarding_development_sectionTitle_overviewDID' | translate">
+      <app-process-step
+        [step]="1"
+        [subtitle]="'eportal_onboarding_development_swiyuAPI_cardSubtitle' | translate"
+        [title]="'eportal_onboarding_development_swiyuAPI_cardTitle' | translate"
+      >
+        <ng-container processStepAlert>
+          <ob-alert type="warning">{{ "eportal_onboarding_development_swiyuAPI_cardAlert" | translate }} </ob-alert>
+        </ng-container>
+
+        <div>{{ "eportal_onboarding_development_swiyuAPI_cardText" | translate }}</div>
+
+        <ng-container processStepLinks>
+          <div class="bottom-links">
+            <a class="link" [href]="appConfig.portalUrl" target="_blank">
+              <div class="text">{{ "eportal_global_link_SelvServicePortal" | translate }}</div>
+              <mat-icon [svgIcon]="'link_external'"></mat-icon>
+            </a>
+            <a
+              class="link"
+              [href]="'eportal_global_link_TechDocumentation_url_cookbook_ssp' | translate"
+              target="_blank"
+            >
+              <div class="text">{{ "eportal_global_link_TechDocumentation" | translate }}</div>
+              <mat-icon [svgIcon]="'link_external'"></mat-icon>
+            </a>
+          </div>
+        </ng-container>
+      </app-process-step>
+
+      <app-process-step
+        [step]="2"
+        [subtitle]="'eportal_onboarding_development_preparation_cardSubtitle' | translate"
+        [title]="'eportal_onboarding_development_preparation_cardTitle' | translate"
+      >
+        <div>{{ "eportal_onboarding_development_preparation_cardText" | translate }}</div>
+
+        <ng-container processStepLinks>
+          <div class="bottom-links">
+            <a class="link" [href]="'eportal_global_link_DIDtoolbox_url' | translate" target="_blank">
+              <div class="text">{{ "eportal_global_link_DIDtoolbox" | translate }}</div>
+              <mat-icon [svgIcon]="'link_external'"></mat-icon>
+            </a>
+            <a
+              class="link"
+              [href]="'eportal_global_link_TechDocumentation_url_cookbook_didgeneration' | translate"
+              target="_blank"
+            >
+              <div class="text">{{ "eportal_global_link_TechDocumentation" | translate }}</div>
+              <mat-icon [svgIcon]="'link_external'"></mat-icon>
+            </a>
+          </div>
+        </ng-container>
+      </app-process-step>
+
+      <app-process-step
+        [step]="3"
+        [subtitle]="'eportal_onboarding_development_toolbox_cardSubtitle' | translate"
+        [title]="'eportal_onboarding_development_toolbox_cardTitle' | translate"
+      >
+        <ng-container processStepAlert>
+          <ob-alert type="warning">{{ "eportal_onboarding_development_toolbox_cardAlert" | translate }} </ob-alert>
+        </ng-container>
+
+        <div>{{ "eportal_onboarding_development_toolbox_cardText" | translate }}</div>
+
+        <ng-container processStepLinks>
+          <div class="bottom-links">
+            <a
+              class="link"
+              [href]="'eportal_global_link_TechDocumentation_url_cookbook_didgeneration' | translate"
+              target="_blank"
+            >
+              <div class="text">{{ "eportal_global_link_TechDocumentation" | translate }}</div>
+              <mat-icon [svgIcon]="'link_external'"></mat-icon>
+            </a>
+          </div>
+        </ng-container>
+      </app-process-step>
+    </app-process>
+
+    <!-- Two Column Layout -->
+    <div class="info-cards-row">
+      <app-detail-section
+        [fields]="requiredInfoFields"
+        [group]="requiredInfoForm"
+        [title]="'eportal_DIDsetup_subTitle_necessaryInfo' | translate"
+        data-cy="cardNecessaryInfo"
+      />
+      <app-detail-section
+        [fields]="availableDidSpacesFields"
+        [group]="availableDidSpacesForm"
+        [title]="'eportal_DIDsetup_subTitle_availableDIDspaces' | translate"
+        data-cy="cardAvailableDidSpaces"
+      />
+    </div>
+
+    <!-- Action Button -->
+    <div class="actions">
+      <a [routerLink]="AppRoutes.businessPartnerDetail(businessPartnerId())" mat-button obButton="primary" tabindex="0">
+        {{ "eportal_global_btn_backToProfilePage" | translate }}
+      </a>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>

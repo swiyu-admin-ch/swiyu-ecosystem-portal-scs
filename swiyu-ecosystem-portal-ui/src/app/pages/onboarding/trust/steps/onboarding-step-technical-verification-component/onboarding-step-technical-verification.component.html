@@ -1,0 +1,240 @@
+<div class="sw-wizard-lvl-1">
+  <div class="sw-wizard-lvl-2">
+    <h1
+      [attr.aria-label]="
+        ('eportal_accessibility_step_prefix' | translate: { current: stepNumber, total: totalSteps }) +
+        ('eportal_onboardingTR_technicalProof_pageTitle' | translate)
+      "
+    >
+      {{ "eportal_onboardingTR_technicalProof_pageTitle" | translate }}
+    </h1>
+    <div>
+      {{ "eportal_onboardingTR_technicalProof_infoText" | translate }}
+    </div>
+  </div>
+  <div class="sw-wizard-lvl-2">
+    <h3>{{ "eportal_onboardingTR_technicalProof_sectionTitle_proofOfOwnership" | translate }}</h3>
+    <div class="pop-summary">
+      <div class="group">
+        <div class="cell" data-cy="didToVerify" [class.error-text]="showError()">
+          <div class="caption">{{ "eportal_onboardingTR_technicalProof_label_open" | translate }}</div>
+          <div class="body">{{ wizardService.submission()?.proofOfPossessionList?.length }} DID(s)</div>
+        </div>
+        <div class="cell" data-cy="didVerified" [class.error-text]="showError()">
+          <div class="caption">{{ "eportal_onboardingTR_technicalProof_label_done" | translate }}</div>
+          <div class="body">{{ numberOfSuccessfulVerifications() }} DID(s)</div>
+        </div>
+        <div class="cell" data-cy="remainingTime">
+          <div class="caption">{{ "eportal_onboardingTR_technicalProof_label_time" | translate }}</div>
+          <div class="body">{{ daysRemainingForVerification() }} {{ "eportal_global_days" | translate }}</div>
+        </div>
+      </div>
+      @if (anyVerificationMissing) {
+        <mat-chip [class.proof-warning-chip]="!showError()" [class.proof-error-chip]="showError()">
+          <div class="content">
+            <mat-icon [svgIcon]="'exclamation_circle'" />
+            <span class="caption"
+              >{{ numberOfMissingVerifications() }}
+              {{ "eportal_onboardingTR_technicalProof_status_moreThanOne" | translate }}</span
+            >
+          </div>
+        </mat-chip>
+      } @else {
+        <mat-chip class="proof-success-chip">
+          <div class="content">
+            <mat-icon [svgIcon]="'checkmark_circle'" />
+            <span class="caption"> {{ "eportal_onboardingTR_technicalProof_status_allReceived" | translate }}</span>
+          </div>
+        </mat-chip>
+      }
+    </div>
+    @if (showError()) {
+      <div class="sw-form-error">
+        <mat-icon [svgIcon]="'exclamation_circle'" color="warn" />
+        <span class="caption">{{ "eportal_onboarding_error_technicalProof" | translate }}</span>
+      </div>
+    }
+
+    @if (anyVerificationMissing) {
+      <form [formGroup]="setupForm" class="sw-setup-form">
+        <div formControlName="setupVariant" role="radiogroup" obSelectableGroup class="sw-radio-card-container">
+          <app-radio-card
+            [value]="SetupVariant.EXPERT"
+            (cardSelect)="selectSetupVariant(SetupVariant.EXPERT)"
+            [hasError]="setupForm.controls.setupVariant.hasError('required') && setupForm.controls.setupVariant.touched"
+            [checked]="setupForm.get('setupVariant')?.value === SetupVariant.EXPERT"
+            [dataCy]="'cardExpert'"
+          >
+            <mat-icon cardIcon svgIcon="devhandover_expert" />
+            <h6>{{ "eportal_onboarding_development_card_setup_expert" | translate }}</h6>
+          </app-radio-card>
+
+          <app-radio-card
+            [value]="SetupVariant.SELF"
+            (cardSelect)="selectSetupVariant(SetupVariant.SELF)"
+            [hasError]="setupForm.controls.setupVariant.hasError('required') && setupForm.controls.setupVariant.touched"
+            [checked]="setupForm.get('setupVariant')?.value === SetupVariant.SELF"
+            [dataCy]="'cardSelf'"
+          >
+            <mat-icon cardIcon svgIcon="devhandover_self" />
+            <h6>{{ "eportal_onboarding_development_card_setup" | translate }}</h6>
+          </app-radio-card>
+        </div>
+      </form>
+    }
+
+    @if (setupForm.controls.setupVariant.hasError("required") && setupForm.controls.setupVariant.touched) {
+      <div class="sw-form-error">
+        <mat-icon [svgIcon]="'exclamation_circle'" color="warn" />
+        <span class="caption">{{ "eportal_onboarding_development_error_continue" | translate }}</span>
+      </div>
+    }
+  </div>
+  @if (variantStepCompleted() && anyVerificationMissing) {
+    @if (setupForm.get("setupVariant")?.value === SetupVariant.EXPERT) {
+      <div class="sw-flex-row">
+        <app-process [title]="'eportal_onboardingTR_technicalProof_card_dev_title' | translate">
+          <ng-container processHeader>
+            <a mat-button obButton="secondary" type="button" [attr.href]="mailtoLink()">
+              <mat-icon svgIcon="mail" />
+              {{ "eportal_onboarding_development_btnSec_emailTemplate" | translate }}
+            </a>
+          </ng-container>
+          <app-process-step [step]="1" [title]="'eportal_onboardingTR_technicalProof_sendInvite_cardTitle' | translate">
+            <div>{{ "eportal_onboardingTR_technicalProof_sendInvite_cardText" | translate }}</div>
+
+            <ng-container processStepLinks>
+              <div class="bottom-links">
+                <a class="link" [href]="eportalInviteLink" target="_blank">
+                  <div class="text">{{ "eportal_global_link_invitation" | translate }}</div>
+                  <mat-icon [svgIcon]="'link_external'"></mat-icon>
+                </a>
+              </div>
+            </ng-container>
+          </app-process-step>
+
+          <app-process-step [step]="2" [title]="'eportal_onboardingTR_technicalProof_handover_cardTitle' | translate">
+            <div>{{ "eportal_onboardingTR_technicalProof_handover_cardText" | translate }}</div>
+
+            <ng-container processStepLinks>
+              <div class="bottom-links">
+                <a
+                  class="link"
+                  [href]="'eportal_global_link_TechDocumentation_url_cookbook_pop' | translate"
+                  target="_blank"
+                >
+                  <div class="text">{{ "eportal_global_link_TechDocumentation" | translate }}</div>
+                  <mat-icon [svgIcon]="'link_external'"></mat-icon>
+                </a>
+              </div>
+            </ng-container>
+          </app-process-step>
+
+          <app-process-step [step]="3" [title]="'eportal_onboardingTR_technicalProof_complete_cardTitle' | translate">
+            <div>{{ "eportal_onboardingTR_technicalProof_complete_cardText" | translate }}</div>
+          </app-process-step>
+        </app-process>
+      </div>
+    }
+    @if (setupForm.get("setupVariant")?.value === SetupVariant.SELF) {
+      <app-process [title]="'eportal_onboardingTR_technicalProof_card_self_title' | translate">
+        <ng-container processHeader>
+          <a
+            mat-button
+            obButton="secondary"
+            type="button"
+            [routerLink]="AppRoutes.businessPartnerDetail(wizardService.partnerId ?? '')"
+          >
+            <mat-icon svgIcon="link_external" />
+            {{ "eportal_onboardingTR_technicalProof_btnSec_openOverview" | translate }}
+          </a>
+        </ng-container>
+        <app-process-step [step]="1" [title]="'eportal_onboardingTR_technicalProof_provideData_cardTitle' | translate">
+          <div>{{ "eportal_onboardingTR_technicalProof_provideData_cardText" | translate }}</div>
+
+          <ng-container processStepLinks>
+            <div class="bottom-links">
+              <a
+                class="link"
+                [href]="'eportal_global_link_TechDocumentation_url_cookbook_pop' | translate"
+                target="_blank"
+              >
+                <div class="text">{{ "eportal_global_link_TechDocumentation" | translate }}</div>
+                <mat-icon [svgIcon]="'link_external'"></mat-icon>
+              </a>
+            </div>
+          </ng-container>
+        </app-process-step>
+
+        <app-process-step [step]="2" [title]="'eportal_onboardingTR_technicalProof_createProof_cardTitle' | translate">
+          <ng-container processStepAlert>
+            <ob-alert type="warning"
+              >{{ "eportal_onboardingTR_technicalProof_createProof_alert" | translate }}
+            </ob-alert>
+          </ng-container>
+
+          <div>{{ "eportal_onboardingTR_technicalProof_createProof_cardText" | translate }}</div>
+
+          <ng-container processStepLinks>
+            <div class="bottom-links">
+              <a class="link" [href]="'eportal_global_link_DIDtoolbox_url' | translate" target="_blank">
+                <div class="text">{{ "eportal_global_link_DIDtoolbox" | translate }}</div>
+                <mat-icon [svgIcon]="'link_external'"></mat-icon>
+              </a>
+              <a
+                class="link"
+                [href]="'eportal_global_link_TechDocumentation_url_cookbook_ssp' | translate"
+                target="_blank"
+              >
+                <div class="text">{{ "eportal_global_link_TechDocumentation" | translate }}</div>
+                <mat-icon [svgIcon]="'link_external'"></mat-icon>
+              </a>
+            </div>
+          </ng-container>
+        </app-process-step>
+
+        <app-process-step [step]="3" [title]="'eportal_onboardingTR_technicalProof_btnSec_openOverview' | translate">
+          <div>{{ "eportal_onboardingTR_technicalProof_submitProof_cardText" | translate }}</div>
+
+          <ng-container processStepLinks>
+            <div class="bottom-links">
+              <a
+                class="link"
+                [href]="'eportal_global_link_TechDocumentation_url_cookbook_pop' | translate"
+                target="_blank"
+              >
+                <div class="text">{{ "eportal_global_link_TechDocumentation" | translate }}</div>
+                <mat-icon [svgIcon]="'link_external'"></mat-icon>
+              </a>
+            </div>
+          </ng-container>
+        </app-process-step>
+      </app-process>
+    }
+  }
+  <div class="actions">
+    <button (click)="wizardService.navigateToPreviousStep()" mat-button obButton="secondary" type="button">
+      {{ "eportal_global_btnSec_back" | translate }}
+    </button>
+    <div class="actions-2">
+      @if (!variantStepCompleted() && anyVerificationMissing) {
+        <button type="button" mat-button obButton="primary" (click)="wizardService.saveAndNext()" data-cy="btnNext">
+          {{ "eportal_global_btnPrim_continue" | translate }}
+        </button>
+      } @else {
+        <button
+          (click)="wizardService.submit()"
+          data-cy="btnTechnicalVerificationNext"
+          mat-button
+          obButton="primary"
+          type="button"
+        >
+          {{ "app_site_onboarding_trust_technical-verification_cta" | translate }}
+        </button>
+      }
+      <button (click)="wizardService.onSaveAndContinueLater()" mat-button obButton="secondary" type="button">
+        {{ "eportal_global_btnSec_continueLater" | translate }}
+      </button>
+    </div>
+  </div>
+</div>

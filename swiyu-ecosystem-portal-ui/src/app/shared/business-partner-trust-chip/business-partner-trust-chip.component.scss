@@ -1,0 +1,38 @@
+@use "@oblique/oblique/styles/scss/core/palette" as obp;
+
+.NOT_VERIFIED {
+  &.mat-mdc-chip.mat-mdc-standard-chip {
+    background-color: obp.$ob-secondary-100;
+    color: obp.$ob-secondary-900;
+  }
+}
+
+.RE_VERIFICATION_IN_PROGRESS,
+.VERIFICATION_IN_PROGRESS {
+  &.mat-mdc-chip.mat-mdc-standard-chip {
+    background-color: obp.$ob-blue-100;
+    color: obp.$ob-blue-900;
+  }
+}
+
+.VERIFIED {
+  &.mat-mdc-chip.mat-mdc-standard-chip {
+    background-color: obp.$ob-green-100;
+    color: obp.$ob-green-900;
+  }
+}
+
+.INFORMATION_REQUESTED {
+  &.mat-mdc-chip.mat-mdc-standard-chip {
+    background-color: obp.$ob-orange-100;
+    color: obp.$ob-orange-900;
+  }
+}
+
+.VERIFICATION_STARTED,
+.RE_VERIFICATION_STARTED {
+  &.mat-mdc-chip.mat-mdc-standard-chip {
+    background-color: obp.$ob-orange-100;
+    color: obp.$ob-orange-900;
+  }
+}

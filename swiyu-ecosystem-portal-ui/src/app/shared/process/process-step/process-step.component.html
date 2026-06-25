@@ -1,0 +1,36 @@
+<div class="header">
+  <div class="step">{{ step() }}</div>
+  <div class="text-container">
+    <h3 class="title">{{ title() }}</h3>
+    <span>{{ subtitle() }}</span>
+  </div>
+  <ng-content select="[processStepHeaderExtra]"></ng-content>
+</div>
+
+<!-- Custom alert slot, or fallback to alertText input -->
+<ng-content select="[processStepAlert]"></ng-content>
+@if (alertText()) {
+  <ob-alert [type]="alertType()">{{ alertText() }}</ob-alert>
+}
+
+<div class="content">
+  <ng-content></ng-content>
+  @if (description()) {
+    <div>{{ description() }}</div>
+  }
+</div>
+
+<!-- Custom links slot, or fallback to links input -->
+<ng-content select="[processStepLinks]"></ng-content>
+@if (links() && links()?.length) {
+  <div class="bottom-links">
+    @for (link of links(); track link.label) {
+      <a class="link" [href]="link.href" [attr.target]="link.target || '_blank'">
+        <div class="text">{{ link.label }}</div>
+        @if (link.icon) {
+          <mat-icon [svgIcon]="link.icon"></mat-icon>
+        }
+      </a>
+    }
+  </div>
+}

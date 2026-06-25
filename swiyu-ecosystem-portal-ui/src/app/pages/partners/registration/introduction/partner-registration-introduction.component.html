@@ -1,0 +1,54 @@
+<div class="introduction">
+  <div class="introduction-top">
+    <h1 class="light">{{ "eportal_onboarding_start_pageTitle" | translate }}</h1>
+    <div>
+      {{ "eportal_onboarding_start_introText" | translate }}
+    </div>
+    <div class="introduction-actions">
+      <button (click)="startRegistration()" data-cy="btnStartRegistration" mat-button obButton="primary">
+        <mat-icon iconPositionEnd svgIcon="chevron_right" /> {{ "eportal_onboarding_start_btnPrim" | translate }}
+      </button>
+      @if (!isGovernmentalAllowlistUser()) {
+        <a
+          mat-button
+          obButton="secondary"
+          type="button"
+          [attr.href]="'eportal_GOV_onboarding_mailTemplate' | translate"
+        >
+          {{ "eportal_GOV_start_btnSec" | translate }} <mat-icon svgIcon="mail" />
+        </a>
+        <app-info-icon>
+          <h3>{{ "eportal_GOV_start_tooltip_title" | translate }}</h3>
+          <p>{{ "eportal_GOV_start_tooltip_text_p1" | translate }}</p>
+          <p>{{ "eportal_GOV_start_tooltip_text_p2" | translate }}</p>
+          <p>{{ "eportal_GOV_start_tooltip_text_p3" | translate }}</p>
+        </app-info-icon>
+      }
+    </div>
+  </div>
+  <div class="introduction-middle">
+    <app-process [title]="'eportal_onboarding_start_sectionTitle_registration' | translate" [stepsPerRow]="stepsPerRow">
+      @for (step of registrationSteps; track step; let i = $index) {
+        <app-process-step
+          [step]="$index + 1"
+          [title]="step.title | translate"
+          [subtitle]="step.subtitle | translate"
+          [description]="step.description | translate"
+        />
+      }
+    </app-process>
+  </div>
+  <div class="introduction-bottom">
+    <div class="swiyu-logo">
+      <img src="../../../../../assets/images/swiyu.png" alt="swiyu logo" />
+    </div>
+    <div class="swiyu-info">
+      <h2>{{ "eportal_onboarding_start_sectionTitle_swiyuAdd" | translate }}</h2>
+      <p>{{ "eportal_onboarding_start_sectionText_swiyuAdd" | translate }}</p>
+      <a href="https://swiyu.ch" target="_blank">
+        {{ "eportal_onboarding_start_sectionLink_swiyuAdd" | translate }}
+        <mat-icon [svgIcon]="'link_external'" />
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="test:ui" type="JavaScriptTestRunnerJest">
+        <node-interpreter value="project" />
+        <jest-package value="$PROJECT_DIR$/swiyu-ecosystem-portal-ui/node_modules/@angular/cli" />
+        <working-dir value="$PROJECT_DIR$/swiyu-ecosystem-portal-ui" />
+        <envs />
+        <scope-kind value="ALL" />
+        <method v="2" />
+    </configuration>
+</component>

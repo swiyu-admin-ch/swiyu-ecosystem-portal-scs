@@ -1,0 +1,27 @@
+@if (isLoggedIn) {
+  <ob-master-layout>
+    <div style="display: flex; flex-direction: row; column-gap: 20px" obHeaderTitle>
+      <div [innerHTML]="'app_name' | translate"></div>
+      @if (productLabel) {
+        <mat-chip [ngStyle]="{ 'background-color': productLabelColor }" class="info">
+          {{ productLabel | translate }}
+        </mat-chip>
+      }
+    </div>
+    <ng-container obFooterInfo>
+      <p>
+        &copy; 2025 <span>{{ "i18n_oblique_footer_title" | translate }}</span>
+      </p>
+    </ng-container>
+  </ob-master-layout>
+}
+
+@if (i18nKeyDisplay.isEnabled) {
+  <button
+    class="i18n-key-display-badge"
+    (click)="i18nKeyDisplay.toggle()"
+    title="Click or press Ctrl+Shift+K to disable i18n key display mode"
+  >
+    🔑 i18n key display ON
+  </button>
+}

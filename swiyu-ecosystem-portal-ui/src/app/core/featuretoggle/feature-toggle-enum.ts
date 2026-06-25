@@ -1,0 +1,3 @@
+export const FEATURE_TOGGLE = {
+  EIDARTFE_1122: 'EIDARTFE_1122'
+};

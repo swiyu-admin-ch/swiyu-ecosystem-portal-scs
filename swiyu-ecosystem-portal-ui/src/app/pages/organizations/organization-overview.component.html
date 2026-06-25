@@ -1,0 +1,297 @@
+@if (drawerIconVisible) {
+  <button
+    (click)="drawerOpened = !drawerOpened"
+    [attr.aria-label]="'app_site_overview_btn_toggleDrawer' | translate"
+    class="fab-manual"
+    mat-fab
+  >
+    <mat-icon [svgIcon]="drawerIcon" style="font-size: 30px" />
+  </button>
+}
+
+<mat-drawer-container>
+  <mat-drawer [mode]="drawerStyle" [opened]="drawerOpened" class="drawer-side" position="end">
+    <div>
+      <h2>{{ "app_site_overview_tile_baseRegistry_title" | translate }}</h2>
+      <p>{{ "app_site_overview_tile_baseRegistry_body" | translate }}</p>
+      <ob-collapse
+        (activeChange)="changeCollapse($event, 'baseRefCollapse')"
+        [(active)]="baseRegistryInfoActive"
+        [duration]="'fast'"
+      >
+        <span obCollapseHeader> {{ "app_site_overview_tile_baseRegistry_collapse_title" | translate }}</span>
+        <div obCollapseMain>
+          @if (!someOrganization) {
+            <p
+              [innerHTML]="
+                'app_site_overview_tile_baseRegistry_collapse_body'
+                  | translate
+                    : { githublink: 'https://swiyu-admin-ch.github.io/cookbooks/onboarding-base-and-trust-registry' }
+              "
+            ></p>
+          }
+          <ol>
+            <li [innerHTML]="'app_site_overview_tile_baseRegistry_collapse_step_1' | translate"></li>
+            <li
+              [innerHTML]="
+                'app_site_overview_tile_baseRegistry_collapse_step_2'
+                  | translate: { ssplink: appConfigService.portalUrl }
+              "
+            ></li>
+            <li>{{ "app_site_overview_tile_baseRegistry_collapse_step_3" | translate }}</li>
+            <li
+              [innerHTML]="
+                'app_site_overview_tile_baseRegistry_collapse_step_4'
+                  | translate
+                    : {
+                        githublink:
+                          'https://swiyu-admin-ch.github.io/cookbooks/onboarding-base-and-trust-registry/#onboard-business-partner-on-the-swiyu-base-registry',
+                      }
+              "
+            >
+              {{ "app_site_overview_tile_baseRegistry_collapse_step_additionalUsers" | translate }}
+            </li>
+          </ol>
+          @if (someOrganization) {
+            <p
+              [innerHTML]="
+                'app_site_overview_tile_baseRegistry_collapse_body'
+                  | translate
+                    : { githublink: 'https://swiyu-admin-ch.github.io/cookbooks/onboarding-base-and-trust-registry' }
+              "
+            ></p>
+          }
+        </div>
+      </ob-collapse>
+    </div>
+
+    @if (someOrganization) {
+      <div class="drawer-trust-container">
+        <div>
+          <h2>{{ "app_site_overview_tile_trustRegistry_title" | translate }}</h2>
+          <p>{{ "app_site_overview_tile_trustRegistry_body" | translate }}</p>
+        </div>
+        <a
+          [attr.href]="'app_site_overview_notification_registerTrustReg_link' | translate"
+          class="multi-line-button"
+          mat-button
+          obButton="primary"
+          type="button"
+          >{{ "app_site_overview_tile_trustRegistry_register" | translate }}</a
+        >
+        <ob-collapse
+          (activeChange)="changeCollapse($event, 'trustRefCollapse')"
+          [(active)]="trustRegistryInfoActive"
+          [duration]="'fast'"
+        >
+          <span obCollapseHeader>{{ "app_site_overview_tile_trustRegistry_collapse_title" | translate }}</span>
+          <div obCollapseMain>
+            <ol>
+              <li>{{ "app_site_overview_tile_trustRegistry_collapse_step_1" | translate }}</li>
+              <li>{{ "app_site_overview_tile_trustRegistry_collapse_step_2" | translate }}</li>
+              <li>{{ "app_site_overview_tile_trustRegistry_collapse_step_3" | translate }}</li>
+            </ol>
+          </div>
+        </ob-collapse>
+      </div>
+    }
+  </mat-drawer>
+  <mat-drawer-content>
+    @if (!someOrganization) {
+      <div style="display: flex; flex: 1; flex-direction: column; height: 100%">
+        <h1>{{ "app_site_overview_title-no-org" | translate }}</h1>
+        <div
+          id="no-content"
+          style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center"
+        >
+          <div class="no-data-container">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>{{ "app_site_overview_empty_title" | translate }}</mat-card-title>
+                <mat-card-subtitle>{{ "app_site_overview_empty_subtitle" | translate }}</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <p [innerHTML]="'app_site_overview_empty_body_p1' | translate"></p>
+                <p>{{ "app_site_overview_empty_body_p2" | translate }}</p>
+              </mat-card-content>
+              <mat-card-actions>
+                <button
+                  (click)="addOrganization()"
+                  data-cy="btnAddFirstOrganization"
+                  mat-button
+                  obButton="primary"
+                  type="button"
+                >
+                  {{ "app_site_overview_empty_action" | translate }}
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <h1>{{ "app_site_overview_title" | translate }}</h1>
+
+      <!-- Error received during e.g. during an api call -->
+      @for (notification of errorNotifications; track notification) {
+        <app-stateful-alert
+          (closed)="removeErrorNotification(notification)"
+          [storageKey]="notification.id"
+          type="error"
+        >
+          <ng-container notification-title>{{ "app_error_title" | translate }}</ng-container>
+          <ng-container notification-content>
+            <p>{{ "app_error_body" | translate }}</p>
+            @if (notification.error.traceId) {
+              <p>{{ "app_error_body_contactSupport" | translate: { traceId: notification.error.traceId } }}</p>
+            }
+            <p>{{ notification.error.message }}</p>
+            @for (detail of notification.error.additionalDetails; track detail) {
+              <p>{{ detail }}</p>
+            }
+          </ng-container>
+        </app-stateful-alert>
+      }
+
+      <app-stateful-alert [visible]="hasMaxOrganizationAmountBeenReached" storageKey="notificationMaxOrg" type="info">
+        <ng-container notification-title>
+          {{ "app_site_overview_notification_organizationAmountLimit_title" | translate }}
+        </ng-container>
+        <ng-container notification-content>
+          <p
+            [innerHTML]="
+              'app_site_overview_notification_organizationAmountLimit_body'
+                | translate: { max: appConfigService.maxBusinessPartnerPerCustomer }
+            "
+          ></p>
+        </ng-container>
+      </app-stateful-alert>
+
+      <app-stateful-alert
+        (closed)="isCreateOrgNotificationVisible.set(false)"
+        [visible]="isCreateOrgNotificationVisible()"
+        storageKey="createOrgNotification"
+        type="success"
+      >
+        <ng-container notification-title
+          >{{ "app_site_overview_notification_createOrganization_title" | translate }}
+        </ng-container>
+        <ng-container notification-content>
+          <p
+            [innerHTML]="
+              'app_site_overview_notification_createOrganization_body1'
+                | translate: { sspLink: appConfigService.portalUrl }
+            "
+          ></p>
+          <p>{{ "app_site_overview_notification_createOrganization_body2" | translate }}</p>
+        </ng-container>
+      </app-stateful-alert>
+
+      <app-stateful-alert
+        (closed)="isUpdateOrgNotificationVisible.set(false)"
+        [visible]="isUpdateOrgNotificationVisible()"
+        storageKey="updateOrgNotification"
+        type="success"
+      >
+        <ng-container notification-title
+          >{{ "app_site_overview_notification_updateOrganization_title" | translate }}
+        </ng-container>
+        <ng-container notification-content>
+          <p>{{ "app_site_overview_notification_updateOrganization_body" | translate }}</p>
+        </ng-container>
+      </app-stateful-alert>
+
+      <app-stateful-alert storageKey="notificationSelfServicePortal">
+        <ng-container notification-title
+          >{{ "app_site_overview_notification_registerSsp_title" | translate }}
+        </ng-container>
+        <ng-container notification-content>
+          <p
+            [innerHTML]="
+              'app_site_overview_notification_registerSsp_body1' | translate: { ssplink: appConfigService.portalUrl }
+            "
+          ></p>
+          <p>{{ "app_site_overview_notification_registerSsp_body2" | translate }}</p>
+          <div>
+            <a [attr.href]="appConfigService.portalUrl" mat-button obButton="primary" target="_blank" type="button">
+              {{ "app_site_overview_notification_registerSsp_action" | translate }}
+            </a>
+          </div>
+        </ng-container>
+      </app-stateful-alert>
+
+      <app-stateful-alert storageKey="notificationTrustRegister">
+        <ng-container notification-title>
+          {{ "app_site_overview_notification_registerTrustReg_title" | translate }}
+        </ng-container>
+        <ng-container notification-content>
+          <p>{{ "app_site_overview_notification_registerTrustReg_body1" | translate }}</p>
+          <p>{{ "app_site_overview_notification_registerTrustReg_body2" | translate }}</p>
+          <div>
+            <a
+              [attr.href]="'app_site_overview_notification_registerTrustReg_link' | translate"
+              mat-button
+              obButton="primary"
+              target="_blank"
+              type="button"
+            >
+              {{ "app_site_overview_notification_registerTrustReg_action" | translate }}
+            </a>
+          </div>
+        </ng-container>
+      </app-stateful-alert>
+      <p>{{ "app_site_overview_subtitle" | translate }}</p>
+      <table [dataSource]="dataSource" class="ob-table" data-cy="organizationTable" mat-table>
+        <ng-container matColumnDef="name">
+          <th *matHeaderCellDef mat-header-cell>{{ "app_site_overview_organizationTable_header_name" | translate }}</th>
+          <td *matCellDef="let element" mat-cell>{{ element.name }}</td>
+        </ng-container>
+        <ng-container matColumnDef="contactEmailAddress">
+          <th *matHeaderCellDef mat-header-cell>
+            {{ "app_site_overview_organizationTable_header_contactEmail" | translate }}
+          </th>
+          <td *matCellDef="let element" mat-cell>{{ element.contactEmailAddress }}</td>
+        </ng-container>
+        <ng-container matColumnDef="organizationId">
+          <th *matHeaderCellDef mat-header-cell>{{ "app_site_overview_organizationTable_header_id" | translate }}</th>
+          <td *matCellDef="let element" mat-cell>{{ element.id }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th *matHeaderCellDef mat-header-cell>
+            @if (!hasMaxOrganizationAmountBeenReached) {
+              <button
+                (click)="addOrganization()"
+                [attr.aria-label]="'app_site_overview_organizationTable_addBtn_hint' | translate"
+                data-cy="btnAddAdditionalOrganization"
+                mat-icon-button
+                matTooltip="{{ 'app_site_overview_organizationTable_addBtn_hint' | translate }}"
+                obButton="secondary"
+                type="button"
+              >
+                <mat-icon svgIcon="plus" />
+              </button>
+            }
+          </th>
+          <td *matCellDef="let element" mat-cell>
+            <div class="actions">
+              <button
+                (click)="editOrganization(element)"
+                [attr.aria-label]="'app_site_overview_organizationTable_editBtn_hint' | translate"
+                mat-icon-button
+                matTooltip="{{ 'app_site_overview_organizationTable_editBtn_hint' | translate }}"
+                name="edit-{{ element.name }}-{{ element.id }}"
+                obButton="secondary"
+                type="button"
+              >
+                <mat-icon svgIcon="pencil" />
+              </button>
+            </div>
+          </td>
+        </ng-container>
+        <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+      </table>
+      <mat-paginator (page)="onPageChange($event)" [length]="totalItems" [pageSize]="pageSize" />
+    }
+  </mat-drawer-content>
+</mat-drawer-container>

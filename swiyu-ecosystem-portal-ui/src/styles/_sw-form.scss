@@ -1,0 +1,42 @@
+@use "./_sw-variables.scss" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+
+// Container style for the form (big gaps)
+.sw-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $sw-spc-xl;
+  align-self: stretch;
+}
+
+.ob-grid {
+  &.sw-grid-form-container {
+    gap: 0 $sw-frm-fld-spc;
+  }
+}
+
+// Container style for subsections of forms (smaller gaps) stretches the whole width
+.sw-form-sub-container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: stretch;
+  gap: $sw-spc-default;
+}
+
+.sw-form-sub-container-sm {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: stretch;
+  gap: $sw-spc-sm;
+}
+
+.sw-form-header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}

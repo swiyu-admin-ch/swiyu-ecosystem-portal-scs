@@ -1,0 +1,20 @@
+#content {
+  padding-top: var(--sw-spc-lg);
+  padding-bottom: var(--sw-spc-xxl);
+}
+
+.i18n-key-display-badge {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 9999;
+  background: #d97706;
+  color: #ffffff;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: monospace;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 30%);
+  cursor: pointer;
+}

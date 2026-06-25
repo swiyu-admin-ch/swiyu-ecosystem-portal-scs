@@ -1,0 +1,22 @@
+<h2 mat-dialog-title data-cy="oauthMockRoleDialogTitle">Business Partner Created</h2>
+<mat-dialog-content>
+  <p data-cy="oauthMockRoleDialogDescription">
+    Add the following values to the oauth-mock business partner roles before continuing:
+  </p>
+  <mat-form-field class="full-width">
+    <mat-label>Role value</mat-label>
+    <textarea
+      matInput
+      [value]="displayRoles"
+      [rows]="data.roleValues.length"
+      readonly
+      data-cy="oauthMockRole"
+    ></textarea>
+  </mat-form-field>
+  <app-clipboard [value]="clipboardRoles" [label]="'Copy role value'" />
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="close()" obButton="primary" data-cy="oauthMockRoleDialogContinue">
+    Continue
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,98 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+
+.light {
+  font-weight: 300;
+}
+
+@mixin card-shadow {
+  border: 1px solid var(--Border-border-default, #dfe4e9);
+  box-shadow:
+    0 5px 20px -2px rgba(0, 0, 0, 8%),
+    0 2px 6px -1px rgba(0, 0, 0, 5%);
+}
+
+.introduction {
+  @include card-shadow();
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  &-top {
+    display: flex;
+    flex-direction: column;
+    padding: var(--sw-spc-lg) var(--sw-spc-lg) 0;
+    gap: var(--sw-spc-default);
+    width: 75%;
+
+    .introduction-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--sw-spc-sm);
+      margin-bottom: var(--sw-spc-xxl);
+    }
+  }
+
+  &-middle {
+    @include card-shadow();
+    display: flex;
+    flex-direction: column;
+    padding: var(--sw-spc-lg);
+    gap: var(--sw-spc-lg);
+    margin-bottom: var(--sw-spc-xxl);
+    align-self: stretch;
+    background: $ob-gray-extra-light;
+
+    &-title {
+      font-size: 1.5rem;
+      font-weight: normal;
+    }
+  }
+
+  &-bottom {
+    display: flex;
+    padding: 0 var(--sw-spc-lg) var(--sw-spc-lg);
+    gap: var(--sw-spc-default);
+  }
+}
+
+.swiyu-logo img {
+  width: 100%;
+  height: auto;
+}
+
+.swiyu-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sw-spc-sm);
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sw-spc-xxs);
+    color: var(--ob-primary, #0066cc);
+    font-size: 0.875rem;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    mat-icon {
+      font-size: 1rem;
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+}
