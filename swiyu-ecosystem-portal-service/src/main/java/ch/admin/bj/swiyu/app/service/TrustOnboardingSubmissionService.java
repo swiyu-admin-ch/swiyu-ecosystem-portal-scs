@@ -143,11 +143,7 @@ public class TrustOnboardingSubmissionService {
         if (latestTrustOnboardingListItems != null) {
             var latestTrustOnboardingListItem = latestTrustOnboardingListItems.stream().findFirst().orElse(null);
             if (latestTrustOnboardingListItem != null) {
-                var latestTrustOnboarding =
-                    this.trustOnboardingSubmissionApi.getTrustOnboardingSubmission(
-                            latestTrustOnboardingListItem.getId()
-                        );
-                return TrustOnboardingSubmissionMapper.toTrustOnboardingSubmissionDto(latestTrustOnboarding);
+                return getTrustOnboardingSubmission(latestTrustOnboardingListItem.getId());
             }
         }
         throw new OpenApiResourceNotFoundException("No open trust onboarding submission identified.");

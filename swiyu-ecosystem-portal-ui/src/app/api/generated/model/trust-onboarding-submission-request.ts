@@ -9,12 +9,11 @@
  */
 import {Address} from './address';
 import {Contact} from './contact';
-import {MultiLanguageText} from './multi-language-text';
 import {Signatory} from './signatory';
 
 export interface TrustOnboardingSubmissionRequest {
   partnerId?: string;
-  entityName?: MultiLanguageText;
+  entityName?: {[key: string]: string};
   entityAddress?: Address;
   entityEmail?: string;
   contactPerson?: Contact;

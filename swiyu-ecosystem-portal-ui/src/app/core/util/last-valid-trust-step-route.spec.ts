@@ -11,7 +11,7 @@ describe('getLastValidTrustStepRoute', () => {
       id: SUBMISSION_ID,
       version: 1,
       partnerId: PARTNER_ID,
-      entityName: {de: 'Test'},
+      entityName: {default: 'Test', 'de-CH': 'Test'},
       entityEmail: 'test@test.com',
       entityAddress: {street: 's', city: 'c', postalCode: '1234', country: 'CH'},
       contactPerson: {firstName: 'F', lastName: 'L', phone: '123', email: 'f@l.com'},

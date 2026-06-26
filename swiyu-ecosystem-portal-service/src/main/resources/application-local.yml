@@ -4,10 +4,10 @@ app:
   frontend:
     portal-url: "https://ref-selfservice.api.admin.ch/api-selfservice/apis"
     trust-api-url: "http://localhost:8200/"
-    identifier-registry-api-url: "http://localhost:8200/identifier-registry-api-url/"
-    status-registry-api-url: "http://localhost:8200/status-registry-api-url"
+    identifier-registry-api-url: "http://localhost:8200/"
+    status-registry-api-url: "http://localhost:8290/"
     api-gateway-auth-url: "http://localhost:8200/api-gateway-auth-url"
-    identifier-registry-url: "http://localhost:8200/identifier-registry-url"
+    identifier-registry-url: "http://localhost:8190/"
     auth:
       require-https: false
     token-refresh-enabled: false

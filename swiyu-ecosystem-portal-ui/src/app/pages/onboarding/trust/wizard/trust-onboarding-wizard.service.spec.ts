@@ -21,7 +21,7 @@ describe('TrustOnboardingWizardService', () => {
 
   const submissionRequest: TrustOnboardingSubmissionRequest = {
     partnerId: 'partner-001',
-    entityName: {de: 'Test Corp'},
+    entityName: {default: 'Test Corp', 'de-CH': 'Test Corp'},
     entityEmail: 'contact@test.com'
   };
 

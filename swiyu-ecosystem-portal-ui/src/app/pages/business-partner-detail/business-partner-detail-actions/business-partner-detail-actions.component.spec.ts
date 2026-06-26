@@ -19,6 +19,7 @@ function createPartner(trustVerificationStatus: BusinessPartnerTrustStatus, paye
   return {
     id: PARTNER_ID,
     name: 'Test',
+    entityName: {default: 'Test', 'de-CH': 'Test'},
     contactEmailAddress: 'a@b.com',
     contactPhone: '0',
     type: BusinessPartner.TypeEnum.Business,
@@ -36,7 +37,7 @@ function createSubmission(status: TrustOnboardingSubmission.StatusEnum): TrustOn
     id: 'sub-1',
     version: 1,
     partnerId: PARTNER_ID,
-    entityName: {de: 'Test'},
+    entityName: {default: 'Test', 'de-CH': 'Test'},
     entityEmail: 'a@b.com',
     entityAddress: {street: 's', city: 'c', postalCode: '1', country: 'ch', region: 'r'},
     contactPerson: {

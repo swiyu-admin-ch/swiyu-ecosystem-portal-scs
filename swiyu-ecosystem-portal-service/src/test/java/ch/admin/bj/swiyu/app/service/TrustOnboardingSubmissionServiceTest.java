@@ -1,8 +1,6 @@
 package ch.admin.bj.swiyu.app.service;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -12,7 +10,6 @@ import ch.admin.bj.swiyu.app.exceptions.BusinessErrorCode;
 import ch.admin.bj.swiyu.app.exceptions.DataInvalidException;
 import ch.admin.bj.swiyu.client.business.internal.api.TrustOnboardingSubmissionApi;
 import ch.admin.bj.swiyu.client.business.internal.model.*;
-import ch.admin.bj.swiyu.client.business.internal.model.Language;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;

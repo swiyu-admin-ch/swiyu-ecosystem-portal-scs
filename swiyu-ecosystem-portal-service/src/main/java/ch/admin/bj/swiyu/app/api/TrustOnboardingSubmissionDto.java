@@ -2,7 +2,6 @@ package ch.admin.bj.swiyu.app.api;
 
 import ch.admin.bj.swiyu.client.business.internal.model.*;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
@@ -14,7 +13,7 @@ public record TrustOnboardingSubmissionDto(
     @NotNull UUID id,
     @NotNull Long version,
     @NotNull UUID partnerId,
-    @NotNull MultiLanguageText entityName,
+    @NotNull Map<String, String> entityName,
     @NotNull String entityEmail,
     @NotNull Address entityAddress,
     @NotNull Contact contactPerson,
@@ -29,6 +28,6 @@ public record TrustOnboardingSubmissionDto(
     String declineReason,
     String partnerNote,
     Language correspondingLanguage,
-    @Schema(example = "2024-10-29T09:35:16.809924Z") @Nullable Instant initiatedAt,
-    @Schema(example = "2024-10-29T09:35:16.809924Z") @Nullable Instant submittedAt
+    @Schema(example = "2024-10-29T09:35:16.809924Z") Instant initiatedAt,
+    @Schema(example = "2024-10-29T09:35:16.809924Z") Instant submittedAt
 ) {}

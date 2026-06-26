@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.21.0
+
+### Added
+
+- Definition of entity name in multiple languages
+
+## 1.20.3
+
+### Fixed
+
+- fix all CRITICAL and HIGH findings
+
 ## 1.20.2
 
 ### Fixed
@@ -21,15 +33,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add status information for submissions in `INFORMATION_REQUESTED` state, informing users about the time limit to resubmit their data
+- Add status information for submissions in `INFORMATION_REQUESTED` state, informing users about the time limit to
+  resubmit their data
 
 ## 1.19.0
 
 ### Added
 
-- Trust onboarding documents step (formal proof): additional documents upload section shown only for BUSINESS partners that are not registered in the commercial register (no UID). Allows multiple PDF files up to 10 MB each and requires at least one document.
-- Backend endpoint `POST /api/v1/trust-onboarding-submission/{id}/documents/other` to upload documents of type `TRUST_ONBOARDING_OTHER`. The endpoint now rejects (HTTP 400) uploads unless the submission's business partner is of type `BUSINESS` and is not registered in the commercial register, enforcing the same restriction as the frontend.
-- Unguarded `/test/documents-step` route that renders the documents step with mocked services and test data for isolated testing.
+- Trust onboarding documents step (formal proof): additional documents upload section shown only for BUSINESS partners
+  that are not registered in the commercial register (no UID). Allows multiple PDF files up to 10 MB each and requires
+  at least one document.
+- Backend endpoint `POST /api/v1/trust-onboarding-submission/{id}/documents/other` to upload documents of type
+  `TRUST_ONBOARDING_OTHER`. The endpoint now rejects (HTTP 400) uploads unless the submission's business partner is of
+  type `BUSINESS` and is not registered in the commercial register, enforcing the same restriction as the frontend.
+- Unguarded `/test/documents-step` route that renders the documents step with mocked services and test data for isolated
+  testing.
 
 ## 1.18.4
 
@@ -37,12 +55,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add test for visual translation key toggle
 
-
 ## 1.18.3
 
 ### Added
 
-- Add toggle (Ctr+shift+k) to display translation keys instead of value to enable designer to compare text keys with actual values
+- Add toggle (Ctr+shift+k) to display translation keys instead of value to enable designer to compare text keys with
+  actual values
 
 ## 1.18.2
 
@@ -78,7 +96,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added delete button for uploaded declaration of intent documents in the "Formellen Nachweis erbringen" step of the trust onboarding wizard, allowing users to remove a document before submitting.
+- Added delete button for uploaded declaration of intent documents in the "Formellen Nachweis erbringen" step of the
+  trust onboarding wizard, allowing users to remove a document before submitting.
 
 ## 1.15.0
 

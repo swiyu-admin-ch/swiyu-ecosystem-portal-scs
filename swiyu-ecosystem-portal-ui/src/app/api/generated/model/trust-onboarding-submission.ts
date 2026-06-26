@@ -9,7 +9,6 @@
  */
 import {Address} from './address';
 import {Contact} from './contact';
-import {MultiLanguageText} from './multi-language-text';
 import {ProofOfPossession} from './proof-of-possession';
 import {Signatory} from './signatory';
 
@@ -17,7 +16,7 @@ export interface TrustOnboardingSubmission {
   id: string;
   version: number;
   partnerId: string;
-  entityName: MultiLanguageText;
+  entityName: {[key: string]: string};
   entityEmail: string;
   entityAddress: Address;
   contactPerson: Contact;

@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import ch.admin.bj.swiyu.app.api.TrustOnboardingSubmissionDto;
-import ch.admin.bj.swiyu.client.business.internal.model.MultiLanguageText;
 import ch.admin.bj.swiyu.client.business.internal.model.TrustOnboardingSubmission;
 import org.junit.jupiter.api.Test;
 
@@ -13,10 +12,6 @@ class TrustOnboardingSubmissionMapperTest {
 
     @Test
     void toTrustOnboardingSubmissionDto_whenApiDtoIsValid_thenMapsCorrectly() {
-        // Arrange
-        var entityName = new MultiLanguageText();
-        entityName.de("de");
-
         var apiDto = defaultSubmission();
 
         // Act
@@ -26,7 +21,7 @@ class TrustOnboardingSubmissionMapperTest {
         assertEquals(apiDto.getId(), dto.id());
         assertEquals(apiDto.getVersion(), dto.version());
         assertEquals(apiDto.getPartnerId(), dto.partnerId());
-        assertEquals(apiDto.getEntityName(), dto.entityName());
+        assertEquals(apiDto.getName(), dto.entityName());
         assertEquals(apiDto.getEntityEmail(), dto.entityEmail());
         assertEquals(apiDto.getAddress(), dto.entityAddress());
         assertEquals(apiDto.getContactPerson(), dto.contactPerson());

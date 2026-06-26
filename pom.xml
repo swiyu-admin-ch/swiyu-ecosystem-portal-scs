@@ -6,13 +6,13 @@
         <groupId>ch.admin.bit.jeap</groupId>
         <artifactId>jeap-spring-boot-parent</artifactId>
         <!-- ACHTUNG: Immer wenn wir die Version updaten auch die CVE-OVERRIDES section aktualisieren -->
-        <version>33.9.0</version>
+        <version>33.11.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>ch.admin.bj.swiyu</groupId>
     <artifactId>swiyu-ecosystem-portal-scs</artifactId>
-    <version>1.20.2-SNAPSHOT</version>
+    <version>1.21.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Selfservice portal for the ecosystem</description>
 

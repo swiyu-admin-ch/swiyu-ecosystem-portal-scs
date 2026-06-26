@@ -11,6 +11,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class BusinessPartnerMapper {
 
+    @SuppressWarnings({ "java:S1874" }) // Remove name with contract in EID-6303
     public static BusinessPartnerListItemDto toBusinessPartnerListItemDto(BusinessPartnerListItem businessPartner) {
         return new BusinessPartnerListItemDto(
             businessPartner.getId(),
@@ -48,11 +49,13 @@ public class BusinessPartnerMapper {
         };
     }
 
+    @SuppressWarnings({ "java:S1874" }) // Remove name with contract in EID-6303
     public static BusinessPartnerDto toBusinessPartnerDto(BusinessPartner businessPartner) {
         if (businessPartner == null) return null;
         return new BusinessPartnerDto(
             businessPartner.getId(),
             businessPartner.getName(),
+            businessPartner.getEntityName(),
             businessPartner.getContactEmailAddress(),
             toBusinessPartnerTypeDto(businessPartner.getType()),
             Boolean.TRUE.equals(businessPartner.getPayedForTrustVerification()),

@@ -25,6 +25,7 @@ import {AppRoutes} from '../../app.routes';
 import {AppConfigService} from '../../core/appconfig/app-config.service';
 import {SUPPRESS_ERROR_ALERT_STATUSES} from '../../core/interceptor/error-http-interceptor';
 import {BusinessPartnerTrustChipComponent} from '../../shared/business-partner-trust-chip/business-partner-trust-chip.component';
+import {LocalizeService} from '../../shared/i18n/localize.service';
 import {IdentifierBaseOnboardingStatusComponent} from '../../shared/identifier-base-onboarding-status/identifier-base-onboarding-status.component';
 import {InfoIconComponent} from '../../shared/info-icon/info-icon.component';
 import {StatefulAlertComponent} from '../../shared/stateful-alert/stateful-alert.component';
@@ -91,6 +92,8 @@ export class BusinessPartnerDetailComponent {
   private readonly businessPartnerApi = inject(BusinessPartnerApi);
   private readonly trustOnboardingApi = inject(TrustOnboardingApi);
   private readonly identifierApi = inject(IdentifierApi);
+  private readonly localization = inject(LocalizeService);
+  protected readonly entityName = this.localization.localize(() => this.businessPartner()?.entityName);
 
   constructor() {
     effect(onCleanup => {

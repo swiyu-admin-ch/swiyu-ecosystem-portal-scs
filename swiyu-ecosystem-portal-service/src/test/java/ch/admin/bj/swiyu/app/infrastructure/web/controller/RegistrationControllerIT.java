@@ -1,22 +1,25 @@
 package ch.admin.bj.swiyu.app.infrastructure.web.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import ch.admin.bit.jeap.security.test.*;
+import ch.admin.bit.jeap.security.test.WithJeapAuthenticationToken;
 import ch.admin.bj.swiyu.client.business.internal.api.BusinessPartnerApi;
-import ch.admin.bj.swiyu.client.business.internal.model.*;
-import com.fasterxml.jackson.databind.*;
-import java.util.*;
-import org.junit.jupiter.api.*;
-import org.mockito.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.boot.test.autoconfigure.web.servlet.*;
-import org.springframework.boot.test.context.*;
-import org.springframework.http.*;
-import org.springframework.test.context.*;
-import org.springframework.test.context.bean.override.mockito.*;
-import org.springframework.test.web.servlet.*;
-import org.springframework.test.web.servlet.request.*;
+import ch.admin.bj.swiyu.client.business.internal.model.BusinessEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.UUID;
+import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @ActiveProfiles("test")
 @AutoConfigureMockMvc

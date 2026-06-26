@@ -33,17 +33,25 @@ import {AppConfigService} from '../../../../../core/appconfig/app-config.service
 import {CountryService} from '../../../../../core/util/country.service';
 import {CheckboxA11yDirective} from '../../../../../shared/checkbox-a11y/checkbox-a11y.directive';
 import {FullLangPipe} from '../../../../../shared/full-lang/full-lang.pipe';
+import {fromLocalizedMap, LocalizedTextMap, toLocalizedMap} from '../../../../../shared/i18n/localized-map.util';
+import {SWISS_LANGUAGE_TAGS, SWISS_LANGUAGES} from '../../../../../shared/i18n/swiss-languages.util';
 import {InfoIconComponent} from '../../../../../shared/info-icon/info-icon.component';
 import {RadioCardComponent} from '../../../../../shared/radio-card/radio-card.component';
 import {CustomValidators} from '../../../../../shared/validators/custom-validators';
 import {TrustOnboardingWizardService} from '../../wizard/trust-onboarding-wizard.service';
 import {AbstractOnboardingStepComponent} from '../abstract-onboarding-step-component';
+import {DUPLICATE_LANGUAGE_ERROR, duplicateLanguageValidator} from './duplicate-language.validator';
 import PartnerTypeEnum = PartnerCreationRequest.BusinessPartnerTypeEnum;
 import SigningRuleEnum = TrustOnboardingSubmissionRequest.SigningRuleEnum;
 import CorrespondingLanguageEnum = TrustOnboardingSubmissionRequest.CorrespondingLanguageEnum;
 
 type SignatoryFormGroup = FormGroup<{
   [K in keyof Signatory]: FormControl<Signatory[K]>;
+}>;
+
+export type EntityNameEntryFormGroup = FormGroup<{
+  name: FormControl<string>;
+  language: FormControl<string>;
 }>;
 
 @Component({
@@ -74,7 +82,7 @@ type SignatoryFormGroup = FormGroup<{
     FullLangPipe
   ],
   templateUrl: './onboarding-step-organisation-details.component.html',
-  styleUrls: ['../onboarding-steps.scss'],
+  styleUrls: ['../onboarding-steps.scss', './onboarding-step-organisation-details.component.scss'],
   providers: [{provide: AbstractOnboardingStepComponent, useExisting: OnboardingStepOrganisationDetailsComponent}],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -86,15 +94,20 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
   protected readonly PartnerTypeSelection = PartnerTypeEnum;
   protected readonly signingRule = SigningRuleEnum;
   protected readonly signingRuleOptions = Object.values(this.signingRule);
+  protected readonly DUPLICATE_LANGUAGE_ERROR = DUPLICATE_LANGUAGE_ERROR;
   private readonly translateService = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
   private previousPartnerType: string | undefined;
 
-  readonly languages: string[] = Object.values(CorrespondingLanguageEnum);
+  readonly languages = SWISS_LANGUAGES;
+  readonly entityNameLanguages = SWISS_LANGUAGE_TAGS;
   readonly form = this.fb.group({
     partnerType: this.fb.control<PartnerTypeEnum | null>(null, Validators.required),
     hasUid: this.fb.control<boolean>(false),
-    entityDefaultName: this.fb.control<string>('', [Validators.required, CustomValidators.notBlank()]),
+    entityNameDefault: this.fb.control('', [Validators.required, CustomValidators.notBlank()]),
+    entityNameEntries: this.fb.array<EntityNameEntryFormGroup>([], {
+      validators: [duplicateLanguageValidator()]
+    }),
     entityAddress: this.fb.group({
       street: ['', CustomValidators.emptyOrNotBlank()],
       postalCode: ['', [Validators.required, CustomValidators.swissZipCode()]],
@@ -120,15 +133,11 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
     super();
     this.translateSetup();
     this.form.valueChanges.pipe(map(() => this.form.getRawValue())).subscribe(value => {
+      const entityName = this.buildEntityName(value);
+
       this.wizardService.updateOrganisationData({
         partnerId: this.wizardService.partnerId ?? undefined,
-        entityName: {
-          de: value.entityDefaultName,
-          fr: value.entityDefaultName,
-          it: value.entityDefaultName,
-          en: value.entityDefaultName,
-          rm: value.entityDefaultName
-        },
+        entityName,
         entityAddress: {
           street: value.entityAddress.street,
           country: value.entityAddress.country,
@@ -158,13 +167,11 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
     effect(() => {
       const data = this.wizardService.submission();
       if (data) {
-        // Initilize signatory amount based on amount in existing data
         this.updateSignatoryForms(data.signingRule ?? null);
+        this.updateEntityNameFields(data.entityName);
         this.form.patchValue(
           {
-            // partnerType is not set here because it is determined by the wizardService
             hasUid: data?.isRegisteredInCommercialRegister,
-            entityDefaultName: data.entityName?.de,
             entityAddress: {
               street: data.entityAddress?.street,
               country: data.entityAddress?.country ?? 'CH',
@@ -207,8 +214,13 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
         return;
       }
 
+      if (submission?.entityName) {
+        this.updateEntityNameFields(submission.entityName);
+      } else {
+        this.updateEntityNameFields(partner.entityName);
+      }
+
       this.form.patchValue({
-        entityDefaultName: submission?.entityName?.de ?? partner.name,
         entityAddress: submission?.entityAddress ?? partner.address,
         uid: submission?.registryIds?.['UID'] ?? partner.uid
       });
@@ -235,33 +247,33 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
       .subscribe(value => {
         this.updateSignatoryForms(value);
       });
-    this.form.controls.partnerType.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(partnerType => {
-      const previousPartnerType = this.previousPartnerType;
-      this.previousPartnerType = partnerType ?? undefined;
+    this.form.controls.partnerType.valueChanges
+      .pipe(startWith(this.form.controls.partnerType.value), takeUntilDestroyed(this.destroyRef))
+      .subscribe(partnerType => {
+        const previousPartnerType = this.previousPartnerType;
+        this.previousPartnerType = partnerType ?? undefined;
 
-      if (partnerType == PartnerTypeEnum.Individual) {
-        this.form.controls.signingRule.setValue(null);
-      } else if (!this.form.value.signingRule) {
-        // When facing new trust onboarding submission apply default behaviour with two signatories
-        this.form.controls.signingRule.setValue(TrustOnboardingSubmission.SigningRuleEnum.JointSignatureTwo);
-        this.updateSignatoryForms(TrustOnboardingSubmission.SigningRuleEnum.JointSignatureTwo);
-      }
+        if (partnerType == PartnerTypeEnum.Individual) {
+          this.form.controls.signingRule.setValue(null);
+        } else if (!this.form.value.signingRule) {
+          // When facing new trust onboarding submission apply default behaviour with two signatories
+          this.form.controls.signingRule.setValue(TrustOnboardingSubmission.SigningRuleEnum.JointSignatureTwo);
+          this.updateSignatoryForms(TrustOnboardingSubmission.SigningRuleEnum.JointSignatureTwo);
+        }
 
-      // hasUid is only user-controlled for Business.
-      if (partnerType !== PartnerTypeEnum.Business && this.form.controls.hasUid.value === true) {
-        this.form.controls.hasUid.setValue(false, {emitEvent: false});
-      }
+        if (partnerType !== PartnerTypeEnum.Business && this.form.controls.hasUid.value) {
+          this.form.controls.hasUid.setValue(false, {emitEvent: false});
+        }
 
-      // If user comes back to Business from another partner type, restore hasUid=true.
-      if (
-        partnerType === PartnerTypeEnum.Business &&
-        previousPartnerType !== undefined &&
-        previousPartnerType !== PartnerTypeEnum.Business &&
-        this.form.controls.hasUid.value === false
-      ) {
-        this.form.controls.hasUid.setValue(true);
-      }
-    });
+        if (
+          partnerType === PartnerTypeEnum.Business &&
+          previousPartnerType !== undefined &&
+          previousPartnerType !== PartnerTypeEnum.Business &&
+          !this.form.controls.hasUid.value
+        ) {
+          this.form.controls.hasUid.setValue(true);
+        }
+      });
 
     combineLatest([
       this.form.controls.partnerType.valueChanges.pipe(startWith(this.form.controls.partnerType.value)),
@@ -269,7 +281,7 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
     ])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(([partnerType, hasUid]) => {
-        this.applyUidRules(partnerType, hasUid === true);
+        this.applyUidRules(partnerType, hasUid);
       });
   }
 
@@ -283,6 +295,48 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
     firstSignatory.controls.lastName.setValue(this.form.controls.contactPerson.controls.lastName.value);
     firstSignatory.controls.phone.setValue(this.form.controls.contactPerson.controls.phone.value);
     firstSignatory.controls.email.setValue(this.form.controls.contactPerson.controls.email.value);
+  }
+
+  canAddEntityNameEntry(): boolean {
+    return this.form.controls.entityNameEntries.length < SWISS_LANGUAGES.length;
+  }
+
+  addEntityNameEntry(): void {
+    if (!this.canAddEntityNameEntry()) {
+      return;
+    }
+    this.form.controls.entityNameEntries.push(this.createEntityNameTranslationForm());
+  }
+
+  removeEntityNameEntry(index: number): void {
+    this.form.controls.entityNameEntries.removeAt(index);
+  }
+
+  private buildEntityName(value: ReturnType<typeof this.form.getRawValue>): LocalizedTextMap {
+    return toLocalizedMap(value.entityNameDefault, value.entityNameEntries);
+  }
+
+  private updateEntityNameFields(data: Record<string, string>): void {
+    const {defaultValue, translations} = fromLocalizedMap(data);
+
+    this.form.controls.entityNameDefault.setValue(defaultValue);
+    this.setEntityNameTranslations(translations);
+  }
+
+  private setEntityNameTranslations(translations: {name: string; language: string}[]): void {
+    this.form.controls.entityNameEntries.clear();
+    translations.forEach(translation => {
+      const group = this.createEntityNameTranslationForm();
+      group.patchValue({name: translation.name, language: translation.language});
+      this.form.controls.entityNameEntries.push(group);
+    });
+  }
+
+  private createEntityNameTranslationForm(): EntityNameEntryFormGroup {
+    return this.fb.group({
+      name: this.fb.control('', [Validators.required]),
+      language: this.fb.control('', [Validators.required])
+    });
   }
 
   private applyUidRules(partnerType: string | undefined | null, hasUid: boolean) {
@@ -342,10 +396,14 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
   }
 
   private translateSetup() {
-    // Required for translate service auto collection of i18n keys
     this.translateService.get('eportal_global_country_CH');
     this.translateService.get('eportal_onboardingTR_addDetails_inputLabel_typeSignature_option_SINGLE_SIGNATURE');
     this.translateService.get('eportal_onboardingTR_addDetails_inputLabel_typeSignature_option_JOINT_SIGNATURE_TWO');
     this.translateService.get('eportal_onboardingTR_addDetails_inputLabel_typeSignature_option_JOINT_SIGNATURE_THREE');
+    this.translateService.get('eportal_onboarding_profile_btn_addNameTranslation');
+    this.translateService.get('eportal_onboarding_profile_inputLabel_language');
+    this.translateService.get('eportal_onboarding_profile_inputLabel_language_error_required');
+    this.translateService.get('eportal_onboarding_profile_inputLabel_language_error_duplicate');
+    this.translateService.get('eportal_onboarding_profile_btn_removeNameTranslation_aria');
   }
 }

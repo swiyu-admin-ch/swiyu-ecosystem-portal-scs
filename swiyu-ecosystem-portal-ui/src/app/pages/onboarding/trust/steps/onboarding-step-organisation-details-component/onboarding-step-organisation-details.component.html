@@ -122,34 +122,97 @@
             <p>{{ "eportal_onboarding_profile_uid_infoText" | translate }}</p>
           </app-info-icon>
         </div>
+      </div>
 
-        <div class="ob-span-11">
-          <mat-form-field>
-            <mat-label
-              >{{ "app_site_onboarding_trust_organisation-information_organisation-name" | translate }}
-            </mat-label>
-            <input
-              matInput
-              [formControl]="form.controls.entityDefaultName"
-              [placeholder]="'app_site_onboarding_trust_organisation-information_organisation-name' | translate"
-              data-cy="organizationName"
-            />
-            <mat-hint>
-              {{ "eportal_onboarding_profile_inputLabel_name_hint" | translate }}
-            </mat-hint>
-            @if (form.controls.entityDefaultName.hasError("required")) {
-              <mat-error class="ob-full">
-                {{ "eportal_onboarding_profile_inputLabel_name_error" | translate }}
-              </mat-error>
-            }
-          </mat-form-field>
-        </div>
-        <div>
+      <div class="ob-full entity-name">
+        <mat-form-field class="span-2">
+          <mat-label>
+            {{ "app_site_onboarding_trust_organisation-information_organisation-name" | translate }}
+          </mat-label>
+          <input
+            matInput
+            [formControl]="form.controls.entityNameDefault"
+            [placeholder]="'app_site_onboarding_trust_organisation-information_organisation-name' | translate"
+            data-cy="organizationName"
+          />
+          <mat-hint>{{ "eportal_onboarding_profile_inputLabel_name_hint" | translate }}</mat-hint>
+          @if (form.controls.entityNameDefault.hasError("required")) {
+            <mat-error class="ob-full">
+              {{ "eportal_onboarding_profile_inputLabel_name_error" | translate }}
+            </mat-error>
+          }
+        </mat-form-field>
+        <div class="entity-name-row-actions">
           <app-info-icon>
             <h3>{{ "eportal_onboarding_profile_language_infoTitle" | translate }}</h3>
             <p>{{ "eportal_onboarding_profile_language_infoText" | translate }}</p>
           </app-info-icon>
         </div>
+        @for (entry of form.controls.entityNameEntries.controls; track $index; let i = $index) {
+          <div class="display-contents" [formGroup]="entry">
+            <mat-form-field>
+              <mat-label>
+                {{ "app_site_onboarding_trust_organisation-information_organisation-name" | translate }}
+              </mat-label>
+              <input
+                matInput
+                [formControl]="entry.controls.name"
+                [placeholder]="'app_site_onboarding_trust_organisation-information_organisation-name' | translate"
+                [attr.data-cy]="'organizationName' + (i + 1)"
+              />
+              @if (entry.controls.name.hasError("required")) {
+                <mat-error class="ob-full">
+                  {{ "eportal_onboarding_profile_inputLabel_name_error" | translate }}
+                </mat-error>
+              }
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>{{ "eportal_onboarding_profile_inputLabel_language" | translate }}</mat-label>
+              <mat-select [formControl]="entry.controls.language" [attr.data-cy]="'organizationLanguage' + (i + 1)">
+                @for (lang of entityNameLanguages; track lang) {
+                  <mat-option [value]="lang">
+                    {{ lang | fullLang | translate }}
+                  </mat-option>
+                }
+              </mat-select>
+              @if (entry.controls.language.hasError("required")) {
+                <mat-error>
+                  {{ "eportal_onboarding_profile_inputLabel_language_error_required" | translate }}
+                </mat-error>
+              }
+              @if (entry.controls.language.hasError(DUPLICATE_LANGUAGE_ERROR)) {
+                <mat-error>
+                  {{ "eportal_onboarding_profile_inputLabel_language_error_duplicate" | translate }}
+                </mat-error>
+              }
+            </mat-form-field>
+          </div>
+          <div class="entity-name-row-actions">
+            <button
+              type="button"
+              mat-icon-button
+              [attr.data-cy]="'removeOrganizationName' + (i + 1)"
+              (click)="removeEntityNameEntry(i)"
+              [attr.aria-label]="'eportal_onboarding_profile_btn_removeNameTranslation_aria' | translate"
+              obButton="secondary"
+            >
+              <mat-icon svgIcon="delete" />
+            </button>
+          </div>
+        }
+      </div>
+      <div class="ob-span-11">
+        <button
+          type="button"
+          mat-button
+          obButton="tertiary"
+          data-cy="addOrganizationNameTranslation"
+          [disabled]="!canAddEntityNameEntry()"
+          (click)="addEntityNameEntry()"
+        >
+          <mat-icon svgIcon="plus" />
+          {{ "eportal_onboarding_profile_btn_addNameTranslation" | translate }}
+        </button>
       </div>
 
       <!-- Entity Address -->

@@ -82,7 +82,8 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
     it('should have all required form controls', () => {
       expect(component.form.get('partnerType')).toBeTruthy();
       expect(component.form.get('hasUid')).toBeTruthy();
-      expect(component.form.get('entityDefaultName')).toBeTruthy();
+      expect(component.form.get('entityNameDefault')).toBeTruthy();
+      expect(component.form.get('entityNameEntries')).toBeTruthy();
       expect(component.form.get('entityAddress')).toBeTruthy();
       expect(component.form.get('contactPerson')).toBeTruthy();
       expect(component.form.get('uid')).toBeTruthy();
@@ -91,7 +92,7 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
     });
 
     it('should initialize languages array', () => {
-      expect(component.languages).toEqual(['EN', 'DE', 'FR', 'IT', 'RM']);
+      expect(component.languages).toEqual(['DE', 'FR', 'IT', 'EN', 'RM']);
     });
   });
 
@@ -100,14 +101,6 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
       const control = component.form.get('partnerType');
       control?.setValue(null);
       expect(control?.hasError('required')).toBe(true);
-    });
-
-    it('should require at least one entity name language', () => {
-      const entityDefaultName = component.form.get('entityDefaultName');
-      expect(entityDefaultName?.hasError('required')).toBe(true);
-
-      entityDefaultName?.setValue('Test Organisation');
-      expect(entityDefaultName?.hasError('required')).toBe(false);
     });
 
     it('should require all address fields', () => {
@@ -146,6 +139,95 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
 
       control?.setValue(true);
       expect(control?.hasError('required')).toBe(false);
+    });
+  });
+
+  describe('Entity name entries', () => {
+    beforeEach(() => {
+      component.form.get('partnerType')?.setValue(BusinessPartner.TypeEnum.Business);
+      fixture.detectChanges();
+    });
+
+    it('should allow adding up to four translation rows', () => {
+      while (component.canAddEntityNameEntry()) {
+        component.addEntityNameEntry();
+      }
+
+      expect(component.form.controls.entityNameEntries.length).toBe(5);
+      expect(component.canAddEntityNameEntry()).toBe(false);
+    });
+
+    it('should remove translation rows', () => {
+      component.addEntityNameEntry();
+      expect(component.form.controls.entityNameEntries.length).toBe(1);
+
+      component.removeEntityNameEntry(0);
+      expect(component.form.controls.entityNameEntries.length).toBe(0);
+    });
+
+    it('should send localized entity name map to wizard service', fakeAsync(() => {
+      component.form.controls.entityNameDefault.setValue('Tourismusverband');
+      component.addEntityNameEntry();
+      component.form.controls.entityNameEntries.at(0)?.setValue({name: 'Office du tourisme', language: 'fr-CH'});
+      tick();
+
+      expect(wizardServiceMock.updateOrganisationData).toHaveBeenCalledWith(
+        expect.objectContaining({
+          entityName: {
+            default: 'Tourismusverband',
+            'fr-CH': 'Office du tourisme'
+          }
+        })
+      );
+    }));
+
+    it('should require default entity name', () => {
+      const entityNameDefault = component.form.controls.entityNameDefault;
+      expect(entityNameDefault.hasError('required')).toBe(true);
+
+      entityNameDefault.setValue('Test Organisation');
+      fixture.detectChanges();
+
+      expect(entityNameDefault.hasError('required')).toBe(false);
+    });
+
+    it('should flag duplicate languages in translation rows', () => {
+      component.form.get('partnerType')?.setValue(BusinessPartner.TypeEnum.Business);
+      fixture.detectChanges();
+
+      component.form.controls.entityNameDefault.setValue('Default Name');
+      component.addEntityNameEntry();
+      component.addEntityNameEntry();
+      const firstTranslation = component.form.controls.entityNameEntries.at(0);
+      const secondTranslation = component.form.controls.entityNameEntries.at(1);
+
+      firstTranslation?.setValue({name: 'Name DE', language: 'de-CH'});
+      secondTranslation?.setValue({name: 'Name DE 2', language: 'de-CH'});
+      fixture.detectChanges();
+      component.isValid();
+
+      expect(secondTranslation?.controls.language.hasError('duplicateLanguage')).toBe(true);
+    });
+    it('should unflag duplicate languages in translation rows when deleting duplicate one', () => {
+      component.form.get('partnerType')?.setValue(BusinessPartner.TypeEnum.Business);
+      fixture.detectChanges();
+
+      component.form.controls.entityNameDefault.setValue('Default Name');
+      component.addEntityNameEntry();
+      component.addEntityNameEntry();
+      const firstTranslation = component.form.controls.entityNameEntries.at(0);
+      const secondTranslation = component.form.controls.entityNameEntries.at(1);
+
+      firstTranslation?.setValue({name: 'Name DE', language: 'de-CH'});
+      secondTranslation?.setValue({name: 'Name DE 2', language: 'de-CH'});
+      fixture.detectChanges();
+      component.isValid();
+
+      component.removeEntityNameEntry(0);
+      fixture.detectChanges();
+      component.isValid();
+
+      expect(secondTranslation?.controls.language.errors).toBeNull();
     });
   });
 
@@ -193,18 +275,15 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
     });
 
     it('should restore hasUid to true when switching from governmental institution back to business', () => {
-      // Start: Business, hasUid=false (uid disabled)
       component.form.get('partnerType')?.setValue(BusinessPartner.TypeEnum.Business);
       component.form.get('hasUid')?.setValue(false);
       fixture.detectChanges();
 
-      // Switch to GovernmentalInstitution -> uid gets enabled
       component.form.get('partnerType')?.setValue(BusinessPartner.TypeEnum.GovernmentalInstitution);
       fixture.detectChanges();
 
       expect(component.form.get('uid')?.enabled).toBe(true);
 
-      // Switch back to Business -> hasUid should be restored to true, uid stays enabled
       component.form.get('partnerType')?.setValue(BusinessPartner.TypeEnum.Business);
       fixture.detectChanges();
 
@@ -231,12 +310,11 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
         status: TrustOnboardingSubmission.StatusEnum.Unsubmitted,
         proofOfPossessionList: [],
         registryIds: {},
+        businessPartnerType: BusinessPartner.TypeEnum.Business,
         entityName: {
-          de: 'Test Organisation',
-          fr: 'Organisation Test',
-          it: '',
-          en: '',
-          rm: ''
+          default: 'Test Organisation',
+          'de-CH': 'Test Organisation',
+          'fr-CH': 'Organisation Test'
         },
         entityAddress: {
           street: 'Test Street 1',
@@ -252,12 +330,12 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
         }
       };
 
-      const wizardService = TestBed.inject(TrustOnboardingWizardService) as TrustOnboardingWizardService;
-      wizardService.submission.set(mockData);
-      wizardService.requestedBusinessPartnerType.set(BusinessPartner.TypeEnum.Business);
+      wizardServiceMock.submission.set(mockData);
+      wizardServiceMock.requestedBusinessPartnerType.set(BusinessPartner.TypeEnum.Business);
       fixture.detectChanges();
 
-      expect(component.form.get('entityDefaultName')?.value).toBe('Test Organisation');
+      expect(component.form.controls.entityNameDefault.value).toBe('Test Organisation');
+      expect(component.form.controls.entityNameEntries.at(0)?.controls.name.value).toBe('Test Organisation');
       expect(component.form.get('entityAddress.street')?.value).toBe('Test Street 1');
       expect(component.form.get('contactPerson.firstName')?.value).toBe('John');
     });
@@ -268,6 +346,7 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
       const mockPartner: BusinessPartner = {
         id: 'test-partner-id',
         name: 'Partner Organisation',
+        entityName: {default: 'Partner Organisation', 'de-CH': 'Partner Organisation'},
         type: BusinessPartner.TypeEnum.Business,
         contactEmailAddress: 'partner@test.ch',
         contactPhone: '+41 11 111 11 11',
@@ -284,7 +363,7 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
       wizardServiceMock.businessPartner.set(mockPartner);
       fixture.detectChanges();
 
-      expect(component.form.get('entityDefaultName')?.value).toBe('Partner Organisation');
+      expect(component.form.controls.entityNameDefault.value).toBe('Partner Organisation');
       expect(component.form.get('entityAddress.street')?.value).toBe('Partner Street 1');
       expect(component.form.get('entityAddress.city')?.value).toBe('Zurich');
       expect(component.form.get('entityAddress.postalCode')?.value).toBe('8000');
@@ -296,6 +375,7 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
       const mockPartner: BusinessPartner = {
         id: 'test-partner-id',
         name: 'Partner Organisation',
+        entityName: {default: 'Partner Organisation', 'de-CH': 'Partner Organisation'},
         type: BusinessPartner.TypeEnum.Business,
         contactEmailAddress: 'partner@test.ch',
         contactPhone: '+41 11 111 11 11',
@@ -318,11 +398,9 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
         proofOfPossessionList: [],
         registryIds: {UID: 'CHE-999.888.777'},
         entityName: {
-          de: 'Submission Organisation',
-          fr: 'Organisation Test',
-          it: '',
-          en: '',
-          rm: ''
+          default: 'Submission Organisation',
+          'de-CH': 'Submission Organisation',
+          'fr-CH': 'Organisation Test'
         },
         entityAddress: {
           street: 'Submission Street 1',
@@ -345,7 +423,7 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
       wizardServiceMock.businessPartner.set(mockPartner);
       fixture.detectChanges();
 
-      expect(component.form.get('entityDefaultName')?.value).toBe('Submission Organisation');
+      expect(component.form.controls.entityNameDefault.value).toBe('Submission Organisation');
       expect(component.form.get('entityAddress.street')?.value).toBe('Submission Street 1');
       expect(component.form.get('entityAddress.city')?.value).toBe('Bern');
       expect(component.form.get('entityAddress.postalCode')?.value).toBe('3000');

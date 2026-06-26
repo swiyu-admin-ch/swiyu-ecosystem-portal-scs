@@ -12,7 +12,7 @@ public class TrustOnboardingSubmissionMapper {
             apiDto.getId(),
             apiDto.getVersion(),
             apiDto.getPartnerId(),
-            apiDto.getEntityName(),
+            apiDto.getName(),
             apiDto.getEntityEmail(),
             apiDto.getAddress(),
             apiDto.getContactPerson(),

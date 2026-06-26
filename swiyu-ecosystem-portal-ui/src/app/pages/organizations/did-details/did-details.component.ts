@@ -1,5 +1,5 @@
 import {CommonModule} from '@angular/common';
-import {Component, computed, DestroyRef, inject, input, OnInit, signal} from '@angular/core';
+import {Component, computed, DestroyRef, effect, inject, input, OnInit, signal} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {FormBuilder, FormGroup, FormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
@@ -16,6 +16,7 @@ import {AppRoutes} from '../../../app.routes';
 import {AppConfigService} from '../../../core/appconfig/app-config.service';
 import {DetailSectionComponent} from '../../../shared/detail-section/detail-section.component';
 import {FormField, SectionLink} from '../../../shared/detail-section/form-field.model';
+import {LocalizeService} from '../../../shared/i18n/localize.service';
 
 interface DidDetailsData {
   identifier: IdentifierResponse;
@@ -122,6 +123,8 @@ export class DidDetailsComponent implements OnInit {
   private readonly identifierApi = inject(IdentifierApi);
   private readonly businessPartnerApi = inject(BusinessPartnerApi);
   private readonly translateService = inject(TranslateService);
+  private readonly localization = inject(LocalizeService);
+  private readonly localizedEntityName = this.localization.localize(() => this.data()?.businessPartner?.entityName);
   private readonly identifierRegistry = computed(() => {
     let ret = `/api/v1/did/${this.identifierEntryId()}`;
     if (this.appConfigService.identifierRegistryUrl) {
@@ -135,6 +138,11 @@ export class DidDetailsComponent implements OnInit {
 
   constructor() {
     this.initForms();
+    effect(() => {
+      this.profileInfoForm.patchValue({
+        swiyuProfile: this.localizedEntityName()
+      });
+    });
   }
 
   ngOnInit(): void {
@@ -241,7 +249,6 @@ export class DidDetailsComponent implements OnInit {
     });
 
     this.profileInfoForm.patchValue({
-      swiyuProfile: data.businessPartner?.name ?? '',
       businessPartnerId: this.businessPartnerId()
     });
   }

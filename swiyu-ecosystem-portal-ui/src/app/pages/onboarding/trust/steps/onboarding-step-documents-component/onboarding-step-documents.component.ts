@@ -20,6 +20,7 @@ import {
 } from '../../../../../api/generated';
 import {AppConfigService} from '../../../../../core/appconfig/app-config.service';
 import {FullLangPipe} from '../../../../../shared/full-lang/full-lang.pipe';
+import {SWISS_LANGUAGES} from '../../../../../shared/i18n/swiss-languages.util';
 import {UploadComponent, UploadedFile, UploadItem} from '../../../../../shared/upload/upload.component';
 import {TrustOnboardingWizardService} from '../../wizard/trust-onboarding-wizard.service';
 import {AbstractOnboardingStepComponent} from '../abstract-onboarding-step-component';
@@ -70,7 +71,7 @@ export class OnboardingStepDocumentsComponent extends AbstractOnboardingStepComp
   private readonly destroyRef = inject(DestroyRef);
   protected readonly appConfigService = inject(AppConfigService);
   protected readonly wizardService = inject(TrustOnboardingWizardService);
-  readonly languages: string[] = Object.values(CorrespondingLanguageEnum);
+  readonly languages = SWISS_LANGUAGES;
   readonly translateService = inject(TranslateService);
   protected uploadItem?: InternalUploadItem;
   protected otherUploadItem?: InternalUploadItem;

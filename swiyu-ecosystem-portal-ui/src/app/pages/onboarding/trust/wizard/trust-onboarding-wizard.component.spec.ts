@@ -34,7 +34,8 @@ describe('TrustOnboardingWizardComponent', () => {
     version: 1,
     partnerId: 'partner-001',
     entityName: {
-      de: 'Test Corp'
+      default: 'Test Corp',
+      'de-CH': 'Test Corp'
     },
     entityAddress: {
       street: 'street',

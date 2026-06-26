@@ -13,6 +13,14 @@ $sw-frm-fld-spc: 20px;
 $sw-purple-100: #ede9fe;
 $sw-purple-600: #7c3aed;
 
+// form field margin from oblique, which is not exported
+// https://github.com/oblique-bit/oblique/blob/c744192f20cfcf85964fc97444ba294fc119e29d/projects/oblique/src/styles/scss/material/_variables.scss#L1
+$ob-form-field-margin: 0.2em !default;
+
+// form field max height from oblique, which is not exported
+// https://github.com/oblique-bit/oblique/blob/c744192f20cfcf85964fc97444ba294fc119e29d/projects/oblique/src/styles/scss/material/mixins/_mat-form-field.scss#L55
+$ob-standard-max-height: 40px;
+
 :root {
   --sw-spc-xxl: #{$sw-spc-xxl};
   --sw-spc-xl: #{$sw-spc-xl};

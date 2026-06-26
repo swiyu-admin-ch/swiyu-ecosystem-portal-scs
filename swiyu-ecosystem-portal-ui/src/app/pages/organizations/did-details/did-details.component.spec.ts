@@ -49,6 +49,7 @@ describe('DidDetailsComponent', () => {
       getBusinessPartner: jest.fn().mockReturnValue(
         of({
           name: mockBusinessPartnerName,
+          entityName: {default: mockBusinessPartnerName, 'de-CH': mockBusinessPartnerName},
           trustVerificationStatus: 'VERIFIED'
         })
       )
@@ -93,6 +94,7 @@ describe('DidDetailsComponent', () => {
 
     // Configure TranslateService mock after TestBed setup
     const translateService = TestBed.inject(TranslateService);
+    translateService.use('de');
     jest.spyOn(translateService, 'instant').mockImplementation((key: string | string[]) => {
       if (key === 'app_site_did-details_card_did-information_docs-link_base-registry-doc-url') {
         return mockBaseRegistryDocUrl;
@@ -136,6 +138,10 @@ describe('DidDetailsComponent', () => {
       expect(businessPartnerApiMock.getBusinessPartner).toHaveBeenCalledWith({
         businessPartnerId: mockPartnerId
       });
+    });
+
+    it('should display localized entity name in profile form', () => {
+      expect(component.profileInfoForm.get('swiyuProfile')?.value).toBe(mockBusinessPartnerName);
     });
   });
 

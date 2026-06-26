@@ -3,7 +3,7 @@
   "info": {
     "title": "Internal API",
     "description": "IF-009 - Internal API",
-    "version": "3.34.1-SNAPSHOT"
+    "version": "3.38.0-SNAPSHOT"
   },
   "servers": [
     {
@@ -774,11 +774,18 @@
         },
         "responses": {
           "400": {
-            "description": "Bad Request",
+            "description": "Validation failed. For Declaration of Intent documents the errorCode will be TRUST_ONBOARDING_DOCUMENT_VALIDATION_FAILED and additionalDetails contains the specific DoI violation codes (see DeclarationOfIntentValidatorErrorCode). For general document validation failures the errorCode will be DATA_INVALID.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiError"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/DeclarationOfIntentValidationApiError"
+                    }
+                  ]
                 }
               }
             }
@@ -787,7 +794,7 @@
             "description": "Internal Server Error"
           },
           "200": {
-            "description": "OK",
+            "description": "Document uploaded successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -1476,9 +1483,9 @@
             "schema": {
               "type": "string",
               "format": "uuid",
-              "example": "8369160f-697c-4b12-80d3-91abff1a29ee"
+              "example": "46ada91a-84ce-422b-b9b5-e0d2e3e8c46d"
             },
-            "example": "8369160f-697c-4b12-80d3-91abff1a29ee"
+            "example": "46ada91a-84ce-422b-b9b5-e0d2e3e8c46d"
           },
           {
             "name": "language",
@@ -1935,26 +1942,6 @@
           "RM"
         ]
       },
-      "MultiLanguageText": {
-        "type": "object",
-        "properties": {
-          "de": {
-            "type": "string"
-          },
-          "fr": {
-            "type": "string"
-          },
-          "it": {
-            "type": "string"
-          },
-          "en": {
-            "type": "string"
-          },
-          "rm": {
-            "type": "string"
-          }
-        }
-      },
       "Signatory": {
         "type": "object",
         "properties": {
@@ -2002,14 +1989,18 @@
             "example": "deadbeef-0000-dead-beef-000000000000"
           },
           "entityName": {
-            "$ref": "#/components/schemas/MultiLanguageText",
-            "description": "The official name of the entity.",
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The official name of the entity as localized map.",
             "example": {
-              "de": "Schweizerische Eidgenossenschaft",
-              "fr": "Confédération suisse",
-              "it": "Confederazione Svizzera",
-              "en": "Swiss Confederation",
-              "rm": "Confederaziun svizra"
+              "default": "Swiss Confederation",
+              "de-CH": "Schweizerische Eidgenossenschaft",
+              "fr-CH": "Confédération suisse",
+              "it-CH": "Confederazione Svizzera",
+              "en-CH": "Swiss Confederation",
+              "rm-CH": "Confederaziun svizra"
             }
           },
           "entityAddress": {
@@ -2089,6 +2080,26 @@
           }
         }
       },
+      "MultiLanguageText": {
+        "type": "object",
+        "properties": {
+          "de": {
+            "type": "string"
+          },
+          "fr": {
+            "type": "string"
+          },
+          "it": {
+            "type": "string"
+          },
+          "en": {
+            "type": "string"
+          },
+          "rm": {
+            "type": "string"
+          }
+        }
+      },
       "ProofOfPossession": {
         "type": "object",
         "properties": {
@@ -2132,8 +2143,15 @@
             "type": "string",
             "format": "uuid"
           },
+          "name": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
           "entityName": {
-            "$ref": "#/components/schemas/MultiLanguageText"
+            "$ref": "#/components/schemas/MultiLanguageText",
+            "deprecated": true
           },
           "entityEmail": {
             "type": "string"
@@ -2222,6 +2240,7 @@
           "entityEmail",
           "entityName",
           "id",
+          "name",
           "partnerId",
           "proofOfPossessions",
           "registryIds",
@@ -2430,8 +2449,16 @@
           },
           "name": {
             "type": "string",
-            "description": "Unique name of the partner",
+            "deprecated": true,
+            "description": "Unique name of the partner. Deprecated: use entityName.",
             "minLength": 1
+          },
+          "entityName": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Localized entity name map with required default key and BCP-47 locale keys"
           },
           "contactEmailAddress": {
             "type": "string",
@@ -2491,6 +2518,7 @@
         "required": [
           "contactEmailAddress",
           "contactPhone",
+          "entityName",
           "id",
           "name",
           "type"
@@ -2498,7 +2526,7 @@
       },
       "BusinessPartnerTrustStatus": {
         "type": "string",
-        "description": "Defines the current aggregated state of the trust process.\n    @startuml\n    [*] --> NOT_VERIFIED\n\n    NOT_VERIFIED -[#green]-> VERIFICATION_STARTED\n\n    VERIFICATION_STARTED -[#green]-> VERIFICATION_IN_PROGRESS\n\n    VERIFICATION_IN_PROGRESS -[#orange]-> INFORMATION_REQUESTED\n    VERIFICATION_IN_PROGRESS -[#green]-> VERIFIED\n    VERIFICATION_IN_PROGRESS -[#red]-> NOT_VERIFIED\n\n    INFORMATION_REQUESTED -[#green]-> VERIFIED\n    INFORMATION_REQUESTED -[#red]-> NOT_VERIFIED\n\n    VERIFIED -[#green]-> RE_VERIFICATION_STARTED\n\n    RE_VERIFICATION_STARTED -[#green]-> RE_VERIFICATION_IN_PROGRESS\n\n    RE_VERIFICATION_IN_PROGRESS -[#orange]-> INFORMATION_REQUESTED\n    RE_VERIFICATION_IN_PROGRESS -[#green]-> VERIFIED\n    RE_VERIFICATION_IN_PROGRESS -[#red]-> NOT_VERIFIED\n    @enduml\n",
+        "description": "Defines the current aggregated state of the trust process.\n    @startuml\n    [*] --\u003E NOT_VERIFIED\n\n    NOT_VERIFIED -[#green]-\u003E VERIFICATION_STARTED\n\n    VERIFICATION_STARTED -[#green]-\u003E VERIFICATION_IN_PROGRESS\n\n    VERIFICATION_IN_PROGRESS -[#orange]-\u003E INFORMATION_REQUESTED\n    VERIFICATION_IN_PROGRESS -[#green]-\u003E VERIFIED\n    VERIFICATION_IN_PROGRESS -[#red]-\u003E NOT_VERIFIED\n\n    INFORMATION_REQUESTED -[#green]-\u003E VERIFIED\n    INFORMATION_REQUESTED -[#red]-\u003E NOT_VERIFIED\n\n    VERIFIED -[#green]-\u003E RE_VERIFICATION_STARTED\n\n    RE_VERIFICATION_STARTED -[#green]-\u003E RE_VERIFICATION_IN_PROGRESS\n\n    RE_VERIFICATION_IN_PROGRESS -[#orange]-\u003E INFORMATION_REQUESTED\n    RE_VERIFICATION_IN_PROGRESS -[#green]-\u003E VERIFIED\n    RE_VERIFICATION_IN_PROGRESS -[#red]-\u003E NOT_VERIFIED\n    @enduml\n",
         "enum": [
           "NOT_VERIFIED",
           "VERIFICATION_STARTED",
@@ -2531,6 +2559,34 @@
         "required": [
           "file",
           "type"
+        ]
+      },
+      "DeclarationOfIntentValidationApiError": {
+        "type": "object",
+        "properties": {
+          "errorCode": {
+            "$ref": "#/components/schemas/ApiErrorCode"
+          },
+          "message": {
+            "type": "string"
+          },
+          "additionalDetails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeclarationOfIntentValidatorErrorCode"
+            }
+          }
+        }
+      },
+      "DeclarationOfIntentValidatorErrorCode": {
+        "type": "string",
+        "enum": [
+          "invalid_signatures_for_mandant",
+          "no_signatures_found",
+          "validation_service_not_available",
+          "violating_doi_variant_single_signature",
+          "violating_doi_variant_joint_signature_two",
+          "violating_doi_variant_joint_signature_three"
         ]
       },
       "PartnerDocumentType": {
@@ -2667,8 +2723,16 @@
           },
           "name": {
             "type": "string",
-            "description": "Unique name of the partner",
+            "deprecated": true,
+            "description": "Unique name of the partner. Deprecated: use entityName.",
             "minLength": 1
+          },
+          "entityName": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Localized entity name map with required default key and BCP-47 locale keys"
           },
           "type": {
             "$ref": "#/components/schemas/BusinessPartnerType",
@@ -2711,6 +2775,7 @@
         },
         "required": [
           "createdAt",
+          "entityName",
           "id",
           "name",
           "type",
@@ -2752,7 +2817,8 @@
           }
         }
       },
-      "JsonNode": {},
+      "JsonNode": {
+      },
       "VqpsSubmissionInternal": {
         "type": "object",
         "properties": {

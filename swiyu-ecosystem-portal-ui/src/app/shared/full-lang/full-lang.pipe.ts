@@ -15,7 +15,9 @@ export class FullLangPipe implements PipeTransform {
       return '';
     }
 
-    return `eportal_global_lang_${value.trim().toLowerCase()}`;
+    const lang = value.includes('-') ? value.split('-')[0] : value;
+
+    return `eportal_global_lang_${lang.trim().toLowerCase()}`;
   }
 
   private translateSetup(): void {

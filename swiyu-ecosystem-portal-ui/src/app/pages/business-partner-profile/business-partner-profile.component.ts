@@ -12,6 +12,7 @@ import {BusinessPartner, BusinessPartnerApi} from '../../api/generated';
 import {AppRoutes} from '../../app.routes';
 import {DetailSectionComponent} from '../../shared/detail-section/detail-section.component';
 import {FormField} from '../../shared/detail-section/form-field.model';
+import {LocalizeService} from '../../shared/i18n/localize.service';
 
 @Component({
   selector: 'app-business-partner-profile',
@@ -55,7 +56,6 @@ export class BusinessPartnerProfileComponent implements OnInit {
     {key: 'contactPhone', label: 'eportal_swiyuProfile_label_phone'},
     {key: 'contactEmailAddress', label: 'eportal_swiyuProfile_label_email'}
   ];
-  generalFields: FormField[] = [{key: 'email', label: 'eportal_swiyuProfile_label_email'}];
   protected readonly AppRoutes = AppRoutes;
   private readonly businessPartnerApi = inject(BusinessPartnerApi);
   private readonly fb = inject(FormBuilder);
@@ -65,9 +65,16 @@ export class BusinessPartnerProfileComponent implements OnInit {
   contactForm: FormGroup = this.fb.group({});
   generalForm: FormGroup = this.fb.group({});
   private readonly translateService = inject(TranslateService);
+  private readonly localizer = inject(LocalizeService);
 
   constructor() {
     this.translateSetup();
+    effect(() => {
+      const entityName = this.localizer.localize(() => this.partner()?.entityName);
+      this.detailsForm.patchValue({
+        name: entityName()
+      });
+    });
     effect(() => {
       const id = this.businessPartnerId();
       if (id) {
@@ -125,7 +132,6 @@ export class BusinessPartnerProfileComponent implements OnInit {
 
   patchForms(data: BusinessPartner) {
     this.detailsForm.patchValue({
-      name: data.name,
       createdAt: data.createdAt,
       uid: data.uid,
       id: data.id

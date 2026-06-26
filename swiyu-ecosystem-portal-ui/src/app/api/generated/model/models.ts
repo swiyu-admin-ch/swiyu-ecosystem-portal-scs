@@ -15,7 +15,6 @@ export * from './identifier-response';
 export * from './identifier-status';
 export * from './identifier-update-request';
 export * from './latest-trust-onboarding-submission-request';
-export * from './multi-language-text';
 export * from './page';
 export * from './page-metadata';
 export * from './paged-model-business-partner-list-item';
