@@ -18,7 +18,7 @@ export function toLocalizedMap(
 
   for (const entry of translations) {
     const {name, language} = entry;
-    if (language && name && name.trim()) {
+    if (language && name?.trim()) {
       map[language] = name;
     }
   }

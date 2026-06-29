@@ -74,6 +74,9 @@
   "engines": {
     "node": ">=22.0.0"
   },
+  "overrides": {
+    "shell-quote": "1.9.0"
+  },
   "jestSonar": {
     "reportPath": "./coverage/sonarQube",
     "reportFile": "sqr.xml",
