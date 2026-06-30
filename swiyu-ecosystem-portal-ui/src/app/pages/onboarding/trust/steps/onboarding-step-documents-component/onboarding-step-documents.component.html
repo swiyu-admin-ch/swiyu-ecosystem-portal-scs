@@ -94,7 +94,11 @@
     @if (showAdditionalDocuments()) {
       <div class="sw-form-sub-container" data-cy="additionalDocumentsSection">
         <h3>{{ "eportal_onboardingTR_formalProof_sectionTitle_additionalDocuments" | translate }}</h3>
-        <p>{{ "eportal_onboardingTR_formalProof_sectionText_additionalDocuments" | translate }}</p>
+        @if (isGov()) {
+          <p>{{ "eportal_GOV_formalproof_additionalproof_text" | translate }}</p>
+        } @else {
+          <p>{{ "eportal_onboardingTR_formalProof_sectionText_additionalDocuments" | translate }}</p>
+        }
         <div class="sw-form-sub-container-sm">
           <app-upload
             data-cy="additionalDocumentsUpload"

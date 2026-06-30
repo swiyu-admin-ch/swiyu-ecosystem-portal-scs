@@ -92,6 +92,10 @@ export class OnboardingStepDocumentsComponent extends AbstractOnboardingStepComp
       this.wizardService.requestedBusinessPartnerType() === BusinessPartner.TypeEnum.GovernmentalInstitution
   );
 
+  readonly isGov = computed(
+    () => this.wizardService.requestedBusinessPartnerType() === BusinessPartner.TypeEnum.GovernmentalInstitution
+  );
+
   private readonly loadTrigger$ = new Subject<void>();
 
   constructor() {
