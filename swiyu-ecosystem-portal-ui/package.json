@@ -1,6 +1,6 @@
 {
   "name": "swiyu-ecosystem-portal-ui",
-  "version": "1.21.0",
+  "version": "1.21.3",
   "private": true,
   "scripts": {
     "build": "ng build --optimization true --output-hashing all --i18n-missing-translation error --i18n-duplicate-translation error",
