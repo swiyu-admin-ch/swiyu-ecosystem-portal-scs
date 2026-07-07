@@ -67,8 +67,6 @@ jeap:
           claim-set-converter-name: unusedBusinessPartnerRoleRemovalConverter
         resource-id: ${RESOURCE_ID:bj-swiyu-ecosystem}
         system-name: ti # trust-infrastructure
-  swagger:
-    status: OPEN
   rest:
     tracing:
       uri-filter-pattern: .*/actuator/.*
