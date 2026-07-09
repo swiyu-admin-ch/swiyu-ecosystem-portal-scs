@@ -1,4 +1,4 @@
-# SWIYU Ecosystem Portal
+# SWIYU Service Portal
 
 ## Getting Started
 
@@ -17,10 +17,10 @@ service for the registration.
 The backend uses a combination of Spring profiles to control which external services are used. IntelliJ run
 configurations for common combinations are provided in `.run/`.
 
-| Profile combination | IntelliJ config | When to use |
-|---|---|---|
-| `local` | `start:backend` | Default. All external service URLs point to `localhost:8200` (no real services needed). |
-| `local,shared` | `start:backend:shared` | Same as `local` for now — reserved for a future docker-compose/mock setup for shared dependencies. |
+| Profile combination       | IntelliJ config            | When to use                                                                                                                                                                            |
+|---------------------------|----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `local`                   | `start:backend`            | Default. All external service URLs point to `localhost:8200` (no real services needed).                                                                                                |
+| `local,shared`            | `start:backend:shared`     | Same as `local` for now — reserved for a future docker-compose/mock setup for shared dependencies.                                                                                     |
 | `local,shared,shared-dev` | `start:backend:shared:dev` | Points external service URLs at the real **DEV** cloud environment (trust registry, identifier registry, core business service). Use this when you need to test against live DEV APIs. |
 
 The compound configs (`start:app:shared`, `start:app:shared:dev`) start both the Angular UI (`npm run start`, port 4501)
@@ -30,7 +30,7 @@ and the backend (port 8501) together.
 hold team-wide configuration for a docker-compose-based mock infrastructure once that is set up. Until then it is empty
 and behaves identically to `local`.
 
-### PAMS API Proxy
+### PAMS API Proxy (for FOITT internal usage only)
 
 To use/test the service navigation in local development please use the pams API proxy.
 see: https://bitbucket.bit.admin.ch/projects/EPORTAL/repos/pams-proxy/browse/readme.md?at=refs/heads/master
