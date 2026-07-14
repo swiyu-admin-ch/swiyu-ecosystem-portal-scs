@@ -2,8 +2,8 @@ import {provideHttpClient} from '@angular/common/http';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatIconTestingModule} from '@angular/material/icon/testing';
-import {provideNoopAnimations} from '@angular/platform-browser/animations';
 import {TranslateModule} from '@ngx-translate/core';
+import {WINDOW} from '@oblique/oblique';
 import {OrganizationOverviewComponent} from './organization-overview.component';
 
 describe('OrganizationOverviewComponent', () => {
@@ -12,7 +12,7 @@ describe('OrganizationOverviewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [provideNoopAnimations(), provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), {provide: WINDOW, useValue: window}],
       imports: [MatIconTestingModule, TranslateModule.forRoot()]
     }).compileComponents();
 

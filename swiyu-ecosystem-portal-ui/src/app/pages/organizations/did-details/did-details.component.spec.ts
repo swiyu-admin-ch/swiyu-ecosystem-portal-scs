@@ -3,7 +3,6 @@ import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {NO_ERRORS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatIconRegistry} from '@angular/material/icon';
-import {provideNoopAnimations} from '@angular/platform-browser/animations';
 import {ActivatedRoute} from '@angular/router';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {ObNotificationService, WINDOW} from '@oblique/oblique';
@@ -70,7 +69,6 @@ describe('DidDetailsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot(), DidDetailsComponent],
       providers: [
-        provideNoopAnimations(),
         provideHttpClient(),
         provideHttpClientTesting(),
         {provide: ActivatedRoute, useValue: {}},

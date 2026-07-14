@@ -73,8 +73,7 @@ describe('trust-step guards', () => {
   describe('canActivateTrustStep', () => {
     function runGuard(route: ActivatedRouteSnapshot): Observable<boolean | UrlTree> | UrlTree {
       return TestBed.runInInjectionContext(() => canActivateTrustStep(route, {} as RouterStateSnapshot)) as
-        | Observable<boolean | UrlTree>
-        | UrlTree;
+        Observable<boolean | UrlTree> | UrlTree;
     }
 
     it('should redirect to base onboarding when params are missing', () => {
@@ -167,8 +166,7 @@ describe('trust-step guards', () => {
   describe('canActivateTrustBaseUrl', () => {
     function runGuard(route: ActivatedRouteSnapshot): Observable<boolean | UrlTree> | UrlTree {
       return TestBed.runInInjectionContext(() => canActivateTrustBaseUrl(route, {} as RouterStateSnapshot)) as
-        | Observable<boolean | UrlTree>
-        | UrlTree;
+        Observable<boolean | UrlTree> | UrlTree;
     }
 
     it('should redirect to base onboarding when params are missing', () => {

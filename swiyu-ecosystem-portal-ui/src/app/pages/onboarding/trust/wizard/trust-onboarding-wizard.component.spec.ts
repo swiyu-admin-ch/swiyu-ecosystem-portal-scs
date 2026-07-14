@@ -4,7 +4,6 @@ import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing'
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatIconTestingModule} from '@angular/material/icon/testing';
 import {MatStepper} from '@angular/material/stepper';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {ActivatedRoute, convertToParamMap, Router} from '@angular/router';
 import {TranslateModule} from '@ngx-translate/core';
 import {of} from 'rxjs';
@@ -79,13 +78,7 @@ describe('TrustOnboardingWizardComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        TrustOnboardingWizardComponent,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        MatIconTestingModule,
-        TranslateModule.forRoot()
-      ],
+      imports: [TrustOnboardingWizardComponent, ReactiveFormsModule, MatIconTestingModule, TranslateModule.forRoot()],
       providers: [
         {
           provide: ActivatedRoute,

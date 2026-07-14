@@ -2,7 +2,6 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatCheckbox, MatCheckboxChange, MatCheckboxModule} from '@angular/material/checkbox';
 import {MatTableModule} from '@angular/material/table';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateModule} from '@ngx-translate/core';
 import {WINDOW} from '@oblique/oblique';
 import {of} from 'rxjs';
@@ -36,7 +35,6 @@ describe('OnboardingStepDidsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         OnboardingStepDidsComponent,
-        NoopAnimationsModule,
         ReactiveFormsModule,
         MatTableModule,
         MatCheckboxModule,

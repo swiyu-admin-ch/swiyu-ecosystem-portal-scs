@@ -3,7 +3,6 @@ import {HttpClientTestingModule, provideHttpClientTesting} from '@angular/common
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatIconTestingModule} from '@angular/material/icon/testing';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateModule} from '@ngx-translate/core';
 import {ObliqueTestingModule} from '@oblique/oblique';
 import {of, throwError} from 'rxjs';
@@ -72,7 +71,6 @@ describe('OnboardingStepDocumentsComponent', () => {
       imports: [
         OnboardingStepDocumentsComponent,
         ReactiveFormsModule,
-        NoopAnimationsModule,
         ObliqueTestingModule,
         TranslateModule.forRoot(),
         MatIconTestingModule,

@@ -4,6 +4,8 @@
   &.mat-mdc-chip.mat-mdc-standard-chip {
     background-color: obp.$ob-secondary-100;
     color: obp.$ob-secondary-900;
+
+    --mat-chip-label-text-color: #{obp.$ob-secondary-900};
   }
 }
 
@@ -12,6 +14,8 @@
   &.mat-mdc-chip.mat-mdc-standard-chip {
     background-color: obp.$ob-red-100;
     color: obp.$ob-red-900;
+
+    --mat-chip-label-text-color: #{obp.$ob-red-900};
   }
 }
 
@@ -19,5 +23,7 @@
   &.mat-mdc-chip.mat-mdc-standard-chip {
     background-color: obp.$ob-green-100;
     color: obp.$ob-green-900;
+
+    --mat-chip-label-text-color: #{obp.$ob-green-900};
   }
 }

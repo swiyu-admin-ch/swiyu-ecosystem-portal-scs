@@ -63,8 +63,7 @@ describe('base-step guards', () => {
 
     function runGuard(route: ActivatedRouteSnapshot) {
       return TestBed.runInInjectionContext(() => canActivateBaseStepWithPartner(route, {} as RouterStateSnapshot)) as
-        | UrlTree
-        | Observable<boolean | UrlTree>;
+        UrlTree | Observable<boolean | UrlTree>;
     }
 
     it('should redirect to product selection when partnerId is missing', () => {

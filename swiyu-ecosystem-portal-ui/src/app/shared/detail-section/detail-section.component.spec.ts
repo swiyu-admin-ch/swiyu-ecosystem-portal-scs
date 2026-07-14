@@ -3,7 +3,6 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormControl, FormGroup} from '@angular/forms';
 import {MatIconTestingModule} from '@angular/material/icon/testing';
 import {By} from '@angular/platform-browser';
-import {provideNoopAnimations} from '@angular/platform-browser/animations';
 import {TranslateModule} from '@ngx-translate/core';
 import {ObNotificationService, WINDOW} from '@oblique/oblique';
 import {DetailSectionComponent} from './detail-section.component';
@@ -24,7 +23,6 @@ describe('DetailSectionComponent', () => {
     await TestBed.configureTestingModule({
       imports: [MatIconTestingModule, TranslateModule.forRoot(), DetailSectionComponent],
       providers: [
-        provideNoopAnimations(),
         {provide: ObNotificationService, useValue: mockObNotificationService},
         {provide: WINDOW, useValue: window},
         {provide: Clipboard, useValue: mockClipboard}

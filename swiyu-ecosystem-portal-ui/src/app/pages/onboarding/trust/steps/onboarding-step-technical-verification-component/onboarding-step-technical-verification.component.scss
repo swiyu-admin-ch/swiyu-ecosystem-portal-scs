@@ -15,16 +15,22 @@
 .mat-mdc-chip.proof-warning-chip {
   background-color: $ob-warning-light;
   color: $ob-warning-dark;
+
+  --mat-chip-label-text-color: #{$ob-warning-dark};
 }
 
 .mat-mdc-chip.proof-error-chip {
   background-color: $ob-error-light;
   color: $ob-error-dark;
+
+  --mat-chip-label-text-color: #{$ob-error-dark};
 }
 
 .mat-mdc-chip.proof-success-chip {
   background-color: $ob-success-light;
   color: $ob-success-dark;
+
+  --mat-chip-label-text-color: #{$ob-success-dark};
 }
 
 .pop-summary {

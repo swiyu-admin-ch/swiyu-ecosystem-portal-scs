@@ -4,9 +4,8 @@ import localeDECH from '@angular/common/locales/de-CH';
 import localeENCH from '@angular/common/locales/en';
 import localeFRCH from '@angular/common/locales/fr-CH';
 import localeITCH from '@angular/common/locales/it-CH';
-import {ApplicationConfig, importProvidersFrom, provideAppInitializer, provideZoneChangeDetection} from '@angular/core';
+import {ApplicationConfig, provideAppInitializer, provideZoneChangeDetection} from '@angular/core';
 import {bootstrapApplication} from '@angular/platform-browser';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {provideRouter, withComponentInputBinding} from '@angular/router';
 import {provideTranslateCompiler} from '@ngx-translate/core';
 import {
@@ -70,7 +69,6 @@ const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes, withComponentInputBinding()),
     provideApi(new Configuration({})),
-    importProvidersFrom([BrowserAnimationsModule]),
     provideHttpClient(withInterceptors([errorHttpInterceptor]), withInterceptorsFromDi()),
     provideObliqueConfiguration({
       translate: {
