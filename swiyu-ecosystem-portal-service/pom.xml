@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ch.admin.bj.swiyu</groupId>
         <artifactId>swiyu-ecosystem-portal-scs</artifactId>
-        <version>1.21.7-SNAPSHOT</version>
+        <version>1.21.8-SNAPSHOT</version>
     </parent>
     <artifactId>swiyu-ecosystem-portal-service</artifactId>
 
@@ -13,9 +12,9 @@
         <skip.surfire.tests>false</skip.surfire.tests>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <archunit-junit5.version>1.4.1</archunit-junit5.version>
+        <archunit-junit5.version>1.4.2</archunit-junit5.version>
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
-        <spotless-maven-plugin.version>3.2.1</spotless-maven-plugin.version>
+        <spotless-maven-plugin.version>3.8.0</spotless-maven-plugin.version>
         <cleanthat.version>2.22</cleanthat.version>
         <prettier.version>3.5.3</prettier.version>
         <prettier-plugin-java.version>2.6.7</prettier-plugin-java.version>
@@ -85,7 +84,7 @@
         <dependency>
             <groupId>org.openapitools</groupId>
             <artifactId>jackson-databind-nullable</artifactId>
-            <version>0.2.9</version>
+            <version>0.2.10</version>
         </dependency>
         <dependency>
             <groupId>com.tngtech.archunit</groupId>
@@ -106,16 +105,6 @@
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <!-- Hotfix for archunit incompatibility: https://github.com/apache/maven-surefire/issues/839 -->
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.5.5</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
                 <!-- See https://www.baeldung.com/checkstyle-java for more info -->
@@ -172,7 +161,7 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.20.0</version>
+                <version>7.23.0</version>
                 <configuration>
                     <configOptions>
                         <inputSpecRootDirectory>${project.basedir}/specs</inputSpecRootDirectory>
@@ -346,7 +335,7 @@
                         <importOrder>
                             <order>java,javax,com,de,lombok,net,org</order>
                         </importOrder>
-                        <removeUnusedImports/>
+                        <removeUnusedImports />
                         <prettier>
                             <devDependencies>
                                 <prettier>${prettier.version}</prettier>
