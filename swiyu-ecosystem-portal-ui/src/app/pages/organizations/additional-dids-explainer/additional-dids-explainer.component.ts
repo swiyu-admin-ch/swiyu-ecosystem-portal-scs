@@ -62,7 +62,6 @@ export class AdditionalDidsExplainerComponent {
   private translateSetup() {
     // Required for translate service auto collection of i18n keys
     this.translateService.get('eportal_verifyAdditionalDIDs_label_apiUrlPoP');
-    this.translateService.get('eportal_global_link_TechDocumentation_url');
     this.translateService.get('eportal_global_link_DIDtoolbox_url');
   }
 }

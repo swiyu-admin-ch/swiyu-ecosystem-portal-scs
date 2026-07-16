@@ -1,3 +1,7 @@
+spring:
+  autoconfigure:
+    exclude:
+      - ch.admin.bit.jeap.monitor.metrics.health.HealthMetricsAutoConfig
 app:
   resourceId: swiyu-ecosystem-portal-scs
   governmental-allowlist:

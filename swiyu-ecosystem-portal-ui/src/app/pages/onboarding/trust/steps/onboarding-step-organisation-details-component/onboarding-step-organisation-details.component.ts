@@ -24,6 +24,7 @@ import {
 } from '@oblique/oblique';
 import {combineLatest, map, startWith} from 'rxjs';
 import {
+  BusinessPartner,
   PartnerCreationRequest,
   Signatory,
   TrustOnboardingSubmission,
@@ -87,20 +88,32 @@ export type EntityNameEntryFormGroup = FormGroup<{
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardingStepComponent implements OnInit {
+  readonly languages = SWISS_LANGUAGES;
+  readonly entityNameLanguages = SWISS_LANGUAGE_TAGS;
   protected readonly wizardService = inject(TrustOnboardingWizardService);
-  private readonly fb = inject(NonNullableFormBuilder);
   protected readonly countryService = inject(CountryService);
   protected readonly appConfigService = inject(AppConfigService);
+
+  readonly partnerTypeBusinessDisabled = computed(
+    () =>
+      !this.appConfigService.isFunctionalityAllowPartnerBaseOnboardingBusinessEnabled || // App does not support business onboarding
+      this.wizardService.businessPartner()?.type === BusinessPartner.TypeEnum.GovernmentalInstitution // BP is a GOV actor
+  );
+  readonly partnerTypeIndividualDisabled = computed(
+    () =>
+      !this.appConfigService.isFunctionalityAllowPartnerBaseOnboardingIndividualEnabled || // App does not support individual onboarding
+      this.wizardService.businessPartner()?.type === BusinessPartner.TypeEnum.GovernmentalInstitution // BP is a GOV actor
+  );
+  readonly partnerTypeGovDisabled = computed(
+    () =>
+      !this.appConfigService.isFunctionalityAllowPartnerBaseOnboardingGovernmentalEnabled || // App does not support GOV onboarding
+      this.wizardService.businessPartner()?.type !== BusinessPartner.TypeEnum.GovernmentalInstitution // BP is not already a GOV actor
+  );
   protected readonly PartnerTypeSelection = PartnerTypeEnum;
   protected readonly signingRule = SigningRuleEnum;
   protected readonly signingRuleOptions = Object.values(this.signingRule);
   protected readonly DUPLICATE_LANGUAGE_ERROR = DUPLICATE_LANGUAGE_ERROR;
-  private readonly translateService = inject(TranslateService);
-  private readonly destroyRef = inject(DestroyRef);
-  private previousPartnerType: string | undefined;
-
-  readonly languages = SWISS_LANGUAGES;
-  readonly entityNameLanguages = SWISS_LANGUAGE_TAGS;
+  private readonly fb = inject(NonNullableFormBuilder);
   readonly form = this.fb.group({
     partnerType: this.fb.control<PartnerTypeEnum | null>(null, Validators.required),
     hasUid: this.fb.control<boolean>(false),
@@ -127,7 +140,9 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
     readTermsAndConditions: this.fb.control<boolean>(false, Validators.requiredTrue),
     readPrivacyPolicy: this.fb.control<boolean>(false, Validators.requiredTrue)
   });
-  readonly partnerTypeGovDisabled = computed(() => false);
+  private readonly translateService = inject(TranslateService);
+  private readonly destroyRef = inject(DestroyRef);
+  private previousPartnerType: string | undefined;
 
   constructor() {
     super();

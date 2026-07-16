@@ -3,9 +3,7 @@ package ch.admin.bj.swiyu.app.infrastructure.web.controller;
 import ch.admin.bj.swiyu.app.api.BusinessPartnerDto;
 import ch.admin.bj.swiyu.app.api.BusinessPartnerListItemDto;
 import ch.admin.bj.swiyu.app.api.PartnerCreationRequestDto;
-import ch.admin.bj.swiyu.app.infrastructure.web.config.FunctionalityProperties;
 import ch.admin.bj.swiyu.app.service.BusinessPartnerService;
-import ch.admin.bj.swiyu.client.business.internal.model.BusinessPartnerType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,10 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedModel;
 import org.springframework.data.web.SortDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/business-partner")
@@ -28,7 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 public class BusinessPartnerController {
 
     private final BusinessPartnerService businessPartnerService;
-    private final FunctionalityProperties functionalityProperties;
 
     @PreAuthorize("isAuthenticated()") // any user that is logged in can register an organization
     @Operation(summary = "IF-013.006 - Register BusinessPartner")
@@ -36,7 +31,6 @@ public class BusinessPartnerController {
     public BusinessPartnerDto registerBusinessPartner(
         @RequestBody PartnerCreationRequestDto partnerCreationRequestDto
     ) {
-        validateBusinessPartnerTypeAllowed(partnerCreationRequestDto.businessPartnerType());
         return this.businessPartnerService.register(partnerCreationRequestDto);
     }
 
@@ -70,22 +64,6 @@ public class BusinessPartnerController {
             // so they'll get an authorization error. This is expected - treat it as "no partners".
             // Tech debt - implement a proper check in the core-business-service that doesn't require the role --> EID-5741
             return false;
-        }
-    }
-
-    private void validateBusinessPartnerTypeAllowed(BusinessPartnerType type) {
-        boolean allowed =
-            switch (type) {
-                case BUSINESS -> functionalityProperties.allowPartnerBaseOnboardingBusinessEnabled();
-                case INDIVIDUAL -> functionalityProperties.allowPartnerBaseOnboardingIndividualEnabled();
-                case GOVERNMENTAL_INSTITUTION -> functionalityProperties.allowPartnerBaseOnboardingGovernmentalEnabled();
-                case UNKNOWN -> false;
-            };
-        if (!allowed) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Partner registration for type '%s' is currently not allowed".formatted(type)
-            );
         }
     }
 }

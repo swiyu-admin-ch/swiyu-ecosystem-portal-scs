@@ -14,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springdoc.core.converters.models.Pageable;
@@ -33,8 +32,20 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.multipart.MultipartFile;
 
 @ActiveProfiles("test")
-@SpringBootTest
+@SpringBootTest(
+    properties = {
+        "app.functionality.automatic-approval-enabled=true",
+        "app.functionality.payment-enabled=false",
+        "app.functionality.allow-partner-base-onboarding-business-enabled=true",
+        "app.functionality.allow-partner-base-onboarding-individual-enabled=true",
+        "app.functionality.allow-partner-base-onboarding-governmental-enabled=true",
+        "app.functionality.primary-environment-enabled=true",
+    }
+)
 class TrustOnboardingSubmissionServiceTest {
+
+    private final UUID submissionId = UUID.fromString("11111111-1111-1111-1111-111111111111");
+    private final UUID documentId = UUID.fromString("22222222-2222-2222-2222-222222222222");
 
     @Autowired
     private TrustOnboardingSubmissionService trustOnboardingSubmissionService;
@@ -45,14 +56,14 @@ class TrustOnboardingSubmissionServiceTest {
     @Mock
     private MultipartFile multipartFile;
 
+    @Autowired
     private TrustOnboardingSubmissionService service;
 
-    private final UUID submissionId = UUID.fromString("11111111-1111-1111-1111-111111111111");
-    private final UUID documentId = UUID.fromString("22222222-2222-2222-2222-222222222222");
-
-    @BeforeEach
-    void setUp() {
-        service = new TrustOnboardingSubmissionService(trustOnboardingSubmissionApi);
+    private TrustOnboardingSubmission submissionWith(BusinessPartnerType type, Boolean registeredInCommercialRegister) {
+        var submission = new TrustOnboardingSubmission();
+        submission.setBusinessPartnerType(type);
+        submission.setIsRegisteredInCommercialRegister(registeredInCommercialRegister);
+        return submission;
     }
 
     @Test
@@ -172,13 +183,6 @@ class TrustOnboardingSubmissionServiceTest {
             eq(TrustOnboardingSubmissionDocumentType.TRUST_ONBOARDING_DECLARATION_OF_INTENT),
             any(AbstractResource.class)
         );
-    }
-
-    private TrustOnboardingSubmission submissionWith(BusinessPartnerType type, Boolean registeredInCommercialRegister) {
-        var submission = new TrustOnboardingSubmission();
-        submission.setBusinessPartnerType(type);
-        submission.setIsRegisteredInCommercialRegister(registeredInCommercialRegister);
-        return submission;
     }
 
     @Test

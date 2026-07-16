@@ -1,6 +1,6 @@
 {
   "name": "swiyu-ecosystem-portal-ui",
-  "version": "1.21.5",
+  "version": "1.21.10",
   "private": true,
   "scripts": {
     "build": "ng build --optimization true --output-hashing all --i18n-missing-translation error --i18n-duplicate-translation error",
@@ -50,7 +50,7 @@
     "@schematics/angular": "^21.2.18",
     "@types/jest": "^30.0.0",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
-    "@vendure/ngx-translate-extract": "^9.4.2",
+    "@vendure/ngx-translate-extract": "^10.2.0",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
     "angular-eslint": "21.4.0",

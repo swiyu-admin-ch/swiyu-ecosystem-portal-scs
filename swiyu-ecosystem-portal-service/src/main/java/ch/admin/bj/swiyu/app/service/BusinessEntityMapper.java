@@ -1,15 +1,12 @@
 package ch.admin.bj.swiyu.app.service;
 
-import ch.admin.bj.swiyu.app.api.*;
+import ch.admin.bj.swiyu.app.api.PageDto;
+import ch.admin.bj.swiyu.app.api.RegistrationRequestDto;
 import ch.admin.bj.swiyu.app.api.RegistrationResponseDto;
 import ch.admin.bj.swiyu.app.api.UpdateRequestDto;
 import ch.admin.bj.swiyu.client.business.internal.model.*;
-import ch.admin.bj.swiyu.client.business.internal.model.BusinessEntity;
-import ch.admin.bj.swiyu.client.business.internal.model.CreateBusinessEntity;
-import ch.admin.bj.swiyu.client.business.internal.model.PagedModelBusinessEntity;
-import ch.admin.bj.swiyu.client.business.internal.model.UpdateBusinessEntity;
-import java.util.*;
-import lombok.experimental.*;
+import java.util.List;
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class BusinessEntityMapper {
@@ -43,7 +40,7 @@ public class BusinessEntityMapper {
         return new CreateBusinessEntity(
             request.organizationName(),
             request.technicalEmailAddress(),
-            BusinessPartnerType.UNKNOWN
+            BusinessPartnerType.BUSINESS
         );
     }
 

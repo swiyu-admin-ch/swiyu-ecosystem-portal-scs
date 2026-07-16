@@ -11,7 +11,7 @@
 
     <groupId>ch.admin.bj.swiyu</groupId>
     <artifactId>swiyu-ecosystem-portal-scs</artifactId>
-    <version>1.21.8-SNAPSHOT</version>
+    <version>1.21.10-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Selfservice portal for the ecosystem</description>
 

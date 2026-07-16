@@ -149,7 +149,6 @@ export class OnboardingStepTechnicalVerificationComponent extends AbstractOnboar
     this.translateService.get('eportal_onboardingTR_technicalProof_complete_cardText');
     this.translateService.get('eportal_onboardingTR_technicalProof_provideData_cardTitle');
     this.translateService.get('eportal_onboardingTR_technicalProof_provideData_cardText');
-    this.translateService.get('eportal_onboardingTR_technicalProof_provideData_alert');
     this.translateService.get('eportal_global_link_DIDtoolbox');
     this.translateService.get('eportal_onboardingTR_technicalProof_btnSec_openOverview');
     this.translateService.get('eportal_onboardingTR_technicalProof_submitProof_cardText');

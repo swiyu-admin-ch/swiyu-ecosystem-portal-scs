@@ -5,6 +5,7 @@ import static ch.admin.bj.swiyu.app.service.TrustOnboardingSubmissionMapper.toTr
 import ch.admin.bj.swiyu.app.api.LatestTrustOnboardingSubmissionRequestDto;
 import ch.admin.bj.swiyu.app.api.TrustOnboardingSubmissionDto;
 import ch.admin.bj.swiyu.app.common.stream.MultipartFileResource;
+import ch.admin.bj.swiyu.app.domain.BusinessPartnerValidator;
 import ch.admin.bj.swiyu.app.exceptions.BusinessErrorCode;
 import ch.admin.bj.swiyu.app.exceptions.DataInvalidException;
 import ch.admin.bj.swiyu.client.business.internal.api.TrustOnboardingSubmissionApi;
@@ -29,9 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class TrustOnboardingSubmissionService {
 
-    private static final String TARGET_DIRECTORY = "/tmp/";
-
     private final TrustOnboardingSubmissionApi trustOnboardingSubmissionApi;
+    private final BusinessPartnerValidator businessPartnerValidator;
 
     public TrustOnboardingSubmissionDto createTrustOnboardingSubmission(TrustOnboardingSubmissionRequest dto) {
         return toTrustOnboardingSubmissionDto(this.trustOnboardingSubmissionApi.createOnboardingSubmission(dto));
@@ -56,6 +56,7 @@ public class TrustOnboardingSubmissionService {
     }
 
     public TrustOnboardingSubmissionDto updateTrustOnboardingSubmission(UUID id, TrustOnboardingSubmissionRequest dto) {
+        businessPartnerValidator.validateBusinessPartnerTypeOnboardingIsAllowed(dto.getRequestedPartnerType());
         return toTrustOnboardingSubmissionDto(
             this.trustOnboardingSubmissionApi.updateTrustOnboardingSubmission(id, dto)
         );

@@ -1,9 +1,9 @@
 package ch.admin.bj.swiyu.app.infrastructure.web.controller;
 
 import ch.admin.bj.swiyu.app.api.*;
+import ch.admin.bj.swiyu.app.common.config.FunctionalityProperties;
 import ch.admin.bj.swiyu.app.common.features.FeaturesProperties;
 import ch.admin.bj.swiyu.app.infrastructure.web.config.FrontendProperties;
-import ch.admin.bj.swiyu.app.infrastructure.web.config.FunctionalityProperties;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

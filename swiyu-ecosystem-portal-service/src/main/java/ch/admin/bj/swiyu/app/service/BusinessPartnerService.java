@@ -3,6 +3,7 @@ package ch.admin.bj.swiyu.app.service;
 import ch.admin.bj.swiyu.app.api.BusinessPartnerDto;
 import ch.admin.bj.swiyu.app.api.BusinessPartnerListItemDto;
 import ch.admin.bj.swiyu.app.api.PartnerCreationRequestDto;
+import ch.admin.bj.swiyu.app.domain.BusinessPartnerValidator;
 import ch.admin.bj.swiyu.client.business.internal.api.BusinessPartnerV2Api;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class BusinessPartnerService {
 
     private final BusinessPartnerV2Api businessPartnerV2Api;
+    private final BusinessPartnerValidator businessPartnerValidator;
 
     public PagedModel<BusinessPartnerListItemDto> getBusinessPartners(Pageable pageable) {
         var sortParams = pageable
@@ -53,6 +55,9 @@ public class BusinessPartnerService {
     }
 
     public BusinessPartnerDto register(PartnerCreationRequestDto partnerCreationRequestDto) {
+        businessPartnerValidator.validateBusinessPartnerTypeOnboardingIsAllowed(
+            partnerCreationRequestDto.businessPartnerType()
+        );
         var createPartner = BusinessPartnerMapper.toCreatePartner(partnerCreationRequestDto);
         var businessPartner = this.businessPartnerV2Api.createBusinessPartner(createPartner);
         return BusinessPartnerMapper.toBusinessPartnerDto(businessPartner);
