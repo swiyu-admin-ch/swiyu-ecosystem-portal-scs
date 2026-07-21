@@ -331,22 +331,22 @@ describe('PartnerRegistrationStepProductSelectionComponent', () => {
     appConfigMock.isFunctionalityPrimaryEnvironmentEnabled = false;
     createComponent();
     fixture.detectChanges();
-    const btn = fixture.nativeElement.querySelector('[data-cy="btnPrimaryEnvironment"]') as HTMLButtonElement;
-    expect(btn.disabled).toBe(true);
+    const card = fixture.nativeElement.querySelector('[data-cy="btnPrimaryEnvironment"]') as HTMLElement;
+    expect(card.classList.contains('sw-selection-card--disabled')).toBe(true);
   });
 
   it('primary environment card is enabled when flag is true', () => {
     createComponent();
     fixture.detectChanges();
-    const btn = fixture.nativeElement.querySelector('[data-cy="btnPrimaryEnvironment"]') as HTMLButtonElement;
-    expect(btn.disabled).toBe(false);
+    const card = fixture.nativeElement.querySelector('[data-cy="btnPrimaryEnvironment"]') as HTMLElement;
+    expect(card.classList.contains('sw-selection-card--disabled')).toBe(false);
   });
 
   it('integration environment card is always enabled', () => {
     createComponent();
     fixture.detectChanges();
-    const btn = fixture.nativeElement.querySelector('[data-cy="btnIntegrationEnvironment"]') as HTMLButtonElement;
-    expect(btn.disabled).toBe(false);
+    const card = fixture.nativeElement.querySelector('[data-cy="btnIntegrationEnvironment"]') as HTMLElement;
+    expect(card.classList.contains('sw-selection-card--disabled')).toBe(false);
   });
 
   // ── Actions ───────────────────────────────────────────────────────────────────

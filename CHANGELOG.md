@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.21.12
+
+### Fixed
+
+- Add CVE overrides
+
+## 1.21.11
+
+### Changed
+
+- Adapted the base onboarding product and env selection to reflect new issuer / verifier contstraints
+
 ## 1.21.10
 
 ### Fixed
@@ -30,7 +42,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update org.apache.commons:commons-lang3 from 3.18.0 to 3.20.0
 - Update com.diffplug.spotless:spotless-maven-plugin from 3.2.1 to 3.8.0
 - Update com.tngtech.archunit:archunit-junit5 from 1.4.1 to 1.4.2
-
 
 ## 1.21.7
 

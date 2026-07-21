@@ -13,14 +13,14 @@
   color: $ob-error-dark;
 }
 
-button.sw-selection-card:disabled {
+.error-card {
+  border-color: $ob-error-dark;
+}
+
+mat-card.sw-selection-card.sw-selection-card--disabled {
   opacity: 0.4;
   cursor: not-allowed;
-
-  * {
-    pointer-events: none;
-    cursor: inherit;
-  }
+  pointer-events: none;
 }
 
 @include sw-wizard-actions();

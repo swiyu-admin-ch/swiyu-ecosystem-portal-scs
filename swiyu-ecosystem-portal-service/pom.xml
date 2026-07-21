@@ -4,7 +4,7 @@
     <parent>
         <groupId>ch.admin.bj.swiyu</groupId>
         <artifactId>swiyu-ecosystem-portal-scs</artifactId>
-        <version>1.21.10-SNAPSHOT</version>
+        <version>1.21.12-SNAPSHOT</version>
     </parent>
     <artifactId>swiyu-ecosystem-portal-service</artifactId>
 

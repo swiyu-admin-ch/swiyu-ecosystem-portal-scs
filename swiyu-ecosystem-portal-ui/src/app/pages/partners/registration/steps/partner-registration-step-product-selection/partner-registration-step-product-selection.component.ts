@@ -7,7 +7,7 @@ import {MatIcon} from '@angular/material/icon';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslatePipe} from '@ngx-translate/core';
-import {ObAlertComponent, ObButtonModule, ObSelectableDirective, ObSelectableGroupDirective} from '@oblique/oblique';
+import {ObButtonModule, ObSelectableGroupDirective} from '@oblique/oblique';
 import {EnvironmentsConfig} from '../../../../../api/generated';
 import {AppRoutes} from '../../../../../app.routes';
 import {AppConfigService} from '../../../../../core/appconfig/app-config.service';
@@ -30,7 +30,6 @@ export enum TrustLevel {
   imports: [
     ReactiveFormsModule,
     TranslatePipe,
-    ObAlertComponent,
     MatIcon,
     MatCard,
     MatCardContent,
@@ -40,7 +39,6 @@ export enum TrustLevel {
     MatCardImage,
     MatButtonModule,
     ObButtonModule,
-    ObSelectableDirective,
     ObSelectableGroupDirective,
     MatSlideToggle
   ],
@@ -99,6 +97,12 @@ export class PartnerRegistrationStepProductSelectionComponent
     }
   }
 
+  get hasError() {
+    return (
+      this.trustLevelForm.controls.trustLevel.hasError('required') && this.trustLevelForm.controls.trustLevel.touched
+    );
+  }
+
   override async validate(): Promise<boolean> {
     const isValid = this.trustLevelForm.valid;
     if (!isValid) {
@@ -109,6 +113,23 @@ export class PartnerRegistrationStepProductSelectionComponent
 
   override isValid(): boolean {
     return this.trustLevelForm.valid;
+  }
+
+  onEnvironmentCardKeydown(event: KeyboardEvent, env: EnvironmentSelection): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      if (env === EnvironmentSelection.PRIMARY && !this.isPrimaryEnvironmentEnabled()) {
+        return;
+      }
+      this.selectEnvironment(env);
+    }
+  }
+
+  onTrustLevelCardKeydown(event: KeyboardEvent, level: TrustLevel): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.trustLevelForm.get('trustLevel')?.setValue(level);
+    }
   }
 
   selectEnvironment(env: EnvironmentSelection): void {
