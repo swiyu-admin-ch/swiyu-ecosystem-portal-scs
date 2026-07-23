@@ -78,7 +78,9 @@ export class BusinessPartnerDetailComponent {
       // and only contains Valid proofs
       this.trustOnboardingSubmission()?.proofOfPossessionList.filter(
         tos => tos.status !== ProofOfPossession.StatusEnum.Valid
-      ).length === 0
+      ).length === 0 &&
+      // and contains at least one proof
+      (this.trustOnboardingSubmission()?.proofOfPossessionList.length ?? 0) > 0
   );
   alertTrustOnboardingSuccessfulVisible = computed(
     () =>
