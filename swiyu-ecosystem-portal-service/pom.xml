@@ -4,7 +4,7 @@
     <parent>
         <groupId>ch.admin.bj.swiyu</groupId>
         <artifactId>swiyu-ecosystem-portal-scs</artifactId>
-        <version>1.21.13-SNAPSHOT</version>
+        <version>1.21.16-SNAPSHOT</version>
     </parent>
     <artifactId>swiyu-ecosystem-portal-service</artifactId>
 
@@ -38,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -101,6 +101,16 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-security-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

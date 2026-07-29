@@ -15,7 +15,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springdoc.core.converters.models.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +34,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.multipart.MultipartFile;
 
 @ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest(
     properties = {
         "app.functionality.automatic-approval-enabled=true",
@@ -88,7 +91,7 @@ class TrustOnboardingSubmissionServiceTest {
             "attachment; filename=\"declaration-of-intent.pdf\"",
             response.getHeaders().getFirst(HttpHeaders.CONTENT_DISPOSITION)
         );
-        assertFalse(response.getHeaders().containsKey("X-Upstream-Header"));
+        assertFalse(response.getHeaders().containsHeader("X-Upstream-Header"));
         assertSame(body, response.getBody());
     }
 

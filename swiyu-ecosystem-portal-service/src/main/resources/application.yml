@@ -102,12 +102,10 @@ spring:
   application:
     name: swiyu-ecosystem-portal-scs
   http:
-    client:
-      connect-timeout: 10000 # 10 seconds
-      read-timeout: 30000 # 30 seconds
+    clients.connect-timeout: 10000
+    clients.read-timeout: 30000 # 30 seconds
   jackson:
-    serialization:
-      write_dates_as_timestamps: false
+    datatype.datetime.write-dates-as-timestamps: false
   jmx:
     default-domain: ${spring.application.name}
 

@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.21.16
+
+### Fixed
+
+- Replace generic `throws Exception` in `WebSecurityConfig` with a specific `SecurityFilterChainConfigurationException`
+- Avoid `NullPointerException` in `DefaultExceptionHandler` when no tracing span is active
+
+## 1.21.15
+
+### Fixed
+
+- Retry core business service health check to tolerate rolling deployments
+
+## 1.21.14
+
+### Changed
+
+- Migrate to Spring Boot 4 / Spring Framework 7 (jeap-spring-boot-parent 36.1.1)
+- Adopt Jackson 3's strict `FAIL_ON_NULL_FOR_PRIMITIVES` default (no request DTOs use primitive fields)
+
+### Fixed
+
+- Add `spring-boot-security-test` dependency so `@WithJeapAuthenticationToken` works again with MockMvc-based integration tests
+
 ## 1.21.13
 
 ### Fixed

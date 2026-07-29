@@ -71,11 +71,11 @@ public class WebSecurityConfig {
      */
     @Bean
     @Order(99)
-    SecurityFilterChain deniedEndpointsFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain deniedEndpointsFilterChain(HttpSecurity http) {
         http
             .securityMatcher(RequestMatchers.anyOf(DENIED_GET_ENDPOINTS))
             .authorizeHttpRequests(auth -> auth.anyRequest().denyAll());
-        return http.build();
+        return buildFilterChain(http);
     }
 
     /**
@@ -83,7 +83,7 @@ public class WebSecurityConfig {
      */
     @Bean
     @Order(100)
-    SecurityFilterChain publicEndpointsFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain publicEndpointsFilterChain(HttpSecurity http) {
         http
             .securityMatcher(RequestMatchers.anyOf(PUBLIC_GET_ENDPOINTS))
             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
@@ -91,7 +91,15 @@ public class WebSecurityConfig {
         // The silent refresh opens in an iframe, which is only allowed with the SAMEORIGIN X-Frame-Options
         http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
-        return http.build();
+        return buildFilterChain(http);
+    }
+
+    private static SecurityFilterChain buildFilterChain(HttpSecurity http) {
+        try {
+            return http.build();
+        } catch (Exception e) {
+            throw new SecurityFilterChainConfigurationException("Failed to build security filter chain", e);
+        }
     }
 
     @Bean

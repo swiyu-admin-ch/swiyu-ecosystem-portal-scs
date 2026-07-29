@@ -113,6 +113,6 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
 
     private String currentTraceId() {
         var currentSpan = this.tracer.currentSpan();
-        return currentSpan.context().traceId();
+        return currentSpan != null ? currentSpan.context().traceId() : null;
     }
 }
