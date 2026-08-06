@@ -54,11 +54,18 @@ export class BusinessPartnerDetailActionsComponent {
   );
 
   showVerifyProfile = computed(
-    () => this.businessPartner()?.trustVerificationStatus !== BusinessPartnerTrustStatus.Verified
+    () =>
+      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.NotVerified ||
+      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.VerificationStarted ||
+      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.VerificationInProgress
   );
 
-  onboardingProcessStarted = computed(() => {
-    return this.trustOnboardingSubmission()?.status === TrustOnboardingSubmission.StatusEnum.Unsubmitted;
+  showContinueVerification = computed(() => {
+    return this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.VerificationStarted;
+  });
+
+  showVerificationInProgress = computed(() => {
+    return this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.VerificationInProgress;
   });
 
   trustOnboardingStepActionRoute = computed(() => {

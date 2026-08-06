@@ -1,7 +1,13 @@
 import {TestBed} from '@angular/core/testing';
 import {ActivatedRouteSnapshot, convertToParamMap, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
 import {Observable, of, throwError} from 'rxjs';
-import {TrustOnboardingApi, TrustOnboardingSubmission} from '../../../../api/generated';
+import {
+  ProofOfPossession,
+  TrustOnboardingApi,
+  TrustOnboardingDocumentsApi,
+  TrustOnboardingSubmission,
+  TrustOnboardingSubmissionDocumentListItem
+} from '../../../../api/generated';
 import {AppRoutes} from '../../../../app.routes';
 import {AuthService} from '../../../../core/security/auth.service';
 import {canActivateTrustBaseUrl, canActivateTrustStep} from './trust-step.guard';
@@ -9,10 +15,29 @@ import {canActivateTrustBaseUrl, canActivateTrustStep} from './trust-step.guard'
 describe('trust-step guards', () => {
   let mockRouter: {createUrlTree: jest.Mock};
   let mockTrustOnboardingApi: {getTrustOnboardingSubmission: jest.Mock};
+  let mockTrustOnboardingDocumentsApi: {listAllDocumentsForTrustOnboarding: jest.Mock};
   let mockAuthService: {isLoggedIn: boolean};
 
   const PARTNER_ID = 'partner-123';
   const SUBMISSION_ID = 'sub-456';
+
+  const SELECTED_DID: ProofOfPossession = {
+    did: 'did:key:1',
+    nonce: 'n1',
+    status: ProofOfPossession.StatusEnum.NotSupplied
+  };
+
+  const DECLARATION_OF_INTENT_DOCUMENT: TrustOnboardingSubmissionDocumentListItem = {
+    id: 'doc-1',
+    createdAt: '2024-01-01',
+    updatedAt: '2024-01-01',
+    name: 'doi.pdf',
+    mediaType: 'application/pdf',
+    type: TrustOnboardingSubmissionDocumentListItem.TypeEnum.TrustOnboardingDeclarationOfIntent,
+    owningBusinessPartner: PARTNER_ID,
+    submittedAt: '2024-01-01',
+    canBeDeleted: true
+  };
 
   function createSubmission(overrides: Partial<TrustOnboardingSubmission> = {}): TrustOnboardingSubmission {
     return {
@@ -24,6 +49,7 @@ describe('trust-step guards', () => {
       entityAddress: {street: 's', city: 'c', postalCode: '1234', country: 'CH'},
       contactPerson: {firstName: 'F', lastName: 'L', phone: '123', email: 'f@l.com'},
       status: TrustOnboardingSubmission.StatusEnum.Unsubmitted,
+      businessPartnerType: TrustOnboardingSubmission.BusinessPartnerTypeEnum.Individual,
       proofOfPossessionList: [],
       registryIds: {},
       ...overrides
@@ -57,6 +83,9 @@ describe('trust-step guards', () => {
     mockTrustOnboardingApi = {
       getTrustOnboardingSubmission: jest.fn()
     };
+    mockTrustOnboardingDocumentsApi = {
+      listAllDocumentsForTrustOnboarding: jest.fn().mockReturnValue(of({content: []}))
+    };
     mockAuthService = {
       isLoggedIn: true
     };
@@ -65,6 +94,7 @@ describe('trust-step guards', () => {
       providers: [
         {provide: Router, useValue: mockRouter},
         {provide: TrustOnboardingApi, useValue: mockTrustOnboardingApi},
+        {provide: TrustOnboardingDocumentsApi, useValue: mockTrustOnboardingDocumentsApi},
         {provide: AuthService, useValue: mockAuthService}
       ]
     });
@@ -161,6 +191,75 @@ describe('trust-step guards', () => {
       expect(result).toBe(true);
       expect(mockTrustOnboardingApi.getTrustOnboardingSubmission).not.toHaveBeenCalled();
     });
+
+    describe('formal-proof step prerequisites', () => {
+      it('should redirect to dids when no did has been selected', done => {
+        const submission = createSubmission({proofOfPossessionList: []});
+        mockTrustOnboardingApi.getTrustOnboardingSubmission.mockReturnValue(of(submission));
+        const route = createRouteWithParent('formal-proof');
+
+        (runGuard(route) as Observable<boolean | UrlTree>).subscribe(() => {
+          expect(mockRouter.createUrlTree).toHaveBeenCalledWith(
+            AppRoutes.trustOnboardingDids(PARTNER_ID, SUBMISSION_ID)
+          );
+          done();
+        });
+      });
+
+      it('should allow navigation once a did has been selected', done => {
+        const submission = createSubmission({proofOfPossessionList: [SELECTED_DID]});
+        mockTrustOnboardingApi.getTrustOnboardingSubmission.mockReturnValue(of(submission));
+        const route = createRouteWithParent('formal-proof');
+
+        (runGuard(route) as Observable<boolean | UrlTree>).subscribe(value => {
+          expect(value).toBe(true);
+          done();
+        });
+      });
+    });
+
+    describe.each(['technical-proof', 'approval'])('%s step prerequisites', stepPath => {
+      it('should redirect to dids when no did has been selected', done => {
+        const submission = createSubmission({proofOfPossessionList: []});
+        mockTrustOnboardingApi.getTrustOnboardingSubmission.mockReturnValue(of(submission));
+        const route = createRouteWithParent(stepPath);
+
+        (runGuard(route) as Observable<boolean | UrlTree>).subscribe(() => {
+          expect(mockRouter.createUrlTree).toHaveBeenCalledWith(
+            AppRoutes.trustOnboardingDids(PARTNER_ID, SUBMISSION_ID)
+          );
+          done();
+        });
+      });
+
+      it('should redirect to formal-proof when a did is selected but no documents are uploaded', done => {
+        const submission = createSubmission({proofOfPossessionList: [SELECTED_DID]});
+        mockTrustOnboardingApi.getTrustOnboardingSubmission.mockReturnValue(of(submission));
+        mockTrustOnboardingDocumentsApi.listAllDocumentsForTrustOnboarding.mockReturnValue(of({content: []}));
+        const route = createRouteWithParent(stepPath);
+
+        (runGuard(route) as Observable<boolean | UrlTree>).subscribe(() => {
+          expect(mockRouter.createUrlTree).toHaveBeenCalledWith(
+            AppRoutes.trustOnboardingFormalProof(PARTNER_ID, SUBMISSION_ID)
+          );
+          done();
+        });
+      });
+
+      it('should allow navigation once did and required documents are present', done => {
+        const submission = createSubmission({proofOfPossessionList: [SELECTED_DID]});
+        mockTrustOnboardingApi.getTrustOnboardingSubmission.mockReturnValue(of(submission));
+        mockTrustOnboardingDocumentsApi.listAllDocumentsForTrustOnboarding.mockReturnValue(
+          of({content: [DECLARATION_OF_INTENT_DOCUMENT]})
+        );
+        const route = createRouteWithParent(stepPath);
+
+        (runGuard(route) as Observable<boolean | UrlTree>).subscribe(value => {
+          expect(value).toBe(true);
+          done();
+        });
+      });
+    });
   });
 
   describe('canActivateTrustBaseUrl', () => {
@@ -196,6 +295,20 @@ describe('trust-step guards', () => {
       (runGuard(route) as Observable<boolean | UrlTree>).subscribe(() => {
         expect(mockRouter.createUrlTree).toHaveBeenCalledWith(
           AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID)
+        );
+        done();
+      });
+    });
+
+    it('should redirect to formal-proof when a did is selected but no documents are uploaded', done => {
+      const submission = createSubmission({proofOfPossessionList: [SELECTED_DID]});
+      mockTrustOnboardingApi.getTrustOnboardingSubmission.mockReturnValue(of(submission));
+      mockTrustOnboardingDocumentsApi.listAllDocumentsForTrustOnboarding.mockReturnValue(of({content: []}));
+      const route = createRouteWithParent('');
+
+      (runGuard(route) as Observable<boolean | UrlTree>).subscribe(() => {
+        expect(mockRouter.createUrlTree).toHaveBeenCalledWith(
+          AppRoutes.trustOnboardingFormalProof(PARTNER_ID, SUBMISSION_ID)
         );
         done();
       });

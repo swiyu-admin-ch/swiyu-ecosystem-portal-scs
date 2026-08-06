@@ -1,12 +1,19 @@
 import {inject} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivateFn, Router, UrlTree} from '@angular/router';
-import {catchError, map, Observable, of} from 'rxjs';
-import {TrustOnboardingApi, TrustOnboardingSubmission} from '../../../../api/generated';
+import {catchError, map, Observable, of, switchMap} from 'rxjs';
+import {TrustOnboardingApi, TrustOnboardingDocumentsApi, TrustOnboardingSubmission} from '../../../../api/generated';
 import {AppRoutes} from '../../../../app.routes';
 import {AuthService} from '../../../../core/security/auth.service';
-import {getLastValidTrustStepRoute} from '../../../../core/util/last-valid-trust-step-route';
+import {getLastValidTrustStepRoute$} from '../../../../core/util/last-valid-trust-step-route';
+import {
+  fetchTrustOnboardingDocuments,
+  hasCompletedFormalProof,
+  hasSelectedDids
+} from '../../../../core/util/trust-onboarding-step-requirements';
 
 export const canActivateTrustStep: CanActivateFn = (route: ActivatedRouteSnapshot) => {
+  const documentsApi = inject(TrustOnboardingDocumentsApi);
+
   return withTrustSubmission(route, (submission, partnerId, submissionId, router) => {
     if (submission.status !== TrustOnboardingSubmission.StatusEnum.Unsubmitted) {
       const approvalRoute = AppRoutes.trustOnboardingApproval(partnerId, submissionId);
@@ -16,13 +23,38 @@ export const canActivateTrustStep: CanActivateFn = (route: ActivatedRouteSnapsho
       }
       return router.createUrlTree(AppRoutes.trustOnboardingApproval(partnerId, submissionId));
     }
+
+    const currentStep = route.url[0]?.path;
+
+    if (currentStep === 'formal-proof') {
+      if (!hasSelectedDids(submission)) {
+        return router.createUrlTree(AppRoutes.trustOnboardingDids(partnerId, submissionId));
+      }
+      return true;
+    }
+
+    if (currentStep === 'technical-proof' || currentStep === 'approval') {
+      if (!hasSelectedDids(submission)) {
+        return router.createUrlTree(AppRoutes.trustOnboardingDids(partnerId, submissionId));
+      }
+      return fetchTrustOnboardingDocuments(documentsApi, submissionId).pipe(
+        map(documents =>
+          hasCompletedFormalProof(submission, documents)
+            ? true
+            : router.createUrlTree(AppRoutes.trustOnboardingFormalProof(partnerId, submissionId))
+        )
+      );
+    }
+
     return true;
   });
 };
 
 export const canActivateTrustBaseUrl: CanActivateFn = (route: ActivatedRouteSnapshot) => {
+  const documentsApi = inject(TrustOnboardingDocumentsApi);
+
   return withTrustSubmission(route, (submission, _partnerId, _submissionId, router) => {
-    return router.createUrlTree(getLastValidTrustStepRoute(submission));
+    return getLastValidTrustStepRoute$(submission, documentsApi).pipe(map(route => router.createUrlTree(route)));
   });
 };
 
@@ -40,7 +72,7 @@ function withTrustSubmission(
     partnerId: string,
     submissionId: string,
     router: Router
-  ) => boolean | UrlTree
+  ) => boolean | UrlTree | Observable<boolean | UrlTree>
 ): Observable<boolean | UrlTree> | boolean | UrlTree {
   const trustOnboardingApi = inject(TrustOnboardingApi);
   const router = inject(Router);
@@ -58,7 +90,10 @@ function withTrustSubmission(
   }
 
   return trustOnboardingApi.getTrustOnboardingSubmission({id: submissionId}).pipe(
-    map(submission => resolveTrustStepUrlFn(submission, partnerId, submissionId, router)),
+    switchMap((submission: TrustOnboardingSubmission) => {
+      const result = resolveTrustStepUrlFn(submission, partnerId, submissionId, router);
+      return result instanceof Observable ? result : of(result);
+    }),
     catchError(() => of(router.createUrlTree(AppRoutes.trustOnboardingIntroduction(partnerId))))
   );
 }

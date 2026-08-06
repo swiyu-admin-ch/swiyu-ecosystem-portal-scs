@@ -237,6 +237,7 @@
   "eportal_global_btnPrim_continueToTechnicalProof": "Continue to technical proof",
   "eportal_global_btnPrim_continueVerification": "Continue profile verification",
   "eportal_global_btnPrim_start": "Start application",
+  "eportal_global_btnPrim_statusVerification": "Verification status",
   "eportal_global_btnPrim_upgradeTrustLevel": "Start profile verification",
   "eportal_global_btnSec_addProfileForNewOrg": "Add organization profile",
   "eportal_global_btnSec_back": "Back",

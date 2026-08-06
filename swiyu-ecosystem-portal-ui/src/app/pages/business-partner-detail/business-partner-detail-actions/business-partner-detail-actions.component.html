@@ -101,8 +101,10 @@
         </mat-card-content>
         <mat-card-actions>
           <button mat-button obButton="primary">
-            @if (onboardingProcessStarted()) {
+            @if (showContinueVerification()) {
               {{ "eportal_global_btnPrim_continueVerification" | translate }}
+            } @else if (showVerificationInProgress()) {
+              {{ "eportal_global_btnPrim_statusVerification" | translate }}
             } @else {
               {{ "eportal_global_btnPrim_upgradeTrustLevel" | translate }}
             }

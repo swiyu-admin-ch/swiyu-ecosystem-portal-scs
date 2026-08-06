@@ -161,14 +161,11 @@ describe('BusinessPartnerDetailActionsComponent', () => {
   });
 
   describe('showVerifyProfile', () => {
-    it('is true when partner is not Verified', () => {
+    it('is true when partner is NotVerified, VerificationStarted or VerificationInProgress', () => {
       for (const status of [
         BusinessPartnerTrustStatus.NotVerified,
         BusinessPartnerTrustStatus.VerificationStarted,
-        BusinessPartnerTrustStatus.VerificationInProgress,
-        BusinessPartnerTrustStatus.InformationRequested,
-        BusinessPartnerTrustStatus.ReVerificationStarted,
-        BusinessPartnerTrustStatus.ReVerificationInProgress
+        BusinessPartnerTrustStatus.VerificationInProgress
       ]) {
         componentRef.setInput('businessPartner', createPartner(status));
         expect(component.showVerifyProfile()).toBe(true);
@@ -179,20 +176,16 @@ describe('BusinessPartnerDetailActionsComponent', () => {
       componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.Verified));
       expect(component.showVerifyProfile()).toBe(false);
     });
-  });
 
-  describe('onboardingProcessStarted', () => {
-    it('is true when submission is provided', () => {
-      componentRef.setInput(
-        'trustOnboardingSubmission',
-        createSubmission(TrustOnboardingSubmission.StatusEnum.Unsubmitted)
-      );
-      expect(component.onboardingProcessStarted()).toBe(true);
-    });
-
-    it('is false when submission is undefined', () => {
-      componentRef.setInput('trustOnboardingSubmission', undefined);
-      expect(component.onboardingProcessStarted()).toBe(false);
+    it('is false when partner is InformationRequested, ReVerificationStarted or ReVerificationInProgress', () => {
+      for (const status of [
+        BusinessPartnerTrustStatus.InformationRequested,
+        BusinessPartnerTrustStatus.ReVerificationStarted,
+        BusinessPartnerTrustStatus.ReVerificationInProgress
+      ]) {
+        componentRef.setInput('businessPartner', createPartner(status));
+        expect(component.showVerifyProfile()).toBe(false);
+      }
     });
   });
 
