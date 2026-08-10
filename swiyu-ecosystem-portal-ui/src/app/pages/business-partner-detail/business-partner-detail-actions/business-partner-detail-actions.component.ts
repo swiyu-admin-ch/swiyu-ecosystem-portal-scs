@@ -48,16 +48,18 @@ export class BusinessPartnerDetailActionsComponent {
   );
 
   showRenewVerification = computed(
-    () =>
-      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.ReVerificationStarted ||
-      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.ReVerificationInProgress
+    () => this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.ReVerificationStarted
+    // here the future status IdentityVerificationProgressStatusDto.ReVerificationRequired from the new CBS endpoint
+    // /{businessPartnerId}/verification-progress needs to be checked to start the re-verification process
+    // EID-6624
   );
 
   showVerifyProfile = computed(
     () =>
       this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.NotVerified ||
       this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.VerificationStarted ||
-      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.VerificationInProgress
+      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.VerificationInProgress ||
+      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.ReVerificationInProgress
   );
 
   showContinueVerification = computed(() => {
@@ -65,7 +67,10 @@ export class BusinessPartnerDetailActionsComponent {
   });
 
   showVerificationInProgress = computed(() => {
-    return this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.VerificationInProgress;
+    return (
+      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.VerificationInProgress ||
+      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.ReVerificationInProgress
+    );
   });
 
   trustOnboardingStepActionRoute = computed(() => {

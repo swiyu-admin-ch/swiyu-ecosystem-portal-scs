@@ -149,11 +149,6 @@ describe('BusinessPartnerDetailActionsComponent', () => {
       expect(component.showRenewVerification()).toBe(true);
     });
 
-    it('is true when trustVerificationStatus is ReVerificationInProgress', () => {
-      componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.ReVerificationInProgress));
-      expect(component.showRenewVerification()).toBe(true);
-    });
-
     it('is false for other statuses', () => {
       componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.Verified));
       expect(component.showRenewVerification()).toBe(false);
@@ -161,11 +156,12 @@ describe('BusinessPartnerDetailActionsComponent', () => {
   });
 
   describe('showVerifyProfile', () => {
-    it('is true when partner is NotVerified, VerificationStarted or VerificationInProgress', () => {
+    it('is true when partner is NotVerified, VerificationStarted, VerificationInProgress or ReVerificationInProgress', () => {
       for (const status of [
         BusinessPartnerTrustStatus.NotVerified,
         BusinessPartnerTrustStatus.VerificationStarted,
-        BusinessPartnerTrustStatus.VerificationInProgress
+        BusinessPartnerTrustStatus.VerificationInProgress,
+        BusinessPartnerTrustStatus.ReVerificationInProgress
       ]) {
         componentRef.setInput('businessPartner', createPartner(status));
         expect(component.showVerifyProfile()).toBe(true);
@@ -177,11 +173,10 @@ describe('BusinessPartnerDetailActionsComponent', () => {
       expect(component.showVerifyProfile()).toBe(false);
     });
 
-    it('is false when partner is InformationRequested, ReVerificationStarted or ReVerificationInProgress', () => {
+    it('is false when partner is InformationRequested or ReVerificationStarted', () => {
       for (const status of [
         BusinessPartnerTrustStatus.InformationRequested,
-        BusinessPartnerTrustStatus.ReVerificationStarted,
-        BusinessPartnerTrustStatus.ReVerificationInProgress
+        BusinessPartnerTrustStatus.ReVerificationStarted
       ]) {
         componentRef.setInput('businessPartner', createPartner(status));
         expect(component.showVerifyProfile()).toBe(false);
