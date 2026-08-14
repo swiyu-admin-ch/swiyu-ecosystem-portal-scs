@@ -4,4 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "Feature Flags", name = "FeatureToggles")
-public record FeatureTogglesDto(@NotNull boolean EIDARTFE_1122) {}
+public record FeatureTogglesDto(
+    @NotNull boolean EIDARTFE_1122,
+    @NotNull boolean EIDARTFE_1822_PROTECTED_VERIFICATION
+) {}

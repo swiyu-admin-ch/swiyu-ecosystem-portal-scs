@@ -4,6 +4,10 @@ import {featureToggleActiveGuard} from './core/featuretoggle/feature-toggle-acti
 import {FEATURE_TOGGLE} from './core/featuretoggle/feature-toggle-enum';
 import {AdministrationOverviewComponent} from './pages/administration-overview/administration-overview.component';
 import {BusinessPartnerDetailComponent} from './pages/business-partner-detail/business-partner-detail.component';
+import {ProtectedVerificationOverviewComponent} from './pages/business-partner-detail/protected-verification/overview/protected-verification-overview.component';
+import {ProtectedVerificationStepCategoryComponent} from './pages/business-partner-detail/protected-verification/steps/protected-verification-step-category/protected-verification-step-category.component';
+import {ProtectedVerificationStepConfirmationComponent} from './pages/business-partner-detail/protected-verification/steps/protected-verification-step-confirmation/protected-verification-step-confirmation.component';
+import {ProtectedVerificationWizardComponent} from './pages/business-partner-detail/protected-verification/wizard/protected-verification-wizard.component';
 import {BusinessPartnerProfileComponent} from './pages/business-partner-profile/business-partner-profile.component';
 import {canActivateTrustBaseUrl, canActivateTrustStep} from './pages/onboarding/trust/guards/trust-step.guard';
 import {TrustIntroductionComponent} from './pages/onboarding/trust/introduction/trust-introduction.component';
@@ -110,6 +114,14 @@ export class AppRoutes {
 
   static additionalDidsExplainer(partnerId: string) {
     return ['/', 'business-partners', partnerId, 'verify-dids'];
+  }
+
+  static protectedVerificationOverview(partnerId: string) {
+    return ['/', 'business-partners', partnerId, 'sensitive-data'];
+  }
+
+  static protectedVerificationWizard(partnerId: string) {
+    return ['/', 'business-partners', partnerId, 'sensitive-data', 'request'];
   }
 }
 
@@ -279,6 +291,38 @@ export const routes: Routes = [
             path: 'verify-dids',
             component: AdditionalDidsExplainerComponent,
             data: {title: 'eportal_verifyAdditionalDIDs_pageTitle'}
+          },
+          {
+            /** @see protectedVerificationOverview() **/
+            path: 'sensitive-data',
+            canMatch: [featureToggleActiveGuard],
+            data: {guardFeature: FEATURE_TOGGLE.EIDARTFE_1822_PROTECTED_VERIFICATION},
+            children: [
+              {
+                path: '',
+                component: ProtectedVerificationOverviewComponent,
+                data: {title: 'eportal_protectedVerificationOverview_pageTitle'}
+              },
+              {
+                /** @see protectedVerificationWizard() **/
+                path: 'request',
+                component: ProtectedVerificationWizardComponent,
+                canDeactivate: [ObUnsavedChangesGuard],
+                children: [
+                  {path: '', redirectTo: 'category', pathMatch: 'full'},
+                  {
+                    path: 'category',
+                    component: ProtectedVerificationStepCategoryComponent,
+                    data: {title: 'eportal_sensitivedata_request_title'}
+                  },
+                  {
+                    path: 'confirmation',
+                    component: ProtectedVerificationStepConfirmationComponent,
+                    data: {title: 'eportal_sensitivedata_request_success_title'}
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

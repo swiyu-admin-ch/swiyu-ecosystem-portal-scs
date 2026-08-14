@@ -117,7 +117,12 @@
 
   <!-- sensitive data access — shown when partner is verified -->
   @if (showSensitiveDataAccess()) {
-    <a data-cy="btnSensitiveDataAccess" class="ob-link-card" tabindex="0">
+    <a
+      [routerLink]="AppRoutes.protectedVerificationOverview(businessPartnerId())"
+      class="ob-link-card"
+      data-cy="btnSensitiveDataAccess"
+      tabindex="0"
+    >
       <mat-card>
         <mat-card-header>
           <mat-card-title>

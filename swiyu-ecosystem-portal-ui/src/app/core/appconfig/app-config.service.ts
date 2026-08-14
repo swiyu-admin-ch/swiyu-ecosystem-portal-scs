@@ -111,7 +111,9 @@ export class AppConfigService {
 
   get featureToggles(): FeatureToggles {
     return {
-      EIDARTFE_1122: this.appConfig()?.featureToggles.EIDARTFE_1122 || false
+      EIDARTFE_1122: this.appConfig()?.featureToggles.EIDARTFE_1122 || false,
+      EIDARTFE_1822_PROTECTED_VERIFICATION:
+        this.appConfig()?.featureToggles.EIDARTFE_1822_PROTECTED_VERIFICATION || false
     };
   }
 

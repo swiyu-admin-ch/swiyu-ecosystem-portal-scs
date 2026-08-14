@@ -1,0 +1,79 @@
+<div>
+  <nav class="section-navigation">
+    <a [routerLink]="AppRoutes.businessPartnerDetail(businessPartnerId())" mat-button obButton="tertiary" tabindex="0">
+      <mat-icon svgIcon="chevron_left" />
+      {{ "eportal_global_btn_backToProfilePage" | translate }}
+    </a>
+  </nav>
+
+  <div class="page-header">
+    <h1>{{ "eportal_protectedVerificationOverview_pageTitle" | translate }}</h1>
+    <p>{{ "eportal_protectedVerificationOverview_intro" | translate }}</p>
+    @if (!hasActiveSubmission()) {
+      <a
+        [routerLink]="AppRoutes.protectedVerificationWizard(businessPartnerId())"
+        data-cy="btnRequestProtectedVerification"
+        mat-button
+        obButton="primary"
+        tabindex="0"
+      >
+        <mat-icon svgIcon="plus" />
+        {{ "eportal_protectedVerificationOverview_requestBtn" | translate }}
+      </a>
+    }
+  </div>
+
+  <div class="table-wrapper">
+    <table [dataSource]="submissions()" class="ob-table" mat-table>
+      <ng-container matColumnDef="category">
+        <th *matHeaderCellDef mat-header-cell>
+          {{ "eportal_protectedVerificationOverview_table_category" | translate }}
+        </th>
+        <td *matCellDef="let element" mat-cell>{{ categoryGroupKey(element.category) | translate }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="attribute">
+        <th *matHeaderCellDef mat-header-cell>
+          {{ "eportal_protectedVerificationOverview_table_attribute" | translate }}
+        </th>
+        <td *matCellDef="let element" mat-cell>
+          {{ "eportal_protectedVerificationAttribute_" + element.category | translate }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="requestDate">
+        <th *matHeaderCellDef mat-header-cell>
+          {{ "eportal_protectedVerificationOverview_table_requestDate" | translate }}
+        </th>
+        <td *matCellDef="let element" mat-cell>{{ element.submittedAt | date: "shortDate" }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th *matHeaderCellDef mat-header-cell>
+          {{ "eportal_protectedVerificationOverview_table_status" | translate }}
+        </th>
+        <td *matCellDef="let element" mat-cell>
+          {{ "eportal_protectedVerificationStatus_" + element.status | translate }}
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="displayColumns" mat-header-row></tr>
+      <tr *matRowDef="let row; columns: displayColumns" mat-row></tr>
+      <tr *matNoDataRow class="mat-row">
+        <td class="mat-cell" colspan="9999">{{ "eportal_protectedVerificationOverview_table_empty" | translate }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="actions">
+    <a
+      [routerLink]="AppRoutes.businessPartnerDetail(businessPartnerId())"
+      data-cy="btnBackToProfileOverview"
+      mat-button
+      obButton="secondary"
+      tabindex="0"
+    >
+      {{ "eportal_global_btn_ToProfileOverview" | translate }}
+    </a>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="sw-wizard">
+  @if (service.partnerId) {
+    <mat-horizontal-stepper #stepper [linear]="false" class="sw-stepper">
+      <ng-template matStepperIcon="edit">
+        <mat-icon [svgIcon]="'pencil'" />
+      </ng-template>
+
+      <ng-template matStepperIcon="done">
+        <mat-icon [svgIcon]="'checkmark'" />
+      </ng-template>
+      <mat-step
+        [completed]="service.currentStepIndex() > 0"
+        [label]="'eportal_sensitivedata_request_stepper_1' | translate"
+      />
+      <mat-step [label]="'eportal_sensitivedata_request_stepper_2' | translate" />
+    </mat-horizontal-stepper>
+    <div class="step-content-container">
+      <router-outlet (activate)="onStepActivated($event)" />
+    </div>
+  }
+</div>

@@ -16,14 +16,19 @@ public final class FeaturesProperties {
     @NotNull
     private Boolean eidartfe1122;
 
+    @NotNull
+    private Boolean eidartfe1822ProtectedVerification;
+
     @PostConstruct
     public void logFeatureFlags() {
         log.info(
             """
             Following features are configured:
               eidartfe1122:{}
+              eidartfe1822ProtectedVerification:{}
             """,
-            eidartfe1122
+            eidartfe1122,
+            eidartfe1822ProtectedVerification
         );
     }
 }

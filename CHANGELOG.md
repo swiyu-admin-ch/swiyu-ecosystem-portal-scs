@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.21.21
+
+### Fixed
+
+- Move async navigation in ProtectedVerificationStepConfirmationComponent out of the constructor into ngOnInit to satisfy the quality gate
+
+## 1.21.20
+
+### Added
+
+- Add protected verification submissions for AHV request
+
 ## 1.21.19
 
 ### Fixed

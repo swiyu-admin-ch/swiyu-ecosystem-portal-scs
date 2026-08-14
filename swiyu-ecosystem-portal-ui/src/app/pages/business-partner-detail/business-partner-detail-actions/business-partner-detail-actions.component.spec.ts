@@ -11,9 +11,14 @@ import {
   TrustOnboardingSubmission
 } from '../../../api/generated';
 import {AppRoutes} from '../../../app.routes';
+import {AppConfigService} from '../../../core/appconfig/app-config.service';
 import {BusinessPartnerDetailActionsComponent} from './business-partner-detail-actions.component';
 
 const PARTNER_ID = 'partner-123';
+
+const appConfigMock = {
+  featureToggles: {EIDARTFE_1822_PROTECTED_VERIFICATION: true}
+};
 
 function createPartner(trustVerificationStatus: BusinessPartnerTrustStatus, payedForDIDSlots = 5): BusinessPartner {
   return {
@@ -60,7 +65,7 @@ describe('BusinessPartnerDetailActionsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [BusinessPartnerDetailActionsComponent, RouterModule.forRoot([]), TranslateModule.forRoot()],
-      providers: [provideObliqueTestingConfiguration()]
+      providers: [provideObliqueTestingConfiguration(), {provide: AppConfigService, useValue: appConfigMock}]
     }).compileComponents();
 
     const fixture = TestBed.createComponent(BusinessPartnerDetailActionsComponent);
@@ -87,7 +92,7 @@ describe('BusinessPartnerDetailActionsComponent', () => {
   });
 
   describe('showSensitiveDataAccess', () => {
-    it('is true when partner is Verified', () => {
+    it('is true when partner is Verified and the feature toggle is enabled', () => {
       componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.Verified));
       expect(component.showSensitiveDataAccess()).toBe(true);
     });
@@ -95,6 +100,13 @@ describe('BusinessPartnerDetailActionsComponent', () => {
     it('is false when partner is not Verified', () => {
       componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.NotVerified));
       expect(component.showSensitiveDataAccess()).toBe(false);
+    });
+
+    it('is false when the feature toggle is disabled, even if partner is Verified', () => {
+      appConfigMock.featureToggles.EIDARTFE_1822_PROTECTED_VERIFICATION = false;
+      componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.Verified));
+      expect(component.showSensitiveDataAccess()).toBe(false);
+      appConfigMock.featureToggles.EIDARTFE_1822_PROTECTED_VERIFICATION = true;
     });
   });
 

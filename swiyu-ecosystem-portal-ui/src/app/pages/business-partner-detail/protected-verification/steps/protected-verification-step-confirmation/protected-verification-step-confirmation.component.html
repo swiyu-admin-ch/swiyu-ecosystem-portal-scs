@@ -1,0 +1,27 @@
+<div class="sw-wizard-lvl-2">
+  <h1>{{ "eportal_sensitivedata_request_success_title" | translate }}</h1>
+  <div class="profile-container">
+    <span class="caption">
+      {{ "eportal_global_label_selectedProfile" | translate }}
+    </span>
+    <span>
+      {{ wizardService.businessPartner()?.name }}
+    </span>
+  </div>
+  <div class="sw-wizard-lvl-3">
+    <span>{{ "eportal_sensitivedata_request_success_thanks" | translate }}</span>
+    <span>{{ "eportal_sensitivedata_request_success_text" | translate }}</span>
+  </div>
+</div>
+<div class="actions">
+  <div class="actions-2">
+    <a
+      [routerLink]="AppRoutes.protectedVerificationOverview(wizardService.partnerId!)"
+      data-cy="btnBackToProtectedVerificationOverview"
+      mat-button
+      obButton="primary"
+    >
+      {{ "eportal_sensitivedata_request_success_btn_tooverview" | translate }}
+    </a>
+  </div>
+</div>

@@ -22,7 +22,6 @@ import {
   TrustOnboardingSubmission
 } from '../../api/generated';
 import {AppRoutes} from '../../app.routes';
-import {AppConfigService} from '../../core/appconfig/app-config.service';
 import {SUPPRESS_ERROR_ALERT_STATUSES} from '../../core/interceptor/error-http-interceptor';
 import {BusinessPartnerTrustChipComponent} from '../../shared/business-partner-trust-chip/business-partner-trust-chip.component';
 import {LocalizeService} from '../../shared/i18n/localize.service';
@@ -58,7 +57,6 @@ import {BusinessPartnerDetailActionsComponent} from './business-partner-detail-a
 })
 export class BusinessPartnerDetailComponent {
   businessPartnerId = input.required<string>();
-  readonly appConfigService = inject(AppConfigService);
   readonly router = inject(Router);
   @ViewChild(StatefulAlertComponent)
   alertNoDIDs!: StatefulAlertComponent;

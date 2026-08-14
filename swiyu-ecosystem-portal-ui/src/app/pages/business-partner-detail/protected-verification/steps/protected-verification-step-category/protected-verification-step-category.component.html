@@ -1,0 +1,55 @@
+<div class="sw-wizard-lvl-1">
+  <div class="sw-wizard-lvl-2">
+    <h1>{{ "eportal_sensitivedata_request_title" | translate }}</h1>
+  </div>
+  <form data-cy="formRequestProtectedVerification" [formGroup]="form">
+    <div class="sw-wizard-lvl-2">
+      <h3>{{ "eportal_sensitivedata_request_section_title" | translate }}</h3>
+      <mat-form-field floatLabel="always" obErrorMessages>
+        <mat-label>{{ "eportal_sensitivedata_request_form_category_inputlabel" | translate }}</mat-label>
+        <mat-select data-cy="protectedVerificationCategory" [formControl]="form.controls.category">
+          @for (category of wizardService.categories(); track category) {
+            <mat-option [value]="category">
+              {{ "eportal_sensitivedata_request_form_category_AHV" | translate }}
+            </mat-option>
+          }
+        </mat-select>
+        <mat-error />
+      </mat-form-field>
+    </div>
+    <div class="sw-wizard-lvl-2">
+      <h3>{{ "eportal_sensitivedata_request_section_title_reason" | translate }}</h3>
+      <mat-form-field floatLabel="always" obErrorMessages>
+        <mat-label>{{ "eportal_sensitivedata_request_form_explanation_inputlabel" | translate }}</mat-label>
+        <textarea
+          data-cy="protectedVerificationReason"
+          maxlength="{{ maxLengthReason }}"
+          [formControl]="form.controls.reason"
+          matInput
+        ></textarea>
+        <mat-error />
+      </mat-form-field>
+      <div class="ob-flex">
+        <mat-form-field floatLabel="always" obErrorMessages>
+          <mat-label>{{ "eportal_sensitivedata_request_form_sbnid_inputlabel" | translate }}</mat-label>
+          <input data-cy="protectedVerificationSbnId" type="text" [formControl]="form.controls.sbnId" matInput />
+          <mat-error />
+        </mat-form-field>
+        <app-info-icon>
+          <h3>{{ "eportal_sensitivedata_request_infoTitle_sbnid" | translate }}</h3>
+          <p>{{ "eportal_sensitivedata_request_infotext_sbnid" | translate }}</p>
+        </app-info-icon>
+      </div>
+    </div>
+  </form>
+  <div class="actions">
+    <div class="actions-2">
+      <button data-cy="btnCancelProtectedVerification" (click)="cancel()" mat-button obButton="secondary" type="button">
+        {{ "eportal_global_btnSec_cancel" | translate }}
+      </button>
+      <button data-cy="btnSubmitProtectedVerification" (click)="next()" mat-button obButton="primary" type="button">
+        {{ "eportal_sensitivedata_request_btn_submit" | translate }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -94,3 +94,4 @@ cors:
 
 features:
   EIDARTFE_1122: true
+  EIDARTFE_1822_PROTECTED_VERIFICATION: true

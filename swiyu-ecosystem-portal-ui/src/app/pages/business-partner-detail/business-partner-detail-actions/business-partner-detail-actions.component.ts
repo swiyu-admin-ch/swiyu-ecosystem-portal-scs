@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, input} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
@@ -13,6 +13,7 @@ import {
   TrustOnboardingSubmission
 } from '../../../api/generated';
 import {AppRoutes} from '../../../app.routes';
+import {AppConfigService} from '../../../core/appconfig/app-config.service';
 import {getLastValidTrustStepRoute} from '../../../core/util/last-valid-trust-step-route';
 
 @Component({
@@ -23,6 +24,8 @@ import {getLastValidTrustStepRoute} from '../../../core/util/last-valid-trust-st
   imports: [RouterModule, TranslateModule, MatCardModule, MatButtonModule, MatIconModule, ObButtonModule]
 })
 export class BusinessPartnerDetailActionsComponent {
+  private readonly appConfigService = inject(AppConfigService);
+
   businessPartner = input<BusinessPartner | undefined>();
   identifiers = input<IdentifierResponse[]>([]);
   trustOnboardingSubmission = input<TrustOnboardingSubmission | undefined>();
@@ -32,7 +35,9 @@ export class BusinessPartnerDetailActionsComponent {
   showCreateIdentifier = computed(() => this.remainingDidSlots() > 0);
 
   showSensitiveDataAccess = computed(
-    () => this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.Verified
+    () =>
+      this.appConfigService.featureToggles.EIDARTFE_1822_PROTECTED_VERIFICATION &&
+      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.Verified
   );
 
   showEnterIdentifiers = computed(

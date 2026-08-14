@@ -1,0 +1,26 @@
+// The global `.sw-wizard form` rule lays out form children as a wrapping row
+// (built for wide multi-column forms like organisation-details). This form
+// only has a couple of stacked field groups, so force a column layout instead.
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--sw-spc-default);
+}
+
+// Category select and reason textarea should fill the available width.
+.sw-wizard-lvl-2 > mat-form-field {
+  width: 100%;
+}
+
+// The SBN-ID field shares its row with an info icon. .sw-wizard-lvl-2 left-aligns
+// its children by default, so the row itself needs to stretch before the field
+// inside it (flex: 1) has any extra width to grow into.
+.ob-flex {
+  align-self: stretch;
+  width: 100%;
+
+  mat-form-field {
+    flex: 1;
+  }
+}

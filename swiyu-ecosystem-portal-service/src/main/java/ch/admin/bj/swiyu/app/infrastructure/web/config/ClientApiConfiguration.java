@@ -5,6 +5,7 @@ import ch.admin.bj.swiyu.client.business.actuator.api.ActuatorApi;
 import ch.admin.bj.swiyu.client.business.internal.api.BusinessPartnerApi;
 import ch.admin.bj.swiyu.client.business.internal.api.BusinessPartnerV2Api;
 import ch.admin.bj.swiyu.client.business.internal.api.IdentifierApi;
+import ch.admin.bj.swiyu.client.business.internal.api.ProtectedVerificationSubmissionApi;
 import ch.admin.bj.swiyu.client.business.internal.api.TrustOnboardingSubmissionApi;
 import ch.admin.bj.swiyu.client.business.internal.invoker.ApiClient;
 import lombok.AllArgsConstructor;
@@ -60,5 +61,15 @@ public class ClientApiConfiguration {
         ApiClient apiClient = new ApiClient(restClient);
         apiClient.setBasePath(clientApiProperties.coreBusinessServiceBaseUrl());
         return new IdentifierApi(apiClient);
+    }
+
+    @Bean
+    public ProtectedVerificationSubmissionApi protectedVerificationSubmissionApi(
+        JeapOAuth2RestClientBuilderFactory factory
+    ) {
+        var restClient = factory.createForTokenFromIncomingRequest().build();
+        ApiClient apiClient = new ApiClient(restClient);
+        apiClient.setBasePath(clientApiProperties.coreBusinessServiceBaseUrl());
+        return new ProtectedVerificationSubmissionApi(apiClient);
     }
 }
