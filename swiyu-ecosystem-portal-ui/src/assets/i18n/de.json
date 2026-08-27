@@ -492,6 +492,7 @@
   "eportal_onboarding_profile_infoText_organisation_preview": "Für die Registrierung in der Testumgebung und deren Nutzung sind keine echten Organisationsangaben nötig. Wir empfehlen aber einen Namen anzugeben, der eindeutig auf die Testumgebung hinweist.",
   "eportal_onboarding_profile_inputLabel_city": "Ort",
   "eportal_onboarding_profile_inputLabel_city_error": "Bitte Ortsnamen eingeben",
+  "eportal_onboarding_profile_inputLabel_correspondenceLanguage": "Korrespondenzsprache",
   "eportal_onboarding_profile_inputLabel_country": "Land",
   "eportal_onboarding_profile_inputLabel_email": "E-Mail",
   "eportal_onboarding_profile_inputLabel_language": "Sprache",

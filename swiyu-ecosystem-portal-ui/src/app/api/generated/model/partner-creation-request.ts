@@ -7,17 +7,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import {Address} from './address';
+import {Contact} from './contact';
 
 export interface PartnerCreationRequest {
   uid?: string;
   organizationName: string;
-  addressStreet?: string;
-  addressZipCode: string;
-  addressCity: string;
-  addressCountry?: string;
-  addressRegion?: string;
-  contactPhone: string;
-  contactEmail: string;
+  address: Address;
+  contact: Contact;
   businessPartnerType: PartnerCreationRequest.BusinessPartnerTypeEnum;
 }
 export namespace PartnerCreationRequest {

@@ -168,11 +168,19 @@ export class TrustOnboardingWizardService {
       entityName: result.entityName,
       entityAddress: result.entityAddress,
       entityEmail: result.entityEmail,
-      contactPerson: result.contactPerson,
+      contactPerson: result.contactPerson
+        ? {
+            firstName: result.contactPerson.firstName,
+            lastName: result.contactPerson.lastName,
+            email: result.contactPerson.email,
+            phone: result.contactPerson.phone,
+            correspondingLanguage: result.contactPerson.correspondingLanguage ?? result.correspondingLanguage,
+            address: result.contactPerson.address
+          }
+        : result.contactPerson,
       signingRule: result.signingRule,
       signatories: result.signatories,
       registryIds: result.registryIds,
-      correspondingLanguage: result.correspondingLanguage,
       dids: result.proofOfPossessionList.map(pop => pop.did ?? '') || [],
       requestedPartnerType: result.businessPartnerType,
       isRegisteredInCommercialRegister: result.isRegisteredInCommercialRegister

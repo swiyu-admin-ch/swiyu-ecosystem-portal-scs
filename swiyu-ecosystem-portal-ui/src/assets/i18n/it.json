@@ -492,6 +492,7 @@
   "eportal_onboarding_profile_infoText_organisation_preview": "Per la registrazione nell'ambiente di prova e il suo utilizzo non sono richiesti dati reali dell'organizzazione. Tuttavia, si consiglia di inserire un nome che indichi chiaramente l'ambiente di prova.",
   "eportal_onboarding_profile_inputLabel_city": "Città",
   "eportal_onboarding_profile_inputLabel_city_error": "Inserisci il nome della località",
+  "eportal_onboarding_profile_inputLabel_correspondenceLanguage": "Lingua di corrispondenza",
   "eportal_onboarding_profile_inputLabel_country": "Paese",
   "eportal_onboarding_profile_inputLabel_email": "E-mail",
   "eportal_onboarding_profile_inputLabel_language": "Lingua",

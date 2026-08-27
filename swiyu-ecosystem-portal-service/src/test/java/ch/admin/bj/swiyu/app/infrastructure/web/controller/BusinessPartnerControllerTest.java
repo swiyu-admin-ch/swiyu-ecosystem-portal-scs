@@ -10,8 +10,11 @@ import ch.admin.bj.swiyu.app.api.PartnerCreationRequestDto;
 import ch.admin.bj.swiyu.app.common.config.FunctionalityProperties;
 import ch.admin.bj.swiyu.app.exceptions.BusinessPartnerTypeNotAllowedException;
 import ch.admin.bj.swiyu.client.business.internal.api.BusinessPartnerV2Api;
+import ch.admin.bj.swiyu.client.business.internal.model.Address;
 import ch.admin.bj.swiyu.client.business.internal.model.BusinessPartner;
 import ch.admin.bj.swiyu.client.business.internal.model.BusinessPartnerType;
+import ch.admin.bj.swiyu.client.business.internal.model.Contact;
+import ch.admin.bj.swiyu.client.business.internal.model.Language;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,13 +50,13 @@ class BusinessPartnerControllerTest {
         return new PartnerCreationRequestDto(
             "CHE-123.456.789",
             "Test Organization",
-            "Test Street 1",
-            "3000",
-            "Bern",
-            "CH",
-            "BE",
-            "+41 31 123 45 67",
-            "test@example.com",
+            new Address().street("Test Street 1").postalCode("3000").city("Bern").country("CH").region("BE"),
+            new Contact()
+                .firstName("John")
+                .lastName("Doe")
+                .email("test@example.com")
+                .phone("+41 31 123 45 67")
+                .correspondingLanguage(Language.DE),
             type
         );
     }

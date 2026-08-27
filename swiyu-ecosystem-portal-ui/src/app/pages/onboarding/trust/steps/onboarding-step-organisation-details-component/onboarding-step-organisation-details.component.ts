@@ -165,6 +165,7 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
           lastName: value.contactPerson.lastName,
           email: value.contactPerson.email,
           phone: value.contactPerson.phone,
+          correspondingLanguage: value.contactPerson.correspondingLanguage ?? undefined,
           address: undefined
         },
         entityEmail: value.contactPerson.email,
@@ -174,7 +175,6 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
           UID: value.uid
         },
         isRegisteredInCommercialRegister: value.hasUid,
-        correspondingLanguage: value.contactPerson.correspondingLanguage ?? 'DE',
         dids: undefined,
         requestedPartnerType: value.partnerType ?? undefined
       });
@@ -198,7 +198,7 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
               lastName: data.contactPerson?.lastName,
               phone: data.contactPerson?.phone,
               email: data.contactPerson?.email,
-              correspondingLanguage: data?.correspondingLanguage // FIX LATER
+              correspondingLanguage: data.contactPerson?.correspondingLanguage
             },
             signingRule: data?.signingRule,
             signatories: data?.signatories,

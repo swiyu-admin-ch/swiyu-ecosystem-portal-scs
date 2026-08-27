@@ -47,7 +47,8 @@ describe('TrustOnboardingWizardComponent', () => {
       firstName: 'first',
       lastName: 'last',
       phone: '1234567890',
-      email: 'john.doe@test.com'
+      email: 'john.doe@test.com',
+      correspondingLanguage: 'DE'
     },
     registryIds: {},
     correspondingLanguage: 'DE',

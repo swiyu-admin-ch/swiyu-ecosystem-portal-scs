@@ -492,6 +492,7 @@
   "eportal_onboarding_profile_infoText_organisation_preview": "Aucune véritable information d'organisation n'est requise pour l'inscription dans l'environnement de test et son utilisation. Nous recommandons toutefois d'indiquer un nom qui indique clairement qu'il s'agit de l'environnement de test.",
   "eportal_onboarding_profile_inputLabel_city": "Lieu",
   "eportal_onboarding_profile_inputLabel_city_error": "Veuillez saisir le nom de la localité",
+  "eportal_onboarding_profile_inputLabel_correspondenceLanguage": "Langue de correspondance",
   "eportal_onboarding_profile_inputLabel_country": "Pays",
   "eportal_onboarding_profile_inputLabel_email": "E-mail",
   "eportal_onboarding_profile_inputLabel_language": "Langue",

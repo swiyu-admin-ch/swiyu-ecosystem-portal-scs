@@ -14,5 +14,16 @@ export interface Contact {
   lastName: string;
   email: string;
   phone: string;
+  correspondingLanguage?: Contact.CorrespondingLanguageEnum;
   address?: Address;
+}
+export namespace Contact {
+  export const CorrespondingLanguageEnum = {
+    En: 'EN',
+    De: 'DE',
+    Fr: 'FR',
+    It: 'IT',
+    Rm: 'RM'
+  } as const;
+  export type CorrespondingLanguageEnum = (typeof CorrespondingLanguageEnum)[keyof typeof CorrespondingLanguageEnum];
 }

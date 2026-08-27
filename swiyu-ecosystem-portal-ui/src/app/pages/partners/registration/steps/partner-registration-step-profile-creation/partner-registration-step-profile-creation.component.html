@@ -174,7 +174,7 @@
             <mat-label>{{ "eportal_onboarding_profile_inputLabel_street" | translate }}</mat-label>
             <input
               matInput
-              [formControl]="form.controls.street"
+              [formControl]="form.controls.address.controls.street"
               [placeholder]="'eportal_onboarding_profile_inputLabel_street' | translate"
               data-cy="street"
             />
@@ -188,14 +188,14 @@
             <mat-label>{{ "eportal_onboarding_profile_inputLabel_postalCode" | translate }}</mat-label>
             <input
               matInput
-              [formControl]="form.controls.zipCode"
+              [formControl]="form.controls.address.controls.postalCode"
               [placeholder]="'eportal_onboarding_profile_inputLabel_postalCode' | translate"
               data-cy="postalCode"
             />
             <mat-error>
-              @if (form.controls.zipCode.hasError("required")) {
+              @if (form.controls.address.controls.postalCode.hasError("required")) {
                 {{ "eportal_onboarding_profile_inputLabel_postalCode_error" | translate }}
-              } @else if (form.controls.zipCode.hasError("swissZipCode")) {
+              } @else if (form.controls.address.controls.postalCode.hasError("swissZipCode")) {
                 {{ "eportal_onboarding_profile_inputLabel_postalCode_error_zipFormat" | translate }}
               }
             </mat-error>
@@ -206,7 +206,7 @@
             <mat-label>{{ "eportal_onboarding_profile_inputLabel_city" | translate }}</mat-label>
             <input
               matInput
-              [formControl]="form.controls.city"
+              [formControl]="form.controls.address.controls.city"
               [placeholder]="'eportal_onboarding_profile_inputLabel_city' | translate"
               data-cy="city"
             />
@@ -216,7 +216,7 @@
         <div class="ob-full">
           <mat-form-field>
             <mat-label>{{ "eportal_onboarding_profile_inputLabel_country" | translate }}</mat-label>
-            <mat-select readonly [formControl]="form.controls.country" data-cy="countrySelect">
+            <mat-select readonly [formControl]="form.controls.address.controls.country" data-cy="countrySelect">
               @for (country of countryService.countries; track country) {
                 <mat-option [value]="country">
                   {{ countryService.getCountryTranslationKey(country) | translate }}
@@ -237,10 +237,34 @@
         </div>
         <div class="ob-span-6">
           <mat-form-field>
+            <mat-label>{{ "eportal_global_inputLabel_name" | translate }}</mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.contact.controls.firstName"
+              [placeholder]="'eportal_global_inputLabel_name' | translate"
+              data-cy="contactFirstName"
+            />
+            <mat-error>{{ "eportal_global_inputLabel_error_name" | translate }}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="ob-span-6">
+          <mat-form-field>
+            <mat-label>{{ "eportal_global_inputLabel_surname" | translate }}</mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.contact.controls.lastName"
+              [placeholder]="'eportal_global_inputLabel_surname' | translate"
+              data-cy="contactLastName"
+            />
+            <mat-error>{{ "eportal_global_inputLabel_error_surname" | translate }}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="ob-span-6">
+          <mat-form-field>
             <mat-label>{{ "eportal_onboarding_profile_inputLabel_phone" | translate }}</mat-label>
             <input
               matInput
-              [formControl]="form.controls.phone"
+              [formControl]="form.controls.contact.controls.phone"
               [placeholder]="'eportal_onboarding_profile_inputLabel_phone' | translate"
               data-cy="phone"
             />
@@ -248,11 +272,11 @@
               {{ "eportal_global_hint_phone" | translate }}
             </mat-hint>
             <mat-error>
-              @if (form.controls.phone.hasError("required")) {
+              @if (form.controls.contact.controls.phone.hasError("required")) {
                 {{ "eportal_global_inputLabel_error_phone" | translate }}
-              } @else if (form.controls.phone.hasError("swissPhoneNumber")) {
+              } @else if (form.controls.contact.controls.phone.hasError("swissPhoneNumber")) {
                 {{ "eportal_global_inputLabel_error_phone_format" | translate }}
-              } @else if (form.controls.phone.hasError("internationalPhoneNumber")) {
+              } @else if (form.controls.contact.controls.phone.hasError("internationalPhoneNumber")) {
                 {{ "eportal_global_inputLabel_error_phone_format_international" | translate }}
               }
             </mat-error>
@@ -263,11 +287,25 @@
             <mat-label>{{ "eportal_onboarding_profile_inputLabel_email" | translate }} </mat-label>
             <input
               matInput
-              [formControl]="form.controls.email"
+              [formControl]="form.controls.contact.controls.email"
               [placeholder]="'eportal_onboarding_profile_inputLabel_email' | translate"
               data-cy="email"
             />
             <mat-error>{{ "eportal_onboarding_profile_error_inputLabel_email" | translate }}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="ob-span-6">
+          <mat-form-field>
+            <mat-label>{{ "eportal_onboarding_profile_inputLabel_correspondenceLanguage" | translate }}</mat-label>
+            <mat-select
+              [formControl]="form.controls.contact.controls.correspondingLanguage"
+              data-cy="contactLanguageSelect"
+            >
+              @for (lang of languages; track lang) {
+                <mat-option [value]="lang">{{ lang | fullLang | translate }}</mat-option>
+              }
+            </mat-select>
+            <mat-error>{{ "eportal_global_inputLabel_error_correspLanguage" | translate }}</mat-error>
           </mat-form-field>
         </div>
       </div>

@@ -17,12 +17,14 @@ import {
   ObSelectableGroupDirective,
   ObUnsavedChangesDirective
 } from '@oblique/oblique';
-import {PartnerCreationRequest} from '../../../../../api/generated';
+import {Contact, PartnerCreationRequest} from '../../../../../api/generated';
 import {AppConfigService} from '../../../../../core/appconfig/app-config.service';
 import {UserProfileService} from '../../../../../core/user/user-profile.service';
 import {CountryService} from '../../../../../core/util/country.service';
 import {isIntegrationEnvironment} from '../../../../../core/util/environment-utils';
 import {CheckboxA11yDirective} from '../../../../../shared/checkbox-a11y/checkbox-a11y.directive';
+import {FullLangPipe} from '../../../../../shared/full-lang/full-lang.pipe';
+import {SWISS_LANGUAGES} from '../../../../../shared/i18n/swiss-languages.util';
 import {InfoIconComponent} from '../../../../../shared/info-icon/info-icon.component';
 import {ProcessStepComponent} from '../../../../../shared/process/process-step/process-step.component';
 import {ProcessComponent} from '../../../../../shared/process/process.component';
@@ -32,6 +34,7 @@ import {CustomValidators} from '../../../../../shared/validators/custom-validato
 import {AbstractOnboardingStepComponent} from '../../../../onboarding/trust/steps/abstract-onboarding-step-component';
 import {PartnerRegistrationWizardService} from '../../wizard/partner-registration-wizard.service';
 import PartnerTypeEnum = PartnerCreationRequest.BusinessPartnerTypeEnum;
+import CorrespondingLanguageEnum = Contact.CorrespondingLanguageEnum;
 
 export interface PartnerRegistration {
   partnerType: PartnerTypeEnum | null | undefined;
@@ -75,7 +78,8 @@ export interface PartnerRegistration {
     ProcessStepComponent,
     ObUnsavedChangesDirective,
     MatTooltip,
-    InfoIconComponent
+    InfoIconComponent,
+    FullLangPipe
   ],
   templateUrl: './partner-registration-step-profile-creation.component.html',
   styleUrls: ['./partner-registration-step-profile-creation.component.scss'],
@@ -86,6 +90,7 @@ export class PartnerRegistrationStepProfileCreationComponent extends AbstractOnb
   createPartnerNotificationShown = signal<boolean>(true);
   firstStepCompleted = signal<boolean>(false);
   protected readonly PartnerTypeSelection = PartnerTypeEnum;
+  protected readonly languages = SWISS_LANGUAGES;
   protected readonly countryService = inject(CountryService);
   private readonly fb = inject(FormBuilder);
   private readonly translateService = inject(TranslateService);
@@ -125,12 +130,19 @@ export class PartnerRegistrationStepProfileCreationComponent extends AbstractOnb
     partnerType: this.fb.control<PartnerTypeEnum | undefined>(undefined, Validators.required),
     uid: this.fb.control<string | undefined>(undefined, CustomValidators.swissUid()),
     name: this.fb.control<string>('', [Validators.required, CustomValidators.notBlank()]),
-    street: this.fb.control<string>('', CustomValidators.emptyOrNotBlank()),
-    zipCode: this.fb.control<string>('', [Validators.required, CustomValidators.swissZipCode()]),
-    city: this.fb.control<string>('', [Validators.required, CustomValidators.notBlank()]),
-    country: this.fb.control<string>('CH', Validators.required),
-    email: this.fb.control<string>('', [Validators.required, Validators.email]),
-    phone: this.fb.control<string>('', [Validators.required, CustomValidators.internationalPhoneNumber()]),
+    address: this.fb.group({
+      street: this.fb.control<string>('', CustomValidators.emptyOrNotBlank()),
+      postalCode: this.fb.control<string>('', [Validators.required, CustomValidators.swissZipCode()]),
+      city: this.fb.control<string>('', [Validators.required, CustomValidators.notBlank()]),
+      country: this.fb.control<string>('CH', Validators.required)
+    }),
+    contact: this.fb.group({
+      firstName: this.fb.control<string>('', [Validators.required, CustomValidators.notBlank()]),
+      lastName: this.fb.control<string>('', [Validators.required, CustomValidators.notBlank()]),
+      email: this.fb.control<string>('', [Validators.required, Validators.email]),
+      phone: this.fb.control<string>('', [Validators.required, CustomValidators.internationalPhoneNumber()]),
+      correspondingLanguage: this.fb.control<CorrespondingLanguageEnum | null>(null, Validators.required)
+    }),
     confirmedCorrectness: this.fb.control<boolean>(false, Validators.requiredTrue),
     readTermsAndConditions: this.fb.control<boolean>(false, Validators.requiredTrue),
     readDataProtection: this.fb.control<boolean>(false, Validators.requiredTrue)
@@ -144,15 +156,22 @@ export class PartnerRegistrationStepProfileCreationComponent extends AbstractOnb
         const value = this.form.getRawValue();
         this.wizardService.updatePartnerDetails({
           organizationName: value.name!,
-          addressZipCode: value.zipCode!,
-          addressCity: value.city!,
-          contactPhone: value.phone!,
-          contactEmail: value.email!,
           businessPartnerType: value.partnerType!,
-          addressStreet: value.street ?? undefined,
-          addressCountry: value.country ?? undefined,
-          addressRegion: '', // to be removed with EID-6270
-          uid: value.uid ?? undefined
+          uid: value.uid ?? undefined,
+          address: {
+            street: value.address.street ?? undefined,
+            postalCode: value.address.postalCode!,
+            city: value.address.city!,
+            country: value.address.country ?? 'CH',
+            region: undefined // to be removed with EID-6270
+          },
+          contact: {
+            firstName: value.contact.firstName!,
+            lastName: value.contact.lastName!,
+            email: value.contact.email!,
+            phone: value.contact.phone!,
+            correspondingLanguage: value.contact.correspondingLanguage ?? undefined
+          }
         });
       }
     });

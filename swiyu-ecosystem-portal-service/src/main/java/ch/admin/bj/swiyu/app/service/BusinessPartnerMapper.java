@@ -92,13 +92,8 @@ public class BusinessPartnerMapper {
             partnerCreationRequestDto.organizationName(),
             partnerCreationRequestDto.businessPartnerType(),
             partnerCreationRequestDto.uid(),
-            partnerCreationRequestDto.addressStreet(),
-            partnerCreationRequestDto.addressZipCode(),
-            partnerCreationRequestDto.addressCity(),
-            partnerCreationRequestDto.addressCountry(),
-            partnerCreationRequestDto.addressRegion(),
-            partnerCreationRequestDto.contactPhone(),
-            partnerCreationRequestDto.contactEmail()
+            partnerCreationRequestDto.address(),
+            partnerCreationRequestDto.contact()
         );
     }
 }

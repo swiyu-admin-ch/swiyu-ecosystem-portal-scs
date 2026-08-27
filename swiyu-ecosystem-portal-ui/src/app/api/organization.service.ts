@@ -52,14 +52,9 @@ export class OrganizationService {
       partnerCreationRequest: {
         uid: request.uid,
         organizationName: request.organizationName,
-        contactEmail: request.contactEmail,
-        addressStreet: request.addressStreet,
-        addressZipCode: request.addressZipCode,
-        addressCity: request.addressCity,
-        addressCountry: request.addressCountry,
-        addressRegion: request.addressRegion,
-        contactPhone: request.contactPhone,
-        businessPartnerType: request.businessPartnerType
+        businessPartnerType: request.businessPartnerType,
+        address: request.address,
+        contact: request.contact
       }
     };
     return this.businessPartnerApi.registerBusinessPartner(requestParameters);

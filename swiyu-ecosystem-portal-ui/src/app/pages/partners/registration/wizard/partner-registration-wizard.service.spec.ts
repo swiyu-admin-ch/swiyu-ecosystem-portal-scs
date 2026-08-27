@@ -27,11 +27,19 @@ describe('PartnerRegistrationWizardService', () => {
 
   const validPartnerRequest: PartnerCreationRequest = {
     organizationName: 'Example Org',
-    addressZipCode: '3000',
-    addressCity: 'Bern',
-    contactPhone: '+41791234567',
-    contactEmail: 'contact@example.org',
-    businessPartnerType: PartnerCreationRequest.BusinessPartnerTypeEnum.Business
+    businessPartnerType: PartnerCreationRequest.BusinessPartnerTypeEnum.Business,
+    address: {
+      postalCode: '3000',
+      city: 'Bern',
+      country: 'CH'
+    },
+    contact: {
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'contact@example.org',
+      phone: '+41791234567',
+      correspondingLanguage: 'DE'
+    }
   };
 
   beforeEach(() => {

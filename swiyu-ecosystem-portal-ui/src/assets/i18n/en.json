@@ -492,6 +492,7 @@
   "eportal_onboarding_profile_infoText_organisation_preview": "No real organisation details are required for registration in the test environment and its use. However, we recommend entering a name that clearly indicates the test environment.",
   "eportal_onboarding_profile_inputLabel_city": "City",
   "eportal_onboarding_profile_inputLabel_city_error": "Please enter a place name",
+  "eportal_onboarding_profile_inputLabel_correspondenceLanguage": "Correspondence language",
   "eportal_onboarding_profile_inputLabel_country": "Country",
   "eportal_onboarding_profile_inputLabel_email": "Email",
   "eportal_onboarding_profile_inputLabel_language": "Language",
