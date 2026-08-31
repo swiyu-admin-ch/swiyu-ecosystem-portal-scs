@@ -5,18 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.21.23
+
+### Changed
+
+- Updated jeap-spring-boot-parent -> 40.4.0
+- Remove CVE overrides
+
 ## 1.21.22
 
 ### Changed
 
 - Send trust onboarding correspondence language as part of `contactPerson.correspondingLanguage`
-- Aligned the base onboarding profile creation with the trust onboarding contract: the contact section now captures first name, last name and a mandatory correspondence language, and the address is sent as a nested object
+- Aligned the base onboarding profile creation with the trust onboarding contract: the contact section now captures
+  first name, last name and a mandatory correspondence language, and the address is sent as a nested object
 
 ## 1.21.21
 
 ### Fixed
 
-- Move async navigation in ProtectedVerificationStepConfirmationComponent out of the constructor into ngOnInit to satisfy the quality gate
+- Move async navigation in ProtectedVerificationStepConfirmationComponent out of the constructor into ngOnInit to
+  satisfy the quality gate
 
 ## 1.21.20
 
@@ -64,7 +73,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Add `spring-boot-security-test` dependency so `@WithJeapAuthenticationToken` works again with MockMvc-based integration tests
+- Add `spring-boot-security-test` dependency so `@WithJeapAuthenticationToken` works again with MockMvc-based
+  integration tests
 
 ## 1.21.13
 
