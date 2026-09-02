@@ -1,6 +1,6 @@
 {
   "name": "swiyu-ecosystem-portal-ui",
-  "version": "1.21.23",
+  "version": "1.21.24",
   "private": true,
   "scripts": {
     "build": "ng build --optimization true --output-hashing all --i18n-missing-translation error --i18n-duplicate-translation error",
@@ -75,7 +75,10 @@
   "engines": {
     "node": ">=22.0.0"
   },
-  "overrides": {},
+  "_comment": "Override `less` to 4.9.0 to drop the vulnerable transitive image-size@0.5.5 (pulled by less 4.4.2). image-size has NO fixed version for the infinite-loop CVEs SNYK-JS-IMAGESIZE-17295814/17295816 (CVE-2025-71329/71330); less 4.9.0 replaces image-size with probe-image-size. Safe here because the app uses SCSS only (no .less files), so less never compiles anything. Revisit when next bumping the Angular CLI/build tooling.",
+  "overrides": {
+    "less": "4.9.0"
+  },
   "jestSonar": {
     "reportPath": "./coverage/sonarQube",
     "reportFile": "sqr.xml",

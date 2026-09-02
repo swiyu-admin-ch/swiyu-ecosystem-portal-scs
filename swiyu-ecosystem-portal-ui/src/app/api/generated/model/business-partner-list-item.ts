@@ -44,6 +44,15 @@ export interface BusinessPartnerListItem {
    * Number of days remaining until the time limit of the current aggregated state of the trust process expires
    */
   daysRemainingForTrustVerificationStatus?: number;
+  /**
+   * Deadline by which the current verification step must be completed,
+   * reported by the centralized verification-progress endpoint.
+   */
+  verificationProgressMaxDate?: string;
+  /**
+   * Number of days remaining until the verification step deadline expires
+   */
+  daysRemainingForVerification?: number;
 }
 export namespace BusinessPartnerListItem {
   export const TypeEnum = {

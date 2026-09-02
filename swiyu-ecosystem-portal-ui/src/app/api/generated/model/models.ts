@@ -31,6 +31,7 @@ export * from './protected-verification-submission-request';
 export * from './registration-request';
 export * from './registration-response';
 export * from './signatory';
+export * from './trust-onboarding-alert';
 export * from './trust-onboarding-submission';
 export * from './trust-onboarding-submission-document';
 export * from './trust-onboarding-submission-document-list-item';

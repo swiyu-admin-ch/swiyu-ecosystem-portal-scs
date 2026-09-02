@@ -10,10 +10,14 @@
       @case (BusinessPartnerTrustStatus.VerificationStarted) {
         <mat-chip [class]="businessPartner()!.trustVerificationStatus">
           <mat-icon matChipAvatar svgIcon="info_circle" />
-          {{
-            "eportal_global_status_trust_identity_onboarding_VerificationStarted"
-              | translate: { days: daysRemainingForTrustVerificationStatus() }
-          }}
+          @if (daysRemainingForVerification() !== null) {
+            {{
+              "eportal_global_status_trust_identity_onboarding_VerificationStarted"
+                | translate: { days: daysRemainingForVerification() }
+            }}
+          } @else {
+            {{ "eportal_global_status_trust_identity_onboarding_VerificationStarted_noDays" | translate }}
+          }
         </mat-chip>
       }
       @case (BusinessPartnerTrustStatus.InformationRequested) {
@@ -23,10 +27,10 @@
             svgIcon="info_circle"
             [matTooltip]="'eportal_adminOverview_informationRequested_tooltip' | translate"
           />
-          @if (daysRemainingForTrustVerificationStatus() !== null) {
+          @if (daysRemainingForVerification() !== null) {
             {{
               "eportal_global_status_trust_identity_onboarding_InformationRequested"
-                | translate: { days: daysRemainingForTrustVerificationStatus() }
+                | translate: { days: daysRemainingForVerification() }
             }}
           } @else {
             {{ "eportal_global_status_trust_identity_onboarding_InformationRequested_noDays" | translate }}
@@ -54,10 +58,14 @@
       @case (BusinessPartnerTrustStatus.ReVerificationStarted) {
         <mat-chip [class]="businessPartner()!.trustVerificationStatus">
           <mat-icon matChipAvatar svgIcon="info_circle" />
-          {{
-            "eportal_global_status_trust_identity_onboarding_ReVerificationStarted"
-              | translate: { days: daysRemainingForTrustVerificationStatus() }
-          }}
+          @if (daysRemainingForVerification() !== null) {
+            {{
+              "eportal_global_status_trust_identity_onboarding_ReVerificationStarted"
+                | translate: { days: daysRemainingForVerification() }
+            }}
+          } @else {
+            {{ "eportal_global_status_trust_identity_onboarding_ReVerificationStarted_noDays" | translate }}
+          }
         </mat-chip>
       }
     }

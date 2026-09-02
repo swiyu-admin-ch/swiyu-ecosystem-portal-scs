@@ -18,6 +18,7 @@ import {
   IdentifierApi,
   IdentifierResponse,
   ProofOfPossession,
+  TrustOnboardingAlert,
   TrustOnboardingApi,
   TrustOnboardingSubmission
 } from '../../api/generated';
@@ -85,8 +86,9 @@ export class BusinessPartnerDetailComponent {
       // if TrustOnboardingSubmission is Unsubmitted
       this.trustOnboardingSubmission()?.status === TrustOnboardingSubmission.StatusEnum.Succeeded
   );
+  // Alerts are evaluated by the backend (see TrustOnboardingAlertEvaluator) and rendered here as-is.
   alertTrustOnboardingInformationRequestedVisible = computed(
-    () => this.trustOnboardingSubmission()?.status === TrustOnboardingSubmission.StatusEnum.InformationRequested
+    () => this.trustOnboardingSubmission()?.alerts?.includes(TrustOnboardingAlert.InformationRequested) ?? false
   );
   protected readonly AppRoutes = AppRoutes;
   private readonly businessPartnerApi = inject(BusinessPartnerApi);

@@ -11,6 +11,7 @@ import {Address} from './address';
 import {Contact} from './contact';
 import {ProofOfPossession} from './proof-of-possession';
 import {Signatory} from './signatory';
+import {TrustOnboardingAlert} from './trust-onboarding-alert';
 
 export interface TrustOnboardingSubmission {
   id: string;
@@ -33,6 +34,8 @@ export interface TrustOnboardingSubmission {
   correspondingLanguage?: TrustOnboardingSubmission.CorrespondingLanguageEnum;
   initiatedAt?: string;
   submittedAt?: string;
+  resubmitRequiredUntil?: string;
+  alerts?: Array<TrustOnboardingAlert>;
 }
 export namespace TrustOnboardingSubmission {
   export const SigningRuleEnum = {
@@ -46,7 +49,8 @@ export namespace TrustOnboardingSubmission {
     Submitted: 'SUBMITTED',
     Succeeded: 'SUCCEEDED',
     Rejected: 'REJECTED',
-    InformationRequested: 'INFORMATION_REQUESTED'
+    InformationRequested: 'INFORMATION_REQUESTED',
+    Resubmitted: 'RESUBMITTED'
   } as const;
   export type StatusEnum = (typeof StatusEnum)[keyof typeof StatusEnum];
   export const BusinessPartnerTypeEnum = {

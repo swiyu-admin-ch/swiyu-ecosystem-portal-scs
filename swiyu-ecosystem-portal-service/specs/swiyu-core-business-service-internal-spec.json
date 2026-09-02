@@ -2562,7 +2562,7 @@
       },
       "BusinessPartnerType": {
         "type": "string",
-        "description": "| Value                        | Description                                                   |\n| ---------------------------- | ------------------------------------------------------------- |\n| GOVERNMENTAL_INSTITUTION     | Governmental institutions like JPD or ASTRA                   |\n| BUSINESS                     | Business entities and corporations                            |\n| INDIVIDUAL                   | Individual persons                                            |\n| UNKNOWN                      | Deprecated – legacy placeholder, all entries migrated to BUSINESS |\n",
+        "description": "| Value                        | Description                                                   |\n| ---------------------------- | ------------------------------------------------------------- |\n| GOVERNMENTAL_INSTITUTION     | Governmental institutions like JPD or ASTRA                   |\n| BUSINESS                     | Business entities and corporations                            |\n| INDIVIDUAL                   | Individual persons                                            |\n| UNKNOWN                      | Deprecated \u2013 legacy placeholder, all entries migrated to BUSINESS |\n",
         "enum": [
           "GOVERNMENTAL_INSTITUTION",
           "BUSINESS",
@@ -2625,7 +2625,7 @@
             "example": {
               "default": "Swiss Confederation",
               "de-CH": "Schweizerische Eidgenossenschaft",
-              "fr-CH": "Confédération suisse",
+              "fr-CH": "Conf\u00e9d\u00e9ration suisse",
               "it-CH": "Confederazione Svizzera",
               "en-CH": "Swiss Confederation",
               "rm-CH": "Confederaziun svizra"
@@ -2850,6 +2850,11 @@
             "format": "date-time",
             "example": "2024-10-29T09:35:16.809924Z"
           },
+          "resubmitRequiredUntil": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Deadline until which the user can resubmit/adjust the submission after more information was requested"
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time",
@@ -2884,7 +2889,8 @@
           "SUBMITTED",
           "SUCCEEDED",
           "REJECTED",
-          "INFORMATION_REQUESTED"
+          "INFORMATION_REQUESTED",
+          "RESUBMITTED"
         ]
       },
       "UpdateBusinessEntity": {
@@ -3317,7 +3323,8 @@
           "VERIFICATION_NOT_STARTED",
           "VERIFICATION_STARTED",
           "VERIFICATION_IN_PROGRESS",
-          "VERIFICATION_INFORMATION_REQUESTED",
+          "VERIFICATION_INFORMATION_REQUESTED_REQUIRED",
+          "VERIFICATION_INFORMATION_REQUESTED_STARTED",
           "VERIFICATION_REJECTED",
           "VERIFICATION_SUCCEEDED",
           "RE_VERIFICATION_REQUIRED",

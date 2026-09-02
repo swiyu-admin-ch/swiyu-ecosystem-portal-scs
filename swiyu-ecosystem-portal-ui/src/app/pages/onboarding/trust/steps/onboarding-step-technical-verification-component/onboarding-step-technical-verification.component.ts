@@ -126,9 +126,9 @@ export class OnboardingStepTechnicalVerificationComponent extends AbstractOnboar
     return this.wizardService.submission()?.proofOfPossessionList?.filter(pop => pop.status === 'VALID').length ?? 0;
   });
 
-  protected daysRemainingForVerification = computed(() => {
-    return 42; //  only visual. currently there is no logic implemented regarding expiry of submission
-  });
+  protected daysRemainingForVerification = computed(
+    () => this.wizardService.businessPartner()?.daysRemainingForVerification
+  );
 
   protected copyPOPUrl() {
     const popUrl = this.appConfig.portalUrl;

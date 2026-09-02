@@ -22,5 +22,14 @@ public record BusinessPartnerListItemDto(
     @Schema(
         description = "Number of days remaining until the time limit of the current aggregated state of the trust process expires"
     )
-    Long daysRemainingForTrustVerificationStatus
+    Long daysRemainingForTrustVerificationStatus,
+
+    @Schema(
+        description = "Deadline by which the current verification step must be completed, " +
+        "reported by the centralized verification-progress endpoint."
+    )
+    Instant verificationProgressMaxDate,
+
+    @Schema(description = "Number of days remaining until the verification step deadline expires")
+    Long daysRemainingForVerification
 ) {}

@@ -61,6 +61,27 @@ class BusinessPartnerMapperTest {
     }
 
     @Test
+    void toBusinessPartnerDto_whenVerificationProgressMaxDateIsNull_thenVerificationDaysRemainingIsNull() {
+        var bp = minimalBusinessPartner();
+
+        BusinessPartnerDto dto = BusinessPartnerMapper.toBusinessPartnerDto(bp, null);
+
+        assertNull(dto.verificationProgressMaxDate());
+        assertNull(dto.daysRemainingForVerification());
+    }
+
+    @Test
+    void toBusinessPartnerDto_whenVerificationProgressMaxDateIs30DaysFromNow_thenVerificationDaysRemainingIs30() {
+        var bp = minimalBusinessPartner();
+        var maxDate = Instant.now().plus(30, ChronoUnit.DAYS);
+
+        BusinessPartnerDto dto = BusinessPartnerMapper.toBusinessPartnerDto(bp, maxDate);
+
+        assertEquals(maxDate, dto.verificationProgressMaxDate());
+        assertEquals(30L, dto.daysRemainingForVerification());
+    }
+
+    @Test
     void toBusinessPartnerListItemDto_whenMaxDateIsNull_thenDaysRemainingIsNull() {
         var bp = minimalBusinessPartnerListItem();
         bp.setMaxDateForTrustVerificationStatus(null);
@@ -88,5 +109,26 @@ class BusinessPartnerMapperTest {
         BusinessPartnerListItemDto dto = BusinessPartnerMapper.toBusinessPartnerListItemDto(bp);
 
         assertEquals(-5L, dto.daysRemainingForTrustVerificationStatus());
+    }
+
+    @Test
+    void toBusinessPartnerListItemDto_whenVerificationProgressMaxDateIsNull_thenVerificationDaysRemainingIsNull() {
+        var bp = minimalBusinessPartnerListItem();
+
+        BusinessPartnerListItemDto dto = BusinessPartnerMapper.toBusinessPartnerListItemDto(bp, null);
+
+        assertNull(dto.verificationProgressMaxDate());
+        assertNull(dto.daysRemainingForVerification());
+    }
+
+    @Test
+    void toBusinessPartnerListItemDto_whenVerificationProgressMaxDateIs30DaysFromNow_thenVerificationDaysRemainingIs30() {
+        var bp = minimalBusinessPartnerListItem();
+        var maxDate = Instant.now().plus(30, ChronoUnit.DAYS);
+
+        BusinessPartnerListItemDto dto = BusinessPartnerMapper.toBusinessPartnerListItemDto(bp, maxDate);
+
+        assertEquals(maxDate, dto.verificationProgressMaxDate());
+        assertEquals(30L, dto.daysRemainingForVerification());
     }
 }

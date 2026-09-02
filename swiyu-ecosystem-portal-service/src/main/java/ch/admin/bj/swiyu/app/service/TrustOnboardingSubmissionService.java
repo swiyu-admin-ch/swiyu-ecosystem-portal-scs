@@ -1,7 +1,5 @@
 package ch.admin.bj.swiyu.app.service;
 
-import static ch.admin.bj.swiyu.app.service.TrustOnboardingSubmissionMapper.toTrustOnboardingSubmissionDto;
-
 import ch.admin.bj.swiyu.app.api.LatestTrustOnboardingSubmissionRequestDto;
 import ch.admin.bj.swiyu.app.api.TrustOnboardingSubmissionDto;
 import ch.admin.bj.swiyu.app.common.stream.MultipartFileResource;
@@ -32,9 +30,10 @@ public class TrustOnboardingSubmissionService {
 
     private final TrustOnboardingSubmissionApi trustOnboardingSubmissionApi;
     private final BusinessPartnerValidator businessPartnerValidator;
+    private final BusinessPartnerService businessPartnerService;
 
     public TrustOnboardingSubmissionDto createTrustOnboardingSubmission(TrustOnboardingSubmissionRequest dto) {
-        return toTrustOnboardingSubmissionDto(this.trustOnboardingSubmissionApi.createOnboardingSubmission(dto));
+        return toDto(this.trustOnboardingSubmissionApi.createOnboardingSubmission(dto));
     }
 
     public Page<TrustOnboardingSubmissionListItem> getTrustOnboardingSubmissions(Pageable pageable) {
@@ -52,14 +51,22 @@ public class TrustOnboardingSubmissionService {
     }
 
     public TrustOnboardingSubmissionDto getTrustOnboardingSubmission(UUID id) {
-        return toTrustOnboardingSubmissionDto(this.trustOnboardingSubmissionApi.getTrustOnboardingSubmission(id));
+        return toDto(this.trustOnboardingSubmissionApi.getTrustOnboardingSubmission(id));
     }
 
     public TrustOnboardingSubmissionDto updateTrustOnboardingSubmission(UUID id, TrustOnboardingSubmissionRequest dto) {
         businessPartnerValidator.validateBusinessPartnerTypeOnboardingIsAllowed(dto.getRequestedPartnerType());
-        return toTrustOnboardingSubmissionDto(
-            this.trustOnboardingSubmissionApi.updateTrustOnboardingSubmission(id, dto)
-        );
+        return toDto(this.trustOnboardingSubmissionApi.updateTrustOnboardingSubmission(id, dto));
+    }
+
+    /**
+     * Builds the submission DTO, enriching it with the canonical verification deadline
+     * ({@code maxDateForStatus}) from the verification-progress endpoint. This is the single source
+     * of truth for the UI deadline, so the alerts derived here always agree with the trust chip.
+     */
+    private TrustOnboardingSubmissionDto toDto(TrustOnboardingSubmission submission) {
+        var maxDateForStatus = businessPartnerService.getVerificationProgressMaxDate(submission.getPartnerId());
+        return TrustOnboardingSubmissionMapper.toTrustOnboardingSubmissionDto(submission, maxDateForStatus);
     }
 
     public void submitOnboardingSubmission(UUID id, TrustOnboardingSubmitRequest request) {

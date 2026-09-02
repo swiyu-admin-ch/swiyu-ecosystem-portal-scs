@@ -5,6 +5,7 @@ import ch.admin.bj.swiyu.app.api.BusinessPartnerListItemDto;
 import ch.admin.bj.swiyu.app.api.PartnerCreationRequestDto;
 import ch.admin.bj.swiyu.app.domain.BusinessPartnerValidator;
 import ch.admin.bj.swiyu.client.business.internal.api.BusinessPartnerV2Api;
+import java.time.Instant;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
@@ -38,7 +39,12 @@ public class BusinessPartnerService {
                 businessPartners
                     .getContent()
                     .stream()
-                    .map(BusinessPartnerMapper::toBusinessPartnerListItemDto)
+                    .map(item ->
+                        BusinessPartnerMapper.toBusinessPartnerListItemDto(
+                            item,
+                            verificationProgressMaxDate(item.getId())
+                        )
+                    )
                     .toList(),
                 PageRequest.of(
                     Math.toIntExact(businessPartners.getPage().getNumber()),
@@ -51,7 +57,25 @@ public class BusinessPartnerService {
 
     public BusinessPartnerDto getBusinessPartner(UUID businessPartnerId) {
         var businessPartner = businessPartnerV2Api.getBusinessPartner(businessPartnerId);
-        return BusinessPartnerMapper.toBusinessPartnerDto(businessPartner);
+        return BusinessPartnerMapper.toBusinessPartnerDto(
+            businessPartner,
+            verificationProgressMaxDate(businessPartnerId)
+        );
+    }
+
+    private Instant verificationProgressMaxDate(UUID businessPartnerId) {
+        var progress = businessPartnerV2Api.getVerificationProgress(businessPartnerId);
+        return progress == null ? null : progress.getMaxDateForStatus();
+    }
+
+    /**
+     * Returns the canonical verification deadline ({@code maxDateForStatus}) reported by the centralized
+     * verification-progress endpoint for the given business partner, or {@code null} when the current
+     * verification state has no deadline. This is the single source of truth for any UI deadline (chip,
+     * alerts, resubmission countdown) so that all consumers agree.
+     */
+    public Instant getVerificationProgressMaxDate(UUID businessPartnerId) {
+        return verificationProgressMaxDate(businessPartnerId);
     }
 
     public BusinessPartnerDto register(PartnerCreationRequestDto partnerCreationRequestDto) {

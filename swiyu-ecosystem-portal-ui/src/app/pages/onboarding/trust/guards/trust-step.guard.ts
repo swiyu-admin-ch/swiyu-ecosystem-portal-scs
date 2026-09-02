@@ -15,7 +15,13 @@ export const canActivateTrustStep: CanActivateFn = (route: ActivatedRouteSnapsho
   const documentsApi = inject(TrustOnboardingDocumentsApi);
 
   return withTrustSubmission(route, (submission, partnerId, submissionId, router) => {
-    if (submission.status !== TrustOnboardingSubmission.StatusEnum.Unsubmitted) {
+    // A submission can only be edited while it is UNSUBMITTED or in the adjustment state
+    // INFORMATION_REQUESTED (EID-6376). RESUBMITTED behaves like SUBMITTED (locked) and
+    // therefore redirects to the approval route. All other states also redirect there.
+    const isEditable =
+      submission.status === TrustOnboardingSubmission.StatusEnum.Unsubmitted ||
+      submission.status === TrustOnboardingSubmission.StatusEnum.InformationRequested;
+    if (!isEditable) {
       const approvalRoute = AppRoutes.trustOnboardingApproval(partnerId, submissionId);
       const currentStep = route.url[0]?.path;
       if (currentStep === approvalRoute[approvalRoute.length - 1]) {

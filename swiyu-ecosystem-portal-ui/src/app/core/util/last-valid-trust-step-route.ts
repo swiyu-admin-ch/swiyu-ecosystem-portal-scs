@@ -14,10 +14,16 @@ export function getLastValidTrustStepRoute(submission: TrustOnboardingSubmission
 
   if (
     status === TrustOnboardingSubmission.StatusEnum.Submitted ||
+    status === TrustOnboardingSubmission.StatusEnum.Resubmitted ||
     status === TrustOnboardingSubmission.StatusEnum.Succeeded ||
     status === TrustOnboardingSubmission.StatusEnum.Rejected
   ) {
     return AppRoutes.trustOnboardingApproval(partnerId, submissionId);
+  }
+
+  // A request for additional information resets the wizard to the first step (EID-6376).
+  if (status === TrustOnboardingSubmission.StatusEnum.InformationRequested) {
+    return AppRoutes.trustOnboardingProfile(partnerId, submissionId);
   }
 
   if (hasSelectedDids(submission)) {
@@ -42,10 +48,16 @@ export function getLastValidTrustStepRoute$(
 
   if (
     status === TrustOnboardingSubmission.StatusEnum.Submitted ||
+    status === TrustOnboardingSubmission.StatusEnum.Resubmitted ||
     status === TrustOnboardingSubmission.StatusEnum.Succeeded ||
     status === TrustOnboardingSubmission.StatusEnum.Rejected
   ) {
     return of(AppRoutes.trustOnboardingApproval(partnerId, submissionId));
+  }
+
+  // A request for additional information resets the wizard to the first step (EID-6376).
+  if (status === TrustOnboardingSubmission.StatusEnum.InformationRequested) {
+    return of(AppRoutes.trustOnboardingProfile(partnerId, submissionId));
   }
 
   if (!hasSelectedDids(submission)) {

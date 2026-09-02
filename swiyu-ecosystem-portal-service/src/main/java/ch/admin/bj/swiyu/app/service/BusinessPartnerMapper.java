@@ -13,6 +13,14 @@ public class BusinessPartnerMapper {
 
     @SuppressWarnings({ "java:S1874" }) // Remove name with contract in EID-6303
     public static BusinessPartnerListItemDto toBusinessPartnerListItemDto(BusinessPartnerListItem businessPartner) {
+        return toBusinessPartnerListItemDto(businessPartner, null);
+    }
+
+    @SuppressWarnings({ "java:S1874" }) // Remove name with contract in EID-6303
+    public static BusinessPartnerListItemDto toBusinessPartnerListItemDto(
+        BusinessPartnerListItem businessPartner,
+        Instant verificationProgressMaxDate
+    ) {
         return new BusinessPartnerListItemDto(
             businessPartner.getId(),
             businessPartner.getName(),
@@ -23,7 +31,9 @@ public class BusinessPartnerMapper {
             businessPartner.getUpdatedAt(),
             toBusinessPartnerTrustStatusDto(businessPartner.getTrustVerificationStatus()),
             businessPartner.getMaxDateForTrustVerificationStatus(),
-            daysUntil(businessPartner.getMaxDateForTrustVerificationStatus())
+            daysUntil(businessPartner.getMaxDateForTrustVerificationStatus()),
+            verificationProgressMaxDate,
+            daysUntil(verificationProgressMaxDate)
         );
     }
 
@@ -51,6 +61,14 @@ public class BusinessPartnerMapper {
 
     @SuppressWarnings({ "java:S1874" }) // Remove name with contract in EID-6303
     public static BusinessPartnerDto toBusinessPartnerDto(BusinessPartner businessPartner) {
+        return toBusinessPartnerDto(businessPartner, null);
+    }
+
+    @SuppressWarnings({ "java:S1874" }) // Remove name with contract in EID-6303
+    public static BusinessPartnerDto toBusinessPartnerDto(
+        BusinessPartner businessPartner,
+        Instant verificationProgressMaxDate
+    ) {
         if (businessPartner == null) return null;
         return new BusinessPartnerDto(
             businessPartner.getId(),
@@ -67,7 +85,9 @@ public class BusinessPartnerMapper {
             businessPartner.getContactPhone(),
             toBusinessPartnerTrustStatusDto(businessPartner.getTrustVerificationStatus()),
             businessPartner.getMaxDateForTrustVerificationStatus(),
-            daysUntil(businessPartner.getMaxDateForTrustVerificationStatus())
+            daysUntil(businessPartner.getMaxDateForTrustVerificationStatus()),
+            verificationProgressMaxDate,
+            daysUntil(verificationProgressMaxDate)
         );
     }
 

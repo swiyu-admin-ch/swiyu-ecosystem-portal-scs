@@ -15,7 +15,7 @@ class TrustOnboardingSubmissionMapperTest {
         var apiDto = defaultSubmission();
 
         // Act
-        TrustOnboardingSubmissionDto dto = TrustOnboardingSubmissionMapper.toTrustOnboardingSubmissionDto(apiDto);
+        TrustOnboardingSubmissionDto dto = TrustOnboardingSubmissionMapper.toTrustOnboardingSubmissionDto(apiDto, null);
 
         // Assert
         assertEquals(apiDto.getId(), dto.id());
@@ -41,7 +41,7 @@ class TrustOnboardingSubmissionMapperTest {
         apiDto.setSubmittedAt(null);
 
         // Act
-        TrustOnboardingSubmissionDto dto = TrustOnboardingSubmissionMapper.toTrustOnboardingSubmissionDto(apiDto);
+        TrustOnboardingSubmissionDto dto = TrustOnboardingSubmissionMapper.toTrustOnboardingSubmissionDto(apiDto, null);
 
         // Assert
         assertNull(dto.submittedAt());

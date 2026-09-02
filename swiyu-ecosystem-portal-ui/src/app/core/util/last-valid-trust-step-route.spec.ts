@@ -49,6 +49,21 @@ describe('getLastValidTrustStepRoute', () => {
     );
   });
 
+  it('should return approval route for resubmitted status', () => {
+    const submission = createSubmission({status: TrustOnboardingSubmission.StatusEnum.Resubmitted});
+    expect(getLastValidTrustStepRoute(submission)).toEqual(
+      AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID)
+    );
+  });
+
+  it('should always return profile route for information_requested status', () => {
+    const submission = createSubmission({
+      status: TrustOnboardingSubmission.StatusEnum.InformationRequested,
+      proofOfPossessionList: [{did: 'did:key:1', nonce: 'n1', status: ProofOfPossession.StatusEnum.Valid}]
+    });
+    expect(getLastValidTrustStepRoute(submission)).toEqual(AppRoutes.trustOnboardingProfile(PARTNER_ID, SUBMISSION_ID));
+  });
+
   it('should return technical-proof route when a proof has been supplied', () => {
     const submission = createSubmission({
       proofOfPossessionList: [{did: 'did:key:1', nonce: 'n1', status: ProofOfPossession.StatusEnum.Valid}]
@@ -116,6 +131,21 @@ describe('getLastValidTrustStepRoute$', () => {
   it('should return approval route for rejected status', async () => {
     const submission = createSubmission({status: TrustOnboardingSubmission.StatusEnum.Rejected});
     expect(await runFn(submission)).toEqual(AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID));
+  });
+
+  it('should return approval route for resubmitted status', async () => {
+    const submission = createSubmission({status: TrustOnboardingSubmission.StatusEnum.Resubmitted});
+    expect(await runFn(submission)).toEqual(AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID));
+  });
+
+  it('should always return profile route for information_requested status', async () => {
+    const submission = createSubmission({
+      status: TrustOnboardingSubmission.StatusEnum.InformationRequested,
+      proofOfPossessionList: [{did: 'did:key:1', nonce: 'n1', status: ProofOfPossession.StatusEnum.NotSupplied}]
+    });
+    expect(await runFn(submission, createDocumentsApi([]))).toEqual(
+      AppRoutes.trustOnboardingProfile(PARTNER_ID, SUBMISSION_ID)
+    );
   });
 
   it('should return profile route for unsubmitted with no data', async () => {

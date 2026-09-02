@@ -13,8 +13,6 @@ import {BusinessPartner, BusinessPartnerListItem, BusinessPartnerTrustStatus} fr
 })
 export class BusinessPartnerTrustChipComponent {
   readonly businessPartner = input.required<BusinessPartnerListItem | BusinessPartner | undefined>();
-  readonly daysRemainingForTrustVerificationStatus = computed(
-    () => this.businessPartner()?.daysRemainingForTrustVerificationStatus ?? undefined
-  );
+  readonly daysRemainingForVerification = computed(() => this.businessPartner()?.daysRemainingForVerification ?? null);
   protected readonly BusinessPartnerTrustStatus = BusinessPartnerTrustStatus;
 }

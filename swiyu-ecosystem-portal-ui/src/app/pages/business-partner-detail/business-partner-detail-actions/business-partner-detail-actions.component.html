@@ -45,7 +45,7 @@
 
   <!-- supplement request — shown when additional information is requested. route: EIDARTFE-1300 -->
   @if (showSupplementRequest()) {
-    <a class="ob-link-card" tabindex="0">
+    <a [routerLink]="trustOnboardingStepActionRoute()" class="ob-link-card" tabindex="0">
       <mat-card>
         <mat-card-header>
           <mat-card-title>

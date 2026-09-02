@@ -29,5 +29,7 @@ public record TrustOnboardingSubmissionDto(
     String partnerNote,
     Language correspondingLanguage,
     @Schema(example = "2024-10-29T09:35:16.809924Z") Instant initiatedAt,
-    @Schema(example = "2024-10-29T09:35:16.809924Z") Instant submittedAt
+    @Schema(example = "2024-10-29T09:35:16.809924Z") Instant submittedAt,
+    @Schema(example = "2024-10-29T09:35:16.809924Z") Instant resubmitRequiredUntil,
+    @NotNull List<TrustOnboardingAlertTypeDto> alerts
 ) {}

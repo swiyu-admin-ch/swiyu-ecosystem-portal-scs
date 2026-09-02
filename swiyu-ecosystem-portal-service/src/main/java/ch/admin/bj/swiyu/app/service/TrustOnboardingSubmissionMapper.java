@@ -2,12 +2,16 @@ package ch.admin.bj.swiyu.app.service;
 
 import ch.admin.bj.swiyu.app.api.TrustOnboardingSubmissionDto;
 import ch.admin.bj.swiyu.client.business.internal.model.TrustOnboardingSubmission;
+import java.time.Instant;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class TrustOnboardingSubmissionMapper {
 
-    public static TrustOnboardingSubmissionDto toTrustOnboardingSubmissionDto(TrustOnboardingSubmission apiDto) {
+    public static TrustOnboardingSubmissionDto toTrustOnboardingSubmissionDto(
+        TrustOnboardingSubmission apiDto,
+        Instant maxDateForStatus
+    ) {
         return new TrustOnboardingSubmissionDto(
             apiDto.getId(),
             apiDto.getVersion(),
@@ -28,7 +32,9 @@ public class TrustOnboardingSubmissionMapper {
             apiDto.getPartnerNote(),
             apiDto.getCorrespondingLanguage(),
             apiDto.getInitiatedAt(),
-            apiDto.getSubmittedAt()
+            apiDto.getSubmittedAt(),
+            apiDto.getResubmitRequiredUntil(),
+            TrustOnboardingAlertEvaluator.evaluate(apiDto, maxDateForStatus)
         );
     }
 }
