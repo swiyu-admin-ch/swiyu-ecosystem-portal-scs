@@ -8,7 +8,9 @@
  * Do not edit the class manually.
  */
 import {Address} from './address';
+import {BusinessPartnerIdentity} from './business-partner-identity';
 import {BusinessPartnerTrustStatus} from './business-partner-trust-status';
+import {Contact} from './contact';
 
 export interface BusinessPartner {
   /**
@@ -44,8 +46,13 @@ export interface BusinessPartner {
   uid?: string;
   /**
    * Address of the partner
+   * @deprecated
    */
   address?: Address;
+  /**
+   * Contact person details
+   */
+  contact?: Contact;
   contactPhone: string;
   /**
    * Aggregated state of the trust process for this business partner
@@ -59,6 +66,10 @@ export interface BusinessPartner {
    * Number of days remaining until the time limit of the current aggregated state of the trust process expires
    */
   daysRemainingForTrustVerificationStatus?: number;
+  /**
+   * Business partner identity as managed by the trust management service
+   */
+  businessPartnerIdentity?: BusinessPartnerIdentity;
   /**
    * Deadline by which the current verification step must be completed,
    * reported by the centralized verification-progress endpoint.

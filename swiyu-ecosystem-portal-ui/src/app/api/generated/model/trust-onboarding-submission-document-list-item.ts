@@ -12,7 +12,7 @@ export interface TrustOnboardingSubmissionDocumentListItem {
   id: string;
   createdAt: string;
   updatedAt: string;
-  trustOnboardingSubmissionId?: string;
+  trustOnboardingSubmissionId?: string | null;
   name: string;
   mediaType: string;
   type: TrustOnboardingSubmissionDocumentListItem.TypeEnum;

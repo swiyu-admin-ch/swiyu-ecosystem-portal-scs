@@ -3,7 +3,7 @@
   "info": {
     "title": "Internal API",
     "description": "IF-009 - Internal API",
-    "version": "3.42.24-SNAPSHOT"
+    "version": "3.42.27-SNAPSHOT"
   },
   "servers": [
     {
@@ -2790,6 +2790,15 @@
           "contactPerson": {
             "$ref": "#/components/schemas/Contact"
           },
+          "type": {
+            "type": "string",
+            "description": "Submission type for trust onboarding",
+            "enum": [
+              "REGISTRATION",
+              "PROFILE_CHANGE",
+              "RENEWAL"
+            ]
+          },
           "version": {
             "type": "integer",
             "format": "int64"
@@ -2868,7 +2877,6 @@
         },
         "required": [
           "address",
-          "contactPerson",
           "createdAt",
           "entityEmail",
           "entityName",
@@ -2878,6 +2886,7 @@
           "proofOfPossessions",
           "registryIds",
           "status",
+          "type",
           "updatedAt",
           "version"
         ]
@@ -3995,6 +4004,11 @@
       "prometheus": {
         "type": "http",
         "scheme": "basic"
+      },
+      "OIDC": {
+        "type": "openIdConnect",
+        "description": "OAuth2-Authentication",
+        "openIdConnectUrl": "https://swiyu-oauth-mock-server-d.apps.p-szb-ros-shrd-npr-01.cloud.admin.ch/.well-known/openid-configuration"
       }
     }
   }

@@ -12,7 +12,7 @@ export interface ProofOfPossession {
   did: string;
   nonce: string;
   status: ProofOfPossession.StatusEnum;
-  verifiedAt?: string;
+  verifiedAt?: string | null;
 }
 export namespace ProofOfPossession {
   export const StatusEnum = {

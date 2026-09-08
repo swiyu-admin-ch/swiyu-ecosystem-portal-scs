@@ -8,22 +8,15 @@
  * Do not edit the class manually.
  */
 import {Address} from './address';
+import {Language} from './language';
 
 export interface Contact {
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  correspondingLanguage?: Contact.CorrespondingLanguageEnum;
+  correspondingLanguage?: Language;
+  /** @deprecated */
   address?: Address;
 }
-export namespace Contact {
-  export const CorrespondingLanguageEnum = {
-    En: 'EN',
-    De: 'DE',
-    Fr: 'FR',
-    It: 'IT',
-    Rm: 'RM'
-  } as const;
-  export type CorrespondingLanguageEnum = (typeof CorrespondingLanguageEnum)[keyof typeof CorrespondingLanguageEnum];
-}
+export namespace Contact {}

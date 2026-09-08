@@ -2,6 +2,7 @@ package ch.admin.bj.swiyu.app.service;
 
 import ch.admin.bj.swiyu.app.api.BusinessPartnerDto;
 import ch.admin.bj.swiyu.app.api.BusinessPartnerListItemDto;
+import ch.admin.bj.swiyu.app.api.BusinessPartnerUpdateRequestDto;
 import ch.admin.bj.swiyu.app.api.PartnerCreationRequestDto;
 import ch.admin.bj.swiyu.app.domain.BusinessPartnerValidator;
 import ch.admin.bj.swiyu.client.business.internal.api.BusinessPartnerV2Api;
@@ -27,7 +28,6 @@ public class BusinessPartnerService {
             .stream()
             .map(order -> order.getProperty() + "," + order.getDirection().name().toLowerCase())
             .toList();
-
         var businessPartners = businessPartnerV2Api.getBusinessPartners(
             pageable.getPageNumber(),
             pageable.getPageSize(),
@@ -84,6 +84,15 @@ public class BusinessPartnerService {
         );
         var createPartner = BusinessPartnerMapper.toCreatePartner(partnerCreationRequestDto);
         var businessPartner = this.businessPartnerV2Api.createBusinessPartner(createPartner);
+        return BusinessPartnerMapper.toBusinessPartnerDto(businessPartner);
+    }
+
+    public BusinessPartnerDto updateBusinessPartner(
+        UUID businessPartnerId,
+        BusinessPartnerUpdateRequestDto updateRequestDto
+    ) {
+        var update = BusinessPartnerMapper.toBusinessPartnerUpdate(updateRequestDto);
+        var businessPartner = businessPartnerV2Api.updateBusinessPartner(businessPartnerId, update);
         return BusinessPartnerMapper.toBusinessPartnerDto(businessPartner);
     }
 }

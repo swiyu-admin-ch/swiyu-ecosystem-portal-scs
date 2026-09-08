@@ -1,12 +1,12 @@
 {
   "name": "swiyu-ecosystem-portal-ui",
-  "version": "1.21.24",
+  "version": "1.22.3",
   "private": true,
   "scripts": {
     "build": "ng build --optimization true --output-hashing all --i18n-missing-translation error --i18n-duplicate-translation error",
     "format": "ng lint --fix && stylelint --fix \"src/**/*.scss\" && npm run prettier",
     "pregenerate:api": "rimraf src/app/api/generated",
-    "generate:api": "HTTPS_PROXY=\"\" NODE_TLS_REJECT_UNAUTHORIZED='0' openapi-generator-cli generate --generator-key angular-client-api",
+    "generate:api": "NODE_USE_SYSTEM_CA=1 openapi-generator-cli generate --generator-key angular-client-api",
     "postgenerate:api": "./node_modules/.bin/prettier --write \"src/app/api/generated/**/*.ts\"",
     "generate:translations": "ngx-translate-extract --sort --input ./src/app --output ./src/assets/i18n/{de,fr,it,en}.json --clean --format json",
     "postgenerate:translations": "./node_modules/.bin/prettier --write \"src/assets/i18n/*.json\"",
@@ -75,9 +75,10 @@
   "engines": {
     "node": ">=22.0.0"
   },
-  "_comment": "Override `less` to 4.9.0 to drop the vulnerable transitive image-size@0.5.5 (pulled by less 4.4.2). image-size has NO fixed version for the infinite-loop CVEs SNYK-JS-IMAGESIZE-17295814/17295816 (CVE-2025-71329/71330); less 4.9.0 replaces image-size with probe-image-size. Safe here because the app uses SCSS only (no .less files), so less never compiles anything. Revisit when next bumping the Angular CLI/build tooling.",
+  "_comment": "Overrides to drop vulnerable transitive deps of @angular-devkit/build-angular: `fast-uri` to 3.1.7 fixes SNYK-JS-FASTURI-19502739/19502854 pulled via ajv; `undici` to ^7.29.1 fixes the undici@7 CVEs pulled via @angular/build.",
   "overrides": {
-    "less": "4.9.0"
+    "fast-uri": "3.1.7",
+    "undici": "^7.29.1"
   },
   "jestSonar": {
     "reportPath": "./coverage/sonarQube",

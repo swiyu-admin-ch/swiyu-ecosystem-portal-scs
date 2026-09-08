@@ -63,3 +63,53 @@ mat-card-content {
   font-weight: 400;
   word-break: break-all;
 }
+
+.edit-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.cost-summary {
+  border-top: 1px solid $ob-gray-lighter;
+  padding-top: $sw-spc-md;
+  margin-top: $sw-spc-sm;
+}
+
+.cost-summary-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: $sw-spc-xl;
+}
+
+.cost-summary-field {
+  display: flex;
+  flex-direction: column;
+  gap: $sw-spc-xxs;
+
+  &--right {
+    text-align: right;
+    align-items: flex-end;
+    flex-shrink: 0;
+  }
+}
+
+.cost-summary-price {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.update-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: $sw-spc-md;
+}
+
+.profile-change-alert {
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+}

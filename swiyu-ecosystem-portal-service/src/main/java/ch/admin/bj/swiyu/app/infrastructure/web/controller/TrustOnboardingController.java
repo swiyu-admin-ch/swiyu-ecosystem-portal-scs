@@ -2,9 +2,9 @@ package ch.admin.bj.swiyu.app.infrastructure.web.controller;
 
 import ch.admin.bj.swiyu.app.api.LatestTrustOnboardingSubmissionRequestDto;
 import ch.admin.bj.swiyu.app.api.TrustOnboardingSubmissionDto;
+import ch.admin.bj.swiyu.app.api.TrustOnboardingSubmissionRequestDto;
 import ch.admin.bj.swiyu.app.service.TrustOnboardingSubmissionService;
 import ch.admin.bj.swiyu.client.business.internal.model.TrustOnboardingSubmissionListItem;
-import ch.admin.bj.swiyu.client.business.internal.model.TrustOnboardingSubmissionRequest;
 import ch.admin.bj.swiyu.client.business.internal.model.TrustOnboardingSubmitRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,12 +31,12 @@ public class TrustOnboardingController {
 
     private TrustOnboardingSubmissionService trustOnboardingSubmissionService;
 
-    @PreAuthorize("hasRoleForPartner('trustonboardingsubmission','write', #submission.getPartnerId())")
+    @PreAuthorize("hasRoleForPartner('trustonboardingsubmission','write', #submission.partnerId())")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new trust onboarding submission")
     public TrustOnboardingSubmissionDto createTrustOnboardingSubmission(
-        @RequestBody TrustOnboardingSubmissionRequest submission
+        @Valid @RequestBody TrustOnboardingSubmissionRequestDto submission
     ) {
         return trustOnboardingSubmissionService.createTrustOnboardingSubmission(submission);
     }
@@ -76,12 +76,12 @@ public class TrustOnboardingController {
         return trustOnboardingSubmissionService.getLatestTrustOnboardingSubmission(filter);
     }
 
-    @PreAuthorize("hasRoleForPartner('trustonboardingsubmission','write', #request.getPartnerId())")
+    @PreAuthorize("hasRoleForPartner('trustonboardingsubmission','write', #request.partnerId())")
     @PutMapping("/{id}")
     @Operation(summary = "Update a trust onboarding submission")
     public TrustOnboardingSubmissionDto updateTrustOnboardingSubmission(
         @PathVariable UUID id,
-        @RequestBody TrustOnboardingSubmissionRequest request
+        @Valid @RequestBody TrustOnboardingSubmissionRequestDto request
     ) {
         return trustOnboardingSubmissionService.updateTrustOnboardingSubmission(id, request);
     }

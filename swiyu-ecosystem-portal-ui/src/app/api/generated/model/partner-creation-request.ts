@@ -11,7 +11,7 @@ import {Address} from './address';
 import {Contact} from './contact';
 
 export interface PartnerCreationRequest {
-  uid?: string;
+  uid?: string | null;
   organizationName: string;
   address: Address;
   contact: Contact;

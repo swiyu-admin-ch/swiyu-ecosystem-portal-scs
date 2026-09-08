@@ -21,10 +21,25 @@
   gap: $sw-spc-xl;
 }
 
-.info-cards-row {
-  display: flex;
+.info-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: $sw-spc-md;
-  flex-wrap: wrap;
+
+  // 3rd tile spans both columns and is centered at half-width
+  > *:last-child {
+    grid-column: 1 / 2;
+  }
+
+  > * {
+    min-height: 0;
+  }
+
+  ::ng-deep mat-card {
+    min-width: 0;
+    height: 100%;
+    box-sizing: border-box;
+  }
 }
 
 .actions {

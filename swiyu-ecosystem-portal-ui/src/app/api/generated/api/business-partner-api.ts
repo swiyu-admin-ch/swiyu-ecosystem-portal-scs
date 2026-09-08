@@ -18,6 +18,8 @@ import {OpenApiHttpParams, QueryParamStyle} from '../query.params';
 // @ts-ignore
 import {BusinessPartner} from '../model/business-partner';
 // @ts-ignore
+import {BusinessPartnerUpdateRequest} from '../model/business-partner-update-request';
+// @ts-ignore
 import {PagedModelBusinessPartnerListItem} from '../model/paged-model-business-partner-list-item';
 // @ts-ignore
 import {PartnerCreationRequest} from '../model/partner-creation-request';
@@ -42,6 +44,11 @@ export interface GetBusinessPartnersRequestParams {
 
 export interface RegisterBusinessPartnerRequestParams {
   partnerCreationRequest: PartnerCreationRequest;
+}
+
+export interface UpdateBusinessPartnerRequestParams {
+  businessPartnerId: string;
+  businessPartnerUpdateRequest: BusinessPartnerUpdateRequest;
 }
 
 @Injectable({
@@ -409,6 +416,104 @@ export class BusinessPartnerApi extends BaseService {
     return this.httpClient.request<BusinessPartner>('post', `${basePath}${localVarPath}`, {
       context: localVarHttpContext,
       body: partnerCreationRequest,
+      responseType: <any>responseType_,
+      ...(withCredentials ? {withCredentials} : {}),
+      headers: localVarHeaders,
+      observe: observe,
+      ...(localVarTransferCache !== undefined ? {transferCache: localVarTransferCache} : {}),
+      reportProgress: reportProgress
+    });
+  }
+
+  /**
+   * IF-013.007 - Update BusinessPartner profile
+   * @endpoint put /api/business-partner/{businessPartnerId}
+   * @param requestParameters
+   * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+   * @param reportProgress flag to report request and response progress.
+   * @param options additional options
+   */
+  public updateBusinessPartner(
+    requestParameters: UpdateBusinessPartnerRequestParams,
+    observe?: 'body',
+    reportProgress?: boolean,
+    options?: {httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean}
+  ): Observable<BusinessPartner>;
+  public updateBusinessPartner(
+    requestParameters: UpdateBusinessPartnerRequestParams,
+    observe?: 'response',
+    reportProgress?: boolean,
+    options?: {httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean}
+  ): Observable<HttpResponse<BusinessPartner>>;
+  public updateBusinessPartner(
+    requestParameters: UpdateBusinessPartnerRequestParams,
+    observe?: 'events',
+    reportProgress?: boolean,
+    options?: {httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean}
+  ): Observable<HttpEvent<BusinessPartner>>;
+  public updateBusinessPartner(
+    requestParameters: UpdateBusinessPartnerRequestParams,
+    observe: any = 'body',
+    reportProgress: boolean = false,
+    options?: {httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean}
+  ): Observable<any> {
+    const businessPartnerId = requestParameters?.businessPartnerId;
+    if (businessPartnerId === null || businessPartnerId === undefined) {
+      throw new Error('Required parameter businessPartnerId was null or undefined when calling updateBusinessPartner.');
+    }
+    const businessPartnerUpdateRequest = requestParameters?.businessPartnerUpdateRequest;
+    if (businessPartnerUpdateRequest === null || businessPartnerUpdateRequest === undefined) {
+      throw new Error(
+        'Required parameter businessPartnerUpdateRequest was null or undefined when calling updateBusinessPartner.'
+      );
+    }
+
+    let localVarHeaders = this.defaultHeaders;
+
+    // authentication (OIDC) required
+    localVarHeaders = this.configuration.addCredentialToHeaders('OIDC', 'Authorization', localVarHeaders, 'Bearer ');
+
+    // authentication (bearer-jwt) required
+    localVarHeaders = this.configuration.addCredentialToHeaders(
+      'bearer-jwt',
+      'Authorization',
+      localVarHeaders,
+      'Bearer '
+    );
+
+    const localVarHttpHeaderAcceptSelected: string | undefined =
+      options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+    if (localVarHttpHeaderAcceptSelected !== undefined) {
+      localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+    }
+
+    const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+    const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+    // to determine the Content-Type header
+    const consumes: string[] = ['application/json'];
+    const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+    if (httpContentTypeSelected !== undefined) {
+      localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+    }
+
+    let responseType_: 'text' | 'json' | 'blob' = 'json';
+    if (localVarHttpHeaderAcceptSelected) {
+      if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+        responseType_ = 'text';
+      } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+        responseType_ = 'json';
+      } else {
+        responseType_ = 'blob';
+      }
+    }
+
+    let localVarPath = `/api/business-partner/${this.configuration.encodeParam({name: 'businessPartnerId', value: businessPartnerId, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: 'uuid'})}`;
+    const {basePath, withCredentials} = this.configuration;
+    return this.httpClient.request<BusinessPartner>('put', `${basePath}${localVarPath}`, {
+      context: localVarHttpContext,
+      body: businessPartnerUpdateRequest,
       responseType: <any>responseType_,
       ...(withCredentials ? {withCredentials} : {}),
       headers: localVarHeaders,

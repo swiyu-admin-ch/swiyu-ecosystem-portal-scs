@@ -41,6 +41,7 @@ describe('DetailSectionComponent', () => {
       })
     );
     fixture.componentRef.setInput('fields', [{key: 'testField', label: 'Test Label', type: 'text'}]);
+    fixture.componentRef.setInput('sectionId', 'test-section');
 
     fixture.detectChanges();
   });
@@ -61,5 +62,13 @@ describe('DetailSectionComponent', () => {
     const input = fixture.debugElement.query(By.css('input'));
     expect(input).toBeTruthy();
     expect(input.nativeElement.value).toBe('Test Value');
+  });
+
+  it('should expose a data-cy attribute on editable fields for e2e selection', () => {
+    fixture.componentRef.setInput('isEditing', true);
+    fixture.detectChanges();
+
+    const input = fixture.debugElement.query(By.css('input'));
+    expect(input.nativeElement.getAttribute('data-cy')).toBe('test-section-testField-input');
   });
 });

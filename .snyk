@@ -58,4 +58,22 @@ ignore:
         reason: No fix available in ubi9 JRE base image yet
         expires: 2026-11-09T09:00:00.000Z
         created: 2026-07-01T12:25:16.970Z
+  SNYK-JS-IMAGESIZE-17295814:
+    - '*':
+        reason: >-
+          Transitive build-time-only dependency via
+          @angular-devkit/build-angular > less. The fix requires image-size 1.x,
+          which is API-incompatible with less 4.4.2 (less calls it as a function).
+          Track upstream less/build-angular update.
+        expires: 2026-11-09T09:00:00.000Z
+        created: 2026-08-31T00:00:00.000Z
+  SNYK-JS-IMAGESIZE-17295816:
+    - '*':
+        reason: >-
+          Transitive build-time-only dependency via
+          @angular-devkit/build-angular > less. The fix requires image-size 1.x,
+          which is API-incompatible with less 4.4.2 (less calls it as a function).
+          Track upstream less/build-angular update.
+        expires: 2026-11-09T09:00:00.000Z
+        created: 2026-08-31T00:00:00.000Z
 patch:

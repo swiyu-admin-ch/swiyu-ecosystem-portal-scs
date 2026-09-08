@@ -2,11 +2,13 @@ package ch.admin.bj.swiyu.app.infrastructure.web.controller;
 
 import ch.admin.bj.swiyu.app.api.BusinessPartnerDto;
 import ch.admin.bj.swiyu.app.api.BusinessPartnerListItemDto;
+import ch.admin.bj.swiyu.app.api.BusinessPartnerUpdateRequestDto;
 import ch.admin.bj.swiyu.app.api.PartnerCreationRequestDto;
 import ch.admin.bj.swiyu.app.service.BusinessPartnerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
@@ -51,6 +53,16 @@ public class BusinessPartnerController {
     @GetMapping("/{businessPartnerId}")
     public BusinessPartnerDto getBusinessPartner(@PathVariable UUID businessPartnerId) {
         return this.businessPartnerService.getBusinessPartner(businessPartnerId);
+    }
+
+    @PreAuthorize("hasRoleForPartner('businesspartner','write',#businessPartnerId)")
+    @Operation(summary = "IF-013.007 - Update BusinessPartner profile")
+    @PutMapping("/{businessPartnerId}")
+    public BusinessPartnerDto updateBusinessPartner(
+        @PathVariable UUID businessPartnerId,
+        @Valid @RequestBody BusinessPartnerUpdateRequestDto updateRequestDto
+    ) {
+        return this.businessPartnerService.updateBusinessPartner(businessPartnerId, updateRequestDto);
     }
 
     @PreAuthorize("isAuthenticated()")

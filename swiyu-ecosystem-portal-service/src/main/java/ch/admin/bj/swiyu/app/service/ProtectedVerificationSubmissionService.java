@@ -1,12 +1,13 @@
 package ch.admin.bj.swiyu.app.service;
 
 import static ch.admin.bj.swiyu.app.service.ProtectedVerificationSubmissionMapper.toProtectedVerificationSubmissionDto;
+import static ch.admin.bj.swiyu.app.service.ProtectedVerificationSubmissionMapper.toProtectedVerificationSubmissionRequest;
 
 import ch.admin.bj.swiyu.app.api.ProtectedVerificationSubmissionDto;
+import ch.admin.bj.swiyu.app.api.ProtectedVerificationSubmissionRequestDto;
 import ch.admin.bj.swiyu.client.business.internal.api.ProtectedVerificationSubmissionApi;
 import ch.admin.bj.swiyu.client.business.internal.model.ProtectedVerificationCategory;
 import ch.admin.bj.swiyu.client.business.internal.model.ProtectedVerificationSubmissionListItem;
-import ch.admin.bj.swiyu.client.business.internal.model.ProtectedVerificationSubmissionRequest;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -26,10 +27,12 @@ public class ProtectedVerificationSubmissionService {
     private final ProtectedVerificationSubmissionApi protectedVerificationSubmissionApi;
 
     public ProtectedVerificationSubmissionDto createProtectedVerificationSubmission(
-        ProtectedVerificationSubmissionRequest request
+        ProtectedVerificationSubmissionRequestDto request
     ) {
         return toProtectedVerificationSubmissionDto(
-            this.protectedVerificationSubmissionApi.createProtectedVerificationSubmission(request)
+            this.protectedVerificationSubmissionApi.createProtectedVerificationSubmission(
+                    toProtectedVerificationSubmissionRequest(request)
+                )
         );
     }
 

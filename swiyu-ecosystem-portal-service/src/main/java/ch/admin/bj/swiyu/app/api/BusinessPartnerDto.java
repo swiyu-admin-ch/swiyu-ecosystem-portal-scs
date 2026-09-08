@@ -22,6 +22,7 @@ public record BusinessPartnerDto(
     @Schema(example = "2024-10-29T09:35:16.809924Z") Instant updatedAt,
     @Schema(description = "Enterprise identification number of the partner") String uid,
     @Schema(description = "Address of the partner") AddressDto address,
+    @Schema(description = "Contact person details") ContactDto contact,
     @NotBlank String contactPhone,
     @Schema(description = "Aggregated state of the trust process for this business partner")
     BusinessPartnerTrustStatusDto trustVerificationStatus,
@@ -31,6 +32,9 @@ public record BusinessPartnerDto(
         description = "Number of days remaining until the time limit of the current aggregated state of the trust process expires"
     )
     Long daysRemainingForTrustVerificationStatus,
+
+    @Schema(description = "Business partner identity as managed by the trust management service")
+    BusinessPartnerIdentityDto businessPartnerIdentity,
 
     @Schema(
         description = "Deadline by which the current verification step must be completed, " +

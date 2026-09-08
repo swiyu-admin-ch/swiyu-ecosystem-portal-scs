@@ -4,27 +4,100 @@
       <h2>{{ title() }}</h2>
     </mat-card-title>
     @if (editable()) {
-      <button
-        (click)="edit.emit()"
-        [attr.aria-label]="'app_site_did-details_aria_edit' | translate"
-        disabled
-        mat-icon-button
-        obButton="secondary"
-        type="button"
-      >
-        <mat-icon svgIcon="pencil"></mat-icon>
-      </button>
+      @if (isEditing() && !showStartUpdateButton()) {
+        <!-- Normal edit mode: checkmark (save) + xmark (cancel) icon buttons -->
+        <div class="edit-buttons">
+          <button
+            (click)="save.emit()"
+            [attr.aria-label]="'app_site_did-details_aria_save' | translate"
+            [attr.data-cy]="sectionId() + '-save-btn'"
+            mat-icon-button
+            obButton="secondary"
+            type="button"
+          >
+            <mat-icon svgIcon="checkmark"></mat-icon>
+          </button>
+          <button
+            (click)="discard.emit()"
+            [attr.aria-label]="'app_site_did-details_aria_cancel' | translate"
+            [attr.data-cy]="sectionId() + '-cancel-btn'"
+            mat-icon-button
+            obButton="secondary"
+            type="button"
+          >
+            <mat-icon svgIcon="xmark"></mat-icon>
+          </button>
+        </div>
+      } @else if (!isEditing()) {
+        <!-- View mode: pencil icon button -->
+        <button
+          (click)="edit.emit()"
+          [attr.aria-label]="'app_site_did-details_aria_edit' | translate"
+          [attr.data-cy]="sectionId() + '-edit-btn'"
+          mat-icon-button
+          obButton="secondary"
+          type="button"
+        >
+          <mat-icon svgIcon="pencil"></mat-icon>
+        </button>
+      }
     }
   </mat-card-header>
   <mat-card-content>
-    <form id="partner-detail-form" [formGroup]="group()" class="sw-form-sub-container" obUnsavedChanges>
+    <!-- Orange re-verification warning (ACTIVE identity only, shown when editing profile details) -->
+    @if (isEditing() && showActiveIdentityWarning()) {
+      <ob-alert class="profile-change-alert" [type]="'warning'">
+        {{ "eportal_swiyuProfile_profileChange_alert_body" | translate }}
+      </ob-alert>
+    }
+
+    <form [formGroup]="group()" [id]="sectionId() + '-form'" class="sw-form-sub-container" obUnsavedChanges>
       @for (field of fields(); track field.key) {
-        @if (isEditing() && field.type !== "readonly") {
-          <mat-form-field appearance="outline" class="w-100 density-compact">
-            <mat-label>{{ field.label | translate }}</mat-label>
-            <input [formControlName]="field.key" [type]="field.type === 'date' ? 'date' : 'text'" matInput />
-          </mat-form-field>
+        @if (isEditing() && showActiveIdentityWarning() && field.hideInActiveEdit) {
+          <!-- Hidden in ACTIVE identity edit mode (e.g. date fields) -->
+        } @else if (isEditing() && !isReadOnlyType(field.type)) {
+          @if (field.selectOptions) {
+            <!-- Select field (e.g. correspondingLanguage) -->
+            <mat-form-field appearance="outline" class="w-100 density-compact">
+              <mat-label>{{ field.label | translate }}</mat-label>
+              <mat-select [formControlName]="field.key" [attr.data-cy]="sectionId() + '-' + field.key + '-select'">
+                @for (opt of field.selectOptions; track opt.value) {
+                  <mat-option [value]="opt.value">{{ opt.labelKey | translate }}</mat-option>
+                }
+              </mat-select>
+              @if (field.errors) {
+                <mat-error>
+                  @for (entry of objectEntries(field.errors); track entry[0]) {
+                    @if (group().get(field.key)?.hasError(entry[0])) {
+                      {{ entry[1] | translate }}
+                    }
+                  }
+                </mat-error>
+              }
+            </mat-form-field>
+          } @else {
+            <!-- Text input field -->
+            <mat-form-field appearance="outline" class="w-100 density-compact">
+              <mat-label>{{ field.label | translate }}</mat-label>
+              <input
+                [formControlName]="field.key"
+                matInput
+                type="text"
+                [attr.data-cy]="sectionId() + '-' + field.key + '-input'"
+              />
+              @if (field.errors) {
+                <mat-error>
+                  @for (entry of objectEntries(field.errors); track entry[0]) {
+                    @if (group().get(field.key)?.hasError(entry[0])) {
+                      {{ entry[1] | translate }}
+                    }
+                  }
+                </mat-error>
+              }
+            </mat-form-field>
+          }
         } @else {
+          <!-- Read-only display -->
           <div class="field-row">
             @if (field.type === "array" && group().get(field.key)?.value) {
               <span class="caption">{{ field.label | translate }}</span>
@@ -34,9 +107,7 @@
                     @if (field.canCopy) {
                       <app-clipboard [value]="value" />
                     } @else {
-                      <span>
-                        {{ value || "-" }}
-                      </span>
+                      <span>{{ value || "-" }}</span>
                     }
                   </div>
                 }
@@ -45,21 +116,15 @@
               <div class="field-row">
                 <span class="caption">{{ field.label | translate }}</span>
                 @if (field.canCopy) {
-                  <app-clipboard
-                    [value]="
-                      field.type === 'date'
-                        ? (group().get(field.key)?.value | date: 'shortDate')
-                        : group().get(field.key)?.value
-                    "
-                  />
-                } @else {
+                  <app-clipboard [value]="group().get(field.key)?.value" />
+                } @else if (field.type === "datetime") {
+                  <span>{{ formatDatetime(group().get(field.key)?.value) }}</span>
+                } @else if (field.selectOptions) {
                   <span>
-                    {{
-                      field.type === "date"
-                        ? (group().get(field.key)?.value | date: "shortDate")
-                        : group().get(field.key)?.value || "-"
-                    }}
+                    {{ group().get(field.key)?.value ? (group().get(field.key)?.value | fullLang | translate) : "-" }}
                   </span>
+                } @else {
+                  <span>{{ (group().get(field.key)?.value | translate) || "-" }}</span>
                 }
               </div>
             }
@@ -72,5 +137,41 @@
         </a>
       }
     </form>
+
+    <!-- Cost summary + action buttons (ACTIVE identity only, shown when editing profile details) -->
+    @if (isEditing() && showActiveIdentityWarning()) {
+      <div class="cost-summary">
+        <div class="cost-summary-row">
+          <div class="cost-summary-field">
+            <span class="caption">{{ "eportal_swiyuProfile_profileChange_label_service" | translate }}</span>
+            <span>{{ "eportal_global_TR_productName" | translate }}</span>
+          </div>
+          <div class="cost-summary-field cost-summary-field--right">
+            <span class="caption">{{ "eportal_swiyuProfile_profileChange_label_total" | translate }}</span>
+            <span class="cost-summary-price">{{ "eportal_swiyuProfile_profileChange_price" | translate }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="update-buttons">
+        <button
+          (click)="startUpdate.emit()"
+          [attr.data-cy]="sectionId() + '-start-update-btn'"
+          mat-button
+          obButton="primary"
+          type="button"
+        >
+          {{ "eportal_swiyuProfile_profileChange_btn_start" | translate }}
+        </button>
+        <button
+          (click)="discard.emit()"
+          [attr.data-cy]="sectionId() + '-cancel-btn'"
+          mat-button
+          obButton="secondary"
+          type="button"
+        >
+          {{ "app_site_register_btn_cancel" | translate }}
+        </button>
+      </div>
+    }
   </mat-card-content>
 </mat-card>

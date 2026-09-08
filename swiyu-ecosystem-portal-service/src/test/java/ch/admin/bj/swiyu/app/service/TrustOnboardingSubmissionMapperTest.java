@@ -23,8 +23,8 @@ class TrustOnboardingSubmissionMapperTest {
         assertEquals(apiDto.getPartnerId(), dto.partnerId());
         assertEquals(apiDto.getName(), dto.entityName());
         assertEquals(apiDto.getEntityEmail(), dto.entityEmail());
-        assertEquals(apiDto.getAddress(), dto.entityAddress());
-        assertEquals(apiDto.getContactPerson(), dto.contactPerson());
+        assertEquals(BusinessPartnerMapper.toAddressDto(apiDto.getAddress()), dto.entityAddress());
+        assertEquals(BusinessPartnerMapper.toContactDto(apiDto.getContactPerson()), dto.contactPerson());
         assertEquals(apiDto.getStatus(), dto.status());
         assertEquals(apiDto.getProofOfPossessions(), dto.proofOfPossessionList());
         assertEquals(apiDto.getRegistryIds(), dto.registryIds());

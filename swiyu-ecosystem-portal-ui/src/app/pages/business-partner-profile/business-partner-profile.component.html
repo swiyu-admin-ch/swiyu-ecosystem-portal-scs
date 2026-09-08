@@ -18,32 +18,47 @@
           <h1>{{ "eportal_swiyuProfile_pageTitle" | translate }}</h1>
         </div>
 
-        <!-- Two Column Layout -->
-        <div class="info-cards-row">
+        <!-- 3-tile Grid -->
+        <div class="info-cards-grid">
           <app-detail-section
-            (edit)="onEdit('details')"
-            [fields]="detailsFields"
-            [group]="detailsForm"
-            [isEditing]="isEditing('details')"
-            [title]="'eportal_swiyuProfile_section_details' | translate"
+            (discard)="onCancel('profileDetails')"
+            (edit)="onEdit('profileDetails')"
+            (save)="onSave('profileDetails')"
+            (startUpdate)="onStartUpdate()"
+            [fields]="profileDetailsFields()"
+            [group]="profileDetailsForm"
+            [isEditing]="isEditing('profileDetails')"
+            [editable]="true"
+            [sectionId]="'profile-details'"
+            [showActiveIdentityWarning]="isIdentityActive()"
+            [showStartUpdateButton]="isIdentityActive()"
+            [title]="'eportal_swiyuProfile_section_profileDetails' | translate"
           >
           </app-detail-section>
 
           <app-detail-section
+            (discard)="onCancel('address')"
             (edit)="onEdit('address')"
+            (save)="onSave('address')"
             [fields]="addressFields"
             [group]="addressForm"
             [isEditing]="isEditing('address')"
+            [editable]="true"
+            [sectionId]="'address'"
             [title]="'eportal_swiyuProfile_section_address' | translate"
           >
           </app-detail-section>
 
           <app-detail-section
+            (discard)="onCancel('contact')"
             (edit)="onEdit('contact')"
+            (save)="onSave('contact')"
             [fields]="contactFields"
             [group]="contactForm"
             [isEditing]="isEditing('contact')"
-            [title]="'eportal_swiyuProfile_section_contact' | translate"
+            [editable]="true"
+            [sectionId]="'contact'"
+            [title]="'eportal_swiyuProfile_subTitle_contact' | translate"
           >
           </app-detail-section>
         </div>

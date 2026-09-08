@@ -1,7 +1,10 @@
 package ch.admin.bj.swiyu.app.service;
 
+import static ch.admin.bj.swiyu.app.service.TrustOnboardingSubmissionMapper.toTrustOnboardingSubmissionRequest;
+
 import ch.admin.bj.swiyu.app.api.LatestTrustOnboardingSubmissionRequestDto;
 import ch.admin.bj.swiyu.app.api.TrustOnboardingSubmissionDto;
+import ch.admin.bj.swiyu.app.api.TrustOnboardingSubmissionRequestDto;
 import ch.admin.bj.swiyu.app.common.stream.MultipartFileResource;
 import ch.admin.bj.swiyu.app.domain.BusinessPartnerValidator;
 import ch.admin.bj.swiyu.app.exceptions.BusinessErrorCode;
@@ -32,8 +35,10 @@ public class TrustOnboardingSubmissionService {
     private final BusinessPartnerValidator businessPartnerValidator;
     private final BusinessPartnerService businessPartnerService;
 
-    public TrustOnboardingSubmissionDto createTrustOnboardingSubmission(TrustOnboardingSubmissionRequest dto) {
-        return toDto(this.trustOnboardingSubmissionApi.createOnboardingSubmission(dto));
+    public TrustOnboardingSubmissionDto createTrustOnboardingSubmission(TrustOnboardingSubmissionRequestDto dto) {
+        return toDto(
+            this.trustOnboardingSubmissionApi.createOnboardingSubmission(toTrustOnboardingSubmissionRequest(dto))
+        );
     }
 
     public Page<TrustOnboardingSubmissionListItem> getTrustOnboardingSubmissions(Pageable pageable) {
@@ -54,9 +59,17 @@ public class TrustOnboardingSubmissionService {
         return toDto(this.trustOnboardingSubmissionApi.getTrustOnboardingSubmission(id));
     }
 
-    public TrustOnboardingSubmissionDto updateTrustOnboardingSubmission(UUID id, TrustOnboardingSubmissionRequest dto) {
-        businessPartnerValidator.validateBusinessPartnerTypeOnboardingIsAllowed(dto.getRequestedPartnerType());
-        return toDto(this.trustOnboardingSubmissionApi.updateTrustOnboardingSubmission(id, dto));
+    public TrustOnboardingSubmissionDto updateTrustOnboardingSubmission(
+        UUID id,
+        TrustOnboardingSubmissionRequestDto dto
+    ) {
+        businessPartnerValidator.validateBusinessPartnerTypeOnboardingIsAllowed(dto.requestedPartnerType());
+        return toDto(
+            this.trustOnboardingSubmissionApi.updateTrustOnboardingSubmission(
+                    id,
+                    toTrustOnboardingSubmissionRequest(dto)
+                )
+        );
     }
 
     /**

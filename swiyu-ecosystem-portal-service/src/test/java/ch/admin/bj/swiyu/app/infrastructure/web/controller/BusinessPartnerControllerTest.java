@@ -3,18 +3,20 @@ package ch.admin.bj.swiyu.app.infrastructure.web.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.admin.bit.jeap.security.test.WithJeapAuthenticationToken;
+import ch.admin.bj.swiyu.app.api.AddressDto;
+import ch.admin.bj.swiyu.app.api.BusinessPartnerUpdateRequestDto;
+import ch.admin.bj.swiyu.app.api.ContactDto;
+import ch.admin.bj.swiyu.app.api.LanguageDto;
 import ch.admin.bj.swiyu.app.api.PartnerCreationRequestDto;
 import ch.admin.bj.swiyu.app.common.config.FunctionalityProperties;
 import ch.admin.bj.swiyu.app.exceptions.BusinessPartnerTypeNotAllowedException;
 import ch.admin.bj.swiyu.client.business.internal.api.BusinessPartnerV2Api;
-import ch.admin.bj.swiyu.client.business.internal.model.Address;
 import ch.admin.bj.swiyu.client.business.internal.model.BusinessPartner;
 import ch.admin.bj.swiyu.client.business.internal.model.BusinessPartnerType;
-import ch.admin.bj.swiyu.client.business.internal.model.Contact;
-import ch.admin.bj.swiyu.client.business.internal.model.Language;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,13 +52,14 @@ class BusinessPartnerControllerTest {
         return new PartnerCreationRequestDto(
             "CHE-123.456.789",
             "Test Organization",
-            new Address().street("Test Street 1").postalCode("3000").city("Bern").country("CH").region("BE"),
-            new Contact()
+            new AddressDto("Test Street 1", "Bern", "3000", "CH", "BE"),
+            ContactDto.builder()
                 .firstName("John")
                 .lastName("Doe")
                 .email("test@example.com")
                 .phone("+41 31 123 45 67")
-                .correspondingLanguage(Language.DE),
+                .correspondingLanguage(LanguageDto.DE)
+                .build(),
             type
         );
     }
@@ -117,5 +120,37 @@ class BusinessPartnerControllerTest {
         assertThatThrownBy(() -> businessPartnerController.registerBusinessPartner(request))
             .isInstanceOf(BusinessPartnerTypeNotAllowedException.class)
             .hasMessageContaining("UNKNOWN");
+    }
+
+    @Test
+    @WithJeapAuthenticationToken(bpRoles = { "39f92e48-619e-4e92-8958-468ae138d8a3 = ti_@businesspartner_#write" })
+    void updateBusinessPartner_delegatesPartialPayloadToService() {
+        // GIVEN — partial payload: only the contact tile is edited
+        var contactOnly = new BusinessPartnerUpdateRequestDto(
+            null,
+            null,
+            null,
+            ContactDto.builder()
+                .firstName("Jane")
+                .lastName("Doe")
+                .email("jane@example.com")
+                .phone("+41 31 123 45 67")
+                .correspondingLanguage(LanguageDto.DE)
+                .build()
+        );
+
+        BusinessPartner testObject = new BusinessPartner();
+        var id = UUID.fromString("39f92e48-619e-4e92-8958-468ae138d8a3");
+        testObject.setId(id);
+        testObject.type(BusinessPartnerType.BUSINESS);
+        testObject.payedForDIDSlots(1);
+        when(businessPartnerV2Api.updateBusinessPartner(any(), any())).thenReturn(testObject);
+
+        // WHEN
+        var result = businessPartnerController.updateBusinessPartner(id, contactOnly);
+
+        // THEN
+        assertThat(result.id()).isEqualTo(id);
+        verify(businessPartnerV2Api).updateBusinessPartner(any(), any());
     }
 }

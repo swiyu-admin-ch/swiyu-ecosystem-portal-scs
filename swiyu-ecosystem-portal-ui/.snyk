@@ -5,21 +5,56 @@ ignore:
   SNYK-JS-VITE-17353904:
     - '*':
         reason: 'Need to upgrade to angular 22; ticket created: EID-6533'
-        expires: 2026-07-23T14:51:28.722Z
-        created: 2026-06-23T14:51:28.723Z
+        expires: 2026-11-09T09:00:00.000Z
+        created: 2026-08-31T00:00:00.000Z
   SNYK-JS-IMAGESIZE-17295816:
     - '*':
-        reason: 'Need to upgrade to angular 21; ticket created: EID-6533'
-        expires: 2026-07-23T14:51:45.484Z
-        created: 2026-06-23T14:51:45.487Z
+        reason: 'Transitive build-time-only dep via build-angular > less; no upgrade/patch available. Track upstream less/build-angular update (EID-6533).'
+        expires: 2026-11-09T09:00:00.000Z
+        created: 2026-08-31T00:00:00.000Z
   SNYK-JS-IMAGESIZE-17295814:
     - '*':
-        reason: 'Need to upgrade to angular 21; ticket created: EID-6533'
-        expires: 2026-07-23T14:52:11.173Z
-        created: 2026-06-23T14:52:11.176Z
+        reason: 'Transitive build-time-only dep via build-angular > less; no upgrade/patch available. Track upstream less/build-angular update (EID-6533).'
+        expires: 2026-11-09T09:00:00.000Z
+        created: 2026-08-31T00:00:00.000Z
   SNYK-JS-FASTURI-17675102:
     - '*':
         reason: 'Need to upgrade to oblique 14; ticket created: EID-6533'
-        expires: 2026-07-23T14:52:11.173Z
-        created: 2026-06-23T14:52:11.176Z
+        expires: 2026-11-09T09:00:00.000Z
+        created: 2026-08-31T00:00:00.000Z
+  SNYK-JS-UNDICI-19635206:
+    - '*':
+        reason: 'undici@7.29.0 pulled by @angular/build@21.2.22; only fixed by the Angular 22 upgrade. Ticket: EID-6533'
+        expires: 2026-11-09T09:00:00.000Z
+        created: 2026-09-07T00:00:00.000Z
+  SNYK-JS-UNDICI-19635208:
+    - '*':
+        reason: 'undici@7.29.0 pulled by @angular/build@21.2.22; only fixed by the Angular 22 upgrade. Ticket: EID-6533'
+        expires: 2026-11-09T09:00:00.000Z
+        created: 2026-09-07T00:00:00.000Z
+  SNYK-JS-UNDICI-19635210:
+    - '*':
+        reason: 'undici@7.29.0 pulled by @angular/build@21.2.22; only fixed by the Angular 22 upgrade. Ticket: EID-6533'
+        expires: 2026-11-09T09:00:00.000Z
+        created: 2026-09-07T00:00:00.000Z
+  SNYK-JS-UNDICI-19635216:
+    - '*':
+        reason: 'undici@7.29.0 pulled by @angular/build@21.2.22; only fixed by the Angular 22 upgrade. Ticket: EID-6533'
+        expires: 2026-11-09T09:00:00.000Z
+        created: 2026-09-07T00:00:00.000Z
+  SNYK-JS-UNDICI-19635218:
+    - '*':
+        reason: 'undici@7.29.0 pulled by @angular/build@21.2.22; only fixed by the Angular 22 upgrade. Ticket: EID-6533'
+        expires: 2026-11-09T09:00:00.000Z
+        created: 2026-09-07T00:00:00.000Z
+  SNYK-JS-UNDICI-19635222:
+    - '*':
+        reason: 'undici@7.29.0 pulled by @angular/build@21.2.22; only fixed by the Angular 22 upgrade. Ticket: EID-6533'
+        expires: 2026-11-09T09:00:00.000Z
+        created: 2026-09-07T00:00:00.000Z
+  SNYK-JS-UNDICI-19635226:
+    - '*':
+        reason: 'undici@7.29.0 pulled by @angular/build@21.2.22; only fixed by the Angular 22 upgrade. Ticket: EID-6533'
+        expires: 2026-11-09T09:00:00.000Z
+        created: 2026-09-07T00:00:00.000Z
 patch: {}

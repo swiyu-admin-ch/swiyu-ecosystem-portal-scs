@@ -1,7 +1,9 @@
 package ch.admin.bj.swiyu.app.service;
 
 import ch.admin.bj.swiyu.app.api.TrustOnboardingSubmissionDto;
+import ch.admin.bj.swiyu.app.api.TrustOnboardingSubmissionRequestDto;
 import ch.admin.bj.swiyu.client.business.internal.model.TrustOnboardingSubmission;
+import ch.admin.bj.swiyu.client.business.internal.model.TrustOnboardingSubmissionRequest;
 import java.time.Instant;
 import lombok.experimental.UtilityClass;
 
@@ -18,8 +20,8 @@ public class TrustOnboardingSubmissionMapper {
             apiDto.getPartnerId(),
             apiDto.getName(),
             apiDto.getEntityEmail(),
-            apiDto.getAddress(),
-            apiDto.getContactPerson(),
+            BusinessPartnerMapper.toAddressDto(apiDto.getAddress()),
+            BusinessPartnerMapper.toContactDto(apiDto.getContactPerson()),
             apiDto.getSigningRule(),
             apiDto.getSignatories(),
             apiDto.getStatus(),
@@ -35,6 +37,25 @@ public class TrustOnboardingSubmissionMapper {
             apiDto.getSubmittedAt(),
             apiDto.getResubmitRequiredUntil(),
             TrustOnboardingAlertEvaluator.evaluate(apiDto, maxDateForStatus)
+        );
+    }
+
+    public static TrustOnboardingSubmissionRequest toTrustOnboardingSubmissionRequest(
+        TrustOnboardingSubmissionRequestDto dto
+    ) {
+        return new TrustOnboardingSubmissionRequest(
+            dto.partnerId(),
+            dto.entityName(),
+            BusinessPartnerMapper.toAddress(dto.entityAddress()),
+            dto.entityEmail(),
+            BusinessPartnerMapper.toContact(dto.contactPerson()),
+            dto.signingRule(),
+            dto.signatories(),
+            dto.registryIds(),
+            dto.isRegisteredInCommercialRegister(),
+            dto.correspondingLanguage(),
+            dto.dids(),
+            dto.requestedPartnerType()
         );
     }
 }

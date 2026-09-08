@@ -8,10 +8,11 @@
  * Do not edit the class manually.
  */
 
-export interface Address {
-  street?: string;
-  city?: string;
-  postalCode?: string;
-  country?: string;
-  region?: string;
-}
+export const Language = {
+  En: 'EN',
+  De: 'DE',
+  Fr: 'FR',
+  It: 'IT',
+  Rm: 'RM'
+} as const;
+export type Language = (typeof Language)[keyof typeof Language];

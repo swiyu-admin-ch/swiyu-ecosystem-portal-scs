@@ -1,13 +1,14 @@
 package ch.admin.bj.swiyu.app.infrastructure.web.controller;
 
 import ch.admin.bj.swiyu.app.api.ProtectedVerificationSubmissionDto;
+import ch.admin.bj.swiyu.app.api.ProtectedVerificationSubmissionRequestDto;
 import ch.admin.bj.swiyu.app.service.ProtectedVerificationSubmissionService;
 import ch.admin.bj.swiyu.client.business.internal.model.ProtectedVerificationCategory;
 import ch.admin.bj.swiyu.client.business.internal.model.ProtectedVerificationSubmissionListItem;
-import ch.admin.bj.swiyu.client.business.internal.model.ProtectedVerificationSubmissionRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -30,11 +31,11 @@ public class ProtectedVerificationSubmissionController {
 
     private ProtectedVerificationSubmissionService protectedVerificationSubmissionService;
 
-    @PreAuthorize("hasRoleForPartner('protectedverificationsubmission','write', #submission.getPartnerId())")
+    @PreAuthorize("hasRoleForPartner('protectedverificationsubmission','write', #submission.partnerId())")
     @PostMapping
     @Operation(summary = "Create a new protected verification submission")
     public ProtectedVerificationSubmissionDto createProtectedVerificationSubmission(
-        @RequestBody ProtectedVerificationSubmissionRequest submission
+        @Valid @RequestBody ProtectedVerificationSubmissionRequestDto submission
     ) {
         return protectedVerificationSubmissionService.createProtectedVerificationSubmission(submission);
     }

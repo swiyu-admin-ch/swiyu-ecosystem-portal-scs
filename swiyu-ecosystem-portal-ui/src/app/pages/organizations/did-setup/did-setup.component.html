@@ -102,12 +102,14 @@
       <app-detail-section
         [fields]="requiredInfoFields"
         [group]="requiredInfoForm"
+        [sectionId]="'did-setup-required-info'"
         [title]="'eportal_DIDsetup_subTitle_necessaryInfo' | translate"
         data-cy="cardNecessaryInfo"
       />
       <app-detail-section
         [fields]="availableDidSpacesFields"
         [group]="availableDidSpacesForm"
+        [sectionId]="'did-setup-available-spaces'"
         [title]="'eportal_DIDsetup_subTitle_availableDIDspaces' | translate"
         data-cy="cardAvailableDidSpaces"
       />

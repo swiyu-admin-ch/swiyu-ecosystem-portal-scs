@@ -17,7 +17,7 @@ import {
   ObSelectableGroupDirective,
   ObUnsavedChangesDirective
 } from '@oblique/oblique';
-import {Contact, PartnerCreationRequest} from '../../../../../api/generated';
+import {PartnerCreationRequest, TrustOnboardingSubmission} from '../../../../../api/generated';
 import {AppConfigService} from '../../../../../core/appconfig/app-config.service';
 import {UserProfileService} from '../../../../../core/user/user-profile.service';
 import {CountryService} from '../../../../../core/util/country.service';
@@ -34,7 +34,7 @@ import {CustomValidators} from '../../../../../shared/validators/custom-validato
 import {AbstractOnboardingStepComponent} from '../../../../onboarding/trust/steps/abstract-onboarding-step-component';
 import {PartnerRegistrationWizardService} from '../../wizard/partner-registration-wizard.service';
 import PartnerTypeEnum = PartnerCreationRequest.BusinessPartnerTypeEnum;
-import CorrespondingLanguageEnum = Contact.CorrespondingLanguageEnum;
+import CorrespondingLanguageEnum = TrustOnboardingSubmission.CorrespondingLanguageEnum;
 
 export interface PartnerRegistration {
   partnerType: PartnerTypeEnum | null | undefined;

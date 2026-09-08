@@ -82,13 +82,37 @@ public class BusinessPartnerMapper {
             businessPartner.getUpdatedAt(),
             businessPartner.getUid(),
             toAddressDto(businessPartner.getAddress()),
+            toContactDto(businessPartner.getContact()),
             businessPartner.getContactPhone(),
             toBusinessPartnerTrustStatusDto(businessPartner.getTrustVerificationStatus()),
             businessPartner.getMaxDateForTrustVerificationStatus(),
             daysUntil(businessPartner.getMaxDateForTrustVerificationStatus()),
+            toBusinessPartnerIdentityDto(businessPartner.getBusinessPartnerIdentity()),
             verificationProgressMaxDate,
             daysUntil(verificationProgressMaxDate)
         );
+    }
+
+    private static BusinessPartnerIdentityDto toBusinessPartnerIdentityDto(BusinessPartnerIdentity source) {
+        if (source == null) return null;
+        return new BusinessPartnerIdentityDto(
+            source.getValidUntil(),
+            source.getTrustedIdentifier(),
+            toBusinessPartnerIdentityStatusDto(source.getStatus()),
+            source.getLastActivated(),
+            source.getUid(),
+            source.getEntityName()
+        );
+    }
+
+    private static BusinessPartnerIdentityStatusDto toBusinessPartnerIdentityStatusDto(
+        BusinessPartnerIdentityStatus source
+    ) {
+        return switch (source) {
+            case ACTIVE -> BusinessPartnerIdentityStatusDto.ACTIVE;
+            case DEACTIVATED -> BusinessPartnerIdentityStatusDto.DEACTIVATED;
+            case null -> null;
+        };
     }
 
     private static Long daysUntil(Instant deadline) {
@@ -96,7 +120,7 @@ public class BusinessPartnerMapper {
         return ChronoUnit.DAYS.between(LocalDate.now(ZoneOffset.UTC), deadline.atZone(ZoneOffset.UTC).toLocalDate());
     }
 
-    private static AddressDto toAddressDto(Address address) {
+    static AddressDto toAddressDto(Address address) {
         if (address == null) return null;
         return new AddressDto(
             address.getStreet(),
@@ -107,13 +131,57 @@ public class BusinessPartnerMapper {
         );
     }
 
+    private static LanguageDto toLanguageDto(Language language) {
+        if (language == null) return null;
+        return LanguageDto.valueOf(language.getValue());
+    }
+
+    @SuppressWarnings("java:S1874") // remove with EID-6303
+    static ContactDto toContactDto(Contact contact) {
+        if (contact == null) return null;
+        return new ContactDto(
+            contact.getFirstName(),
+            contact.getLastName(),
+            contact.getEmail(),
+            contact.getPhone(),
+            toLanguageDto(contact.getCorrespondingLanguage()),
+            toAddressDto(contact.getAddress())
+        );
+    }
+
     public static CreatePartner toCreatePartner(PartnerCreationRequestDto partnerCreationRequestDto) {
         return new CreatePartner(
             partnerCreationRequestDto.organizationName(),
             partnerCreationRequestDto.businessPartnerType(),
             partnerCreationRequestDto.uid(),
-            partnerCreationRequestDto.address(),
-            partnerCreationRequestDto.contact()
+            toAddress(partnerCreationRequestDto.address()),
+            toContact(partnerCreationRequestDto.contact())
         );
+    }
+
+    public static BusinessPartnerUpdate toBusinessPartnerUpdate(BusinessPartnerUpdateRequestDto dto) {
+        return new BusinessPartnerUpdate(dto.name(), dto.uid(), toAddress(dto.address()), toContact(dto.contact()));
+    }
+
+    static Address toAddress(AddressDto dto) {
+        if (dto == null) return null;
+        return new Address(dto.street(), dto.city(), dto.postalCode(), dto.country(), dto.region());
+    }
+
+    static Contact toContact(ContactDto dto) {
+        if (dto == null) return null;
+        return new Contact(
+            dto.firstName(),
+            dto.lastName(),
+            dto.email(),
+            dto.phone(),
+            toLanguage(dto.correspondingLanguage()),
+            null // deprecated address field — never sent on update
+        );
+    }
+
+    private static Language toLanguage(LanguageDto dto) {
+        if (dto == null) return null;
+        return Language.fromValue(dto.name());
     }
 }

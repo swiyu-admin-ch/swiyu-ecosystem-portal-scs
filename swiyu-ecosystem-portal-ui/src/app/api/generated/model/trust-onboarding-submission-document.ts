@@ -9,10 +9,10 @@
  */
 
 export interface TrustOnboardingSubmissionDocument {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  trustOnboardingSubmissionId?: string;
+  id?: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+  trustOnboardingSubmissionId?: string | null;
   downloadUrl: string;
   version: number;
   name: string;

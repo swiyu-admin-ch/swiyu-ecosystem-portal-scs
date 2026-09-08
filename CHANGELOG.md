@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.22.3
+
+### Changed
+
+- - Resolve Snyk npm findings: override `fast-uri` to 3.1.7 and `undici@^8` to 8.10.2, and ignore `undici@7.29.0` (via `@angular/build`) until the Angular 22 upgrade
+
+## 1.22.2
+
+### Changed
+
+- Update jeap-spring-boot-parent -> 40.10.0
+- Update frontend dependencies
+
+## 1.22.1
+
+### Changed
+
+- Remove security exceptions for frontend api client generation
+
+## 1.22.0
+
+### Changed
+
+- Add inline edit option to change irrelevant data
+- Add inline edit option for change relevant date for untrusted business partners
+- Add entrypoint for relevant information change
+
 ## 1.21.24
 
 ### Added
