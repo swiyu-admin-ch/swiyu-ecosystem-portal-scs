@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.22.5
+
+### Changed
+
+- Update contact email
+
+## 1.22.4
+
+### Changed
+
+- Update @angular/build from 21.2.23 to 21.2.24
+- Update @angular/cli from 21.2.23 to 21.2.24
+- Update @angular/common from 21.2.22 to 21.2.23
+- Update @angular/compiler from 21.2.22 to 21.2.23
+- Update @angular/compiler-cli from 21.2.22 to 21.2.23
+- Update @angular/core from 21.2.22 to 21.2.23
+- Update @angular/forms from 21.2.22 to 21.2.23
+- Update @angular/platform-browser from 21.2.22 to 21.2.23
+- Update @angular/router from 21.2.22 to 21.2.23
+- Update @schematics/angular from 21.2.23 to 21.2.24
+- Use the typescript-eslint meta package instead of the individual eslint-plugin
+- Update zone.js from 0.15.1 to 0.16.3
+- Update ch.admin.bit.jeap:jeap-spring-boot-parent from 40.10.0 to 40.13.0
+- Update com.diffplug.spotless:spotless-maven-plugin from 3.8.0 to 3.10.2
+- Update com.tngtech.archunit:archunit-junit5 from 1.4.2 to 1.5.0
+- Update org.codehaus.mojo:build-helper-maven-plugin from 3.6.1 to 3.6.2
+- Update org.openapitools:jackson-databind-nullable from 0.2.10 to 0.2.11
+- Update org.openapitools:openapi-generator-maven-plugin from 7.23.0 to 7.25.0
+
 ## 1.22.3
 
 ### Changed

@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ch.admin.bit.jeap</groupId>
         <artifactId>jeap-spring-boot-parent</artifactId>
         <!-- ACHTUNG: Immer wenn wir die Version updaten auch die CVE-OVERRIDES section aktualisieren -->
-        <version>40.10.0</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>40.13.0</version>
+        <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>ch.admin.bj.swiyu</groupId>
     <artifactId>swiyu-ecosystem-portal-scs</artifactId>
-    <version>1.22.3-SNAPSHOT</version>
+    <version>1.22.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Selfservice portal for the ecosystem</description>
 
@@ -46,8 +45,32 @@
     </build>
 
     <dependencyManagement>
-        <!-- START CVE-OVERRIDES -->
-        <!-- END CVE-OVERRIDES -->
+        <dependencies>
+            <!-- START CVE-OVERRIDES -->
+            <!-- SNYK-JAVA-TOOLSJACKSONCORE-19778371: jackson-databind < 3.1.6 (transitive via jeap logging starter) -->
+            <dependency>
+                <groupId>tools.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>3.1.6</version>
+            </dependency>
+            <dependency>
+                <groupId>tools.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>3.1.6</version>
+            </dependency>
+            <!-- SNYK-JAVA-COMFASTERXMLJACKSONCORE-19778370: jackson-databind 2.x < 2.22.2 (transitive via springdoc/swagger) -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>2.22.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.22.2</version>
+            </dependency>
+            <!-- END CVE-OVERRIDES -->
+        </dependencies>
     </dependencyManagement>
 
     <profiles>

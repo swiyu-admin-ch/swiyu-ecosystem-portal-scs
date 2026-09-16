@@ -4,7 +4,7 @@
     <parent>
         <groupId>ch.admin.bj.swiyu</groupId>
         <artifactId>swiyu-ecosystem-portal-scs</artifactId>
-        <version>1.22.3-SNAPSHOT</version>
+        <version>1.22.5-SNAPSHOT</version>
     </parent>
     <artifactId>swiyu-ecosystem-portal-service</artifactId>
 
@@ -12,9 +12,9 @@
         <skip.surfire.tests>false</skip.surfire.tests>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <archunit-junit5.version>1.4.2</archunit-junit5.version>
+        <archunit-junit5.version>1.5.0</archunit-junit5.version>
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
-        <spotless-maven-plugin.version>3.8.0</spotless-maven-plugin.version>
+        <spotless-maven-plugin.version>3.10.2</spotless-maven-plugin.version>
         <cleanthat.version>2.22</cleanthat.version>
         <prettier.version>3.5.3</prettier.version>
         <prettier-plugin-java.version>2.6.7</prettier-plugin-java.version>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.openapitools</groupId>
             <artifactId>jackson-databind-nullable</artifactId>
-            <version>0.2.10</version>
+            <version>0.2.11</version>
         </dependency>
         <dependency>
             <groupId>com.tngtech.archunit</groupId>
@@ -171,7 +171,7 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.23.0</version>
+                <version>7.25.0</version>
                 <configuration>
                     <configOptions>
                         <inputSpecRootDirectory>${project.basedir}/specs</inputSpecRootDirectory>
@@ -282,7 +282,7 @@
                 <!-- Gives IDEs a hint that generated-sources folder in target must be marked as source -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.6.1</version>
+                <version>3.6.2</version>
                 <executions>
                     <execution>
                         <id>add-source</id>
