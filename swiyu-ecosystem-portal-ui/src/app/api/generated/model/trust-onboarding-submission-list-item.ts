@@ -21,7 +21,8 @@ export namespace TrustOnboardingSubmissionListItem {
     Submitted: 'SUBMITTED',
     Succeeded: 'SUCCEEDED',
     Rejected: 'REJECTED',
-    InformationRequested: 'INFORMATION_REQUESTED'
+    InformationRequested: 'INFORMATION_REQUESTED',
+    Resubmitted: 'RESUBMITTED'
   } as const;
   export type StatusEnum = (typeof StatusEnum)[keyof typeof StatusEnum];
 }

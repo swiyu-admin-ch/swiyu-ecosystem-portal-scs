@@ -2,7 +2,6 @@ package ch.admin.bj.swiyu.app.infrastructure.web.config;
 
 import ch.admin.bit.jeap.security.restclient.JeapOAuth2RestClientBuilderFactory;
 import ch.admin.bj.swiyu.client.business.actuator.api.ActuatorApi;
-import ch.admin.bj.swiyu.client.business.internal.api.BusinessPartnerApi;
 import ch.admin.bj.swiyu.client.business.internal.api.BusinessPartnerV2Api;
 import ch.admin.bj.swiyu.client.business.internal.api.IdentifierApi;
 import ch.admin.bj.swiyu.client.business.internal.api.ProtectedVerificationSubmissionApi;
@@ -26,16 +25,6 @@ public class ClientApiConfiguration {
         ApiClient apiClient = new ApiClient(restClient);
         apiClient.setBasePath(clientApiProperties.coreBusinessServiceBaseUrl());
         return new BusinessPartnerV2Api(apiClient);
-    }
-
-    @Bean
-    public BusinessPartnerApi managementBusinessApi(JeapOAuth2RestClientBuilderFactory factory) {
-        // use jeap's rest client factory, so the invoking auth token is automatically added to the request and
-        // observability is propagated as well (forward existing trace-id)
-        var restClient = factory.createForTokenFromIncomingRequest().build();
-        ApiClient apiClient = new ApiClient(restClient);
-        apiClient.setBasePath(clientApiProperties.coreBusinessServiceBaseUrl());
-        return new BusinessPartnerApi(apiClient);
     }
 
     @Bean

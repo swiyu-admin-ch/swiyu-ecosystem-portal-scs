@@ -58,11 +58,6 @@ export class AdministrationOverviewComponent implements AfterViewInit {
   }
 
   private checkBusinessPartnersAndInitialize() {
-    if (!this.appConfigService.featureToggles.EIDARTFE_1122) {
-      this.initializeTable();
-      return;
-    }
-
     this.businessPartnerApi.hasBusinessPartners().subscribe(businessPartnersExist => {
       if (!businessPartnersExist) {
         this.router.navigate(AppRoutes.baseOnboardingIntroduction(), {replaceUrl: true});

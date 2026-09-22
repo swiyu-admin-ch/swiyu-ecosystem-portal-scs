@@ -12,7 +12,6 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springdoc.core.converters.models.Pageable;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -28,12 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/trust-onboarding-submission")
 @Tag(name = "Trust Onboarding Documents", description = "Trust Onboarding Documents API")
 @AllArgsConstructor
-@ConditionalOnProperty(
-    prefix = "features",
-    name = "EIDARTFE_1122",
-    havingValue = "true",
-    matchIfMissing = false // disabled by default
-)
 public class TrustOnboardingSubmissionDocumentController {
 
     private TrustOnboardingSubmissionService trustOnboardingSubmissionService;

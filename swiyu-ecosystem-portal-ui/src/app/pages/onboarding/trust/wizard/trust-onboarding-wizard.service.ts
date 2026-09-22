@@ -57,13 +57,10 @@ export class TrustOnboardingWizardService {
         // if the submission was newly created the existing actor type from the base registry should be used.
         // Once the user selected the actor type it becomes the requestedPartnerType which will be taken over,
         // when the submissions has been accepted by bj
-        if (
-          !submission.businessPartnerType ||
-          submission.businessPartnerType === TrustOnboardingSubmission.BusinessPartnerTypeEnum.Unknown
-        ) {
-          this.requestedBusinessPartnerType.set(businessPartner.type);
-        } else {
+        if (submission.businessPartnerType) {
           this.requestedBusinessPartnerType.set(submission.businessPartnerType);
+        } else {
+          this.requestedBusinessPartnerType.set(businessPartner.type);
         }
       }
     });

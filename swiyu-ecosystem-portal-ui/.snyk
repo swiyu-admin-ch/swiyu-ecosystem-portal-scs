@@ -57,4 +57,14 @@ ignore:
         reason: 'undici@7.29.0 pulled by @angular/build@21.2.22; only fixed by the Angular 22 upgrade. Ticket: EID-6533'
         expires: 2026-11-09T09:00:00.000Z
         created: 2026-09-07T00:00:00.000Z
+  SNYK-JS-BRACES-19963945:
+    - '*':
+        reason: >-
+          Transitive build-time-only dependency via
+          @angular-devkit/build-angular > http-proxy-middleware > micromatch.
+          New CVE-2026-93687 with no fixed version of braces available (registry
+          mirrors only up to 3.0.3). Not shipped to production. Track upstream
+          build-angular/Angular 22 upgrade (EID-6915).
+        expires: 2026-11-09T09:00:00.000Z
+        created: 2026-09-21T00:00:00.000Z
 patch: {}

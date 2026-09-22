@@ -52,7 +52,6 @@ public class BusinessPartnerMapper {
 
     private static BusinessPartnerTypeDto toBusinessPartnerTypeDto(BusinessPartnerType source) {
         return switch (source) {
-            case UNKNOWN -> BusinessPartnerTypeDto.UNKNOWN;
             case BUSINESS -> BusinessPartnerTypeDto.BUSINESS;
             case INDIVIDUAL -> BusinessPartnerTypeDto.INDIVIDUAL;
             case GOVERNMENTAL_INSTITUTION -> BusinessPartnerTypeDto.GOVERNMENTAL_INSTITUTION;
@@ -94,7 +93,10 @@ public class BusinessPartnerMapper {
     }
 
     private static BusinessPartnerIdentityDto toBusinessPartnerIdentityDto(BusinessPartnerIdentity source) {
-        if (source == null) return null;
+        if (source == null) {
+            return null;
+        }
+
         return new BusinessPartnerIdentityDto(
             source.getValidUntil(),
             source.getTrustedIdentifier(),

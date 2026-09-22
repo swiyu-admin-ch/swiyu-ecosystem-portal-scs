@@ -19,7 +19,6 @@ public class BusinessPartnerValidator {
                 case BUSINESS -> functionalityProperties.allowPartnerBaseOnboardingBusinessEnabled();
                 case INDIVIDUAL -> functionalityProperties.allowPartnerBaseOnboardingIndividualEnabled();
                 case GOVERNMENTAL_INSTITUTION -> functionalityProperties.allowPartnerBaseOnboardingGovernmentalEnabled();
-                case UNKNOWN -> false;
                 case null -> false;
             };
         if (!allowed) {

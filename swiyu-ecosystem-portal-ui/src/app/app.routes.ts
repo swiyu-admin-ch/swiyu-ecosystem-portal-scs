@@ -20,7 +20,6 @@ import {TrustOnboardingWizardComponent} from './pages/onboarding/trust/wizard/tr
 import {AdditionalDidsExplainerComponent} from './pages/organizations/additional-dids-explainer/additional-dids-explainer.component';
 import {DidDetailsComponent} from './pages/organizations/did-details/did-details.component';
 import {DidSetupComponent} from './pages/organizations/did-setup/did-setup.component';
-import {OrganizationOverviewComponent} from './pages/organizations/organization-overview.component';
 import {
   canActivateBaseStepWithoutPartner,
   canActivateBaseStepWithPartner
@@ -88,10 +87,6 @@ export class AppRoutes {
     return ['/', 'onboarding', 'trust', partnerId, submissionId, 'approval'];
   }
 
-  static businessPartnerOverview() {
-    return ['/', 'organizations'];
-  }
-
   static businessPartnerOverviewV2() {
     return ['/', 'business-partners'];
   }
@@ -128,8 +123,6 @@ export class AppRoutes {
 export const routes: Routes = [
   {
     path: 'onboarding',
-    canMatch: [featureToggleActiveGuard],
-    data: {guardFeature: FEATURE_TOGGLE.EIDARTFE_1122},
     children: [
       {
         path: 'trust',
@@ -245,8 +238,6 @@ export const routes: Routes = [
   {
     /** @see businessPartnerOverviewV2() **/
     path: 'business-partners',
-    canMatch: [featureToggleActiveGuard],
-    data: {guardFeature: FEATURE_TOGGLE.EIDARTFE_1122},
     children: [
       {
         path: '',
@@ -267,7 +258,7 @@ export const routes: Routes = [
             /** @see businessPartnerEdit() **/
             path: 'edit',
             component: BusinessPartnerProfileComponent,
-            data: {title: 'app_site_updateOrganization_title'}
+            data: {title: 'eportal_swiyuProfile_pageTitle'}
           },
           {
             /** @see identifierSetup() **/
@@ -328,12 +319,5 @@ export const routes: Routes = [
       }
     ]
   },
-  {
-    /** @see businessPartnerOverview() **/
-    path: 'organizations',
-    component: OrganizationOverviewComponent,
-    data: {title: 'app_site_overview_title'}
-  },
-  {path: '**', redirectTo: 'business-partners', pathMatch: 'full'}, // Only matches if route business-partners is feature enabled
-  {path: '**', redirectTo: 'organizations', pathMatch: 'full'}
+  {path: '**', redirectTo: 'business-partners', pathMatch: 'full'}
 ];

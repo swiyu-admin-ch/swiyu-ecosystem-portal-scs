@@ -6,46 +6,18 @@ import {
   GetAllIdentifiersOfPartnerRequestParams,
   GetBusinessPartnerRequestParams,
   GetBusinessPartnersRequestParams,
-  GetRegistrationsRequestParams,
   IdentifierApi,
   PagedModelBusinessPartnerListItem,
   PagedModelIdentifierResponse,
-  PartnerCreationRequest,
-  RegistrationApi
+  PartnerCreationRequest
 } from './generated';
-
-export interface OrganizationUpdate {
-  id: string;
-  name: string;
-  contactEmailAddress: string;
-}
-
-export interface OrganizationRegistration {
-  name: string;
-  contactEmailAddress: string;
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrganizationService {
-  private readonly registrationApi = inject(RegistrationApi);
   private readonly businessPartnerApi = inject(BusinessPartnerApi);
   private readonly identifierApi = inject(IdentifierApi);
-
-  getRegistrations(requestParams: GetRegistrationsRequestParams) {
-    return this.registrationApi.getRegistrations(requestParams);
-  }
-
-  registerOrganization(request: OrganizationRegistration) {
-    const requestParameters = {
-      registrationRequest: {
-        organizationName: request.name,
-        technicalEmailAddress: request.contactEmailAddress
-      }
-    };
-    return this.registrationApi.registerOrganization(requestParameters);
-  }
 
   registerBusinessPartner(request: PartnerCreationRequest): Observable<BusinessPartner> {
     const requestParameters = {
@@ -58,17 +30,6 @@ export class OrganizationService {
       }
     };
     return this.businessPartnerApi.registerBusinessPartner(requestParameters);
-  }
-
-  updateOrganization(request: OrganizationUpdate) {
-    const requestParameters = {
-      id: request.id,
-      updateRequest: {
-        organizationName: request.name,
-        technicalEmailAddress: request.contactEmailAddress
-      }
-    };
-    return this.registrationApi.updateOrganization(requestParameters);
   }
 
   getIdentifiersOfOrganization(

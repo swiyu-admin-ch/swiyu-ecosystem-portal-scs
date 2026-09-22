@@ -114,15 +114,6 @@ class BusinessPartnerControllerTest {
     }
 
     @Test
-    void registerBusinessPartner_withUnknownType_alwaysThrowsBadRequest() {
-        var request = createRequest(BusinessPartnerType.UNKNOWN);
-
-        assertThatThrownBy(() -> businessPartnerController.registerBusinessPartner(request))
-            .isInstanceOf(BusinessPartnerTypeNotAllowedException.class)
-            .hasMessageContaining("UNKNOWN");
-    }
-
-    @Test
     @WithJeapAuthenticationToken(bpRoles = { "39f92e48-619e-4e92-8958-468ae138d8a3 = ti_@businesspartner_#write" })
     void updateBusinessPartner_delegatesPartialPayloadToService() {
         // GIVEN — partial payload: only the contact tile is edited

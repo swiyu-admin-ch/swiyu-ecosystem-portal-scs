@@ -21,8 +21,7 @@ export namespace PartnerCreationRequest {
   export const BusinessPartnerTypeEnum = {
     GovernmentalInstitution: 'GOVERNMENTAL_INSTITUTION',
     Business: 'BUSINESS',
-    Individual: 'INDIVIDUAL',
-    Unknown: 'UNKNOWN'
+    Individual: 'INDIVIDUAL'
   } as const;
   export type BusinessPartnerTypeEnum = (typeof BusinessPartnerTypeEnum)[keyof typeof BusinessPartnerTypeEnum];
 }

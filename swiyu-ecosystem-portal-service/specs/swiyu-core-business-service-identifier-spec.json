@@ -3,11 +3,11 @@
   "info": {
     "title": "Business Identifier API",
     "description": "IF-010 - B2B Identifier API.",
-    "version": "3.22.6-SNAPSHOT"
+    "version": "4.0.4-20260917152100-be779104"
   },
   "servers": [
     {
-      "url": "http://localhost:8200",
+      "url": "https://swiyu-core-business-service-d.apps.p-szb-ros-shrd-npr-01.cloud.admin.ch",
       "description": "Generated server url"
     }
   ],
@@ -65,6 +65,9 @@
           "required": true
         },
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -74,9 +77,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK"
@@ -105,6 +105,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -114,9 +117,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -181,6 +181,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -190,9 +193,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -229,7 +229,7 @@
       },
       "ApiErrorCode": {
         "type": "string",
-        "description": "       | Value                                       | Description                                                                           |\n       | ------------------------------------------- | ------------------------------------------------------------------------------------- |\n       | data_invalid                                | Indicates that the given data was invalid in syntax or semantic.                      |\n       | data_invalid_virus_detected                 | Indicates that the given data contains a virus.                                       |\n       | resource_not_found                          | Indicates that the requested data was not found in the given context.                 |\n       | resource_forbidden                          | Indicates that the requested data is not available with the permissions used.         |\n       | action_forbidden                            | Indicates that the requested action could not be processed with the permissions used. |\n       | partner_is_not_governmental                 | Indicates that the partner is not governmental.                                       |\n       | business_data_integrity_violation           | Indicates that a business data integrity violation occurred.                          |\n       | crypto_integrity_validation_failed          | Indicates that the crypto integrity validation failed.                                |\n       | did_resolve_failed                          | Indicates that the DID resolution failed.                                             |\n       | document_not_found                          | Indicates that the document was not found.                                            |\n       | identifier_validation_failed                | Indicates that the identifier validation failed.                                      |\n       | invalid_pagination                          | Indicates that the pagination parameters are invalid.                                 |\n       | max_size_exceeded                           | Indicates that the maximum size was exceeded.                                         |\n       | object_count_limit_reached                  | Indicates that the object count limit was reached.                                    |\n       | status_list_validation_failed               | Indicates that the status list validation failed.                                     |\n       | trust_onboarding_document_validation_failed | Indicates that the trust onboarding document validation failed.                       |\n       | vc_schema_submission_not_found              | Indicates that the VC schema submission was not found.                                |\n       | vc_type_metadata_validation_failed          | Indicates that the VC type metadata validation failed.                                |\n",
+        "description": "       | Value                                       | Description                                                                           |\n       | ------------------------------------------- | ------------------------------------------------------------------------------------- |\n       | data_invalid                                | Indicates that the given data was invalid in syntax or semantic.                      |\n       | data_invalid_virus_detected                 | Indicates that the given data contains a virus.                                       |\n       | resource_not_found                          | Indicates that the requested data was not found in the given context.                 |\n       | resource_forbidden                          | Indicates that the requested data is not available with the permissions used.         |\n       | action_forbidden                            | Indicates that the requested action could not be processed with the permissions used. |\n       | partner_is_not_governmental                 | Indicates that the partner is not governmental.                                       |\n       | partner_is_not_trusted                      | Indicates that the partner is not trusted.                                            |\n       | business_data_integrity_violation           | Indicates that a business data integrity violation occurred.                          |\n       | crypto_integrity_validation_failed          | Indicates that the crypto integrity validation failed.                                |\n       | did_resolve_failed                          | Indicates that the DID resolution failed.                                             |\n       | document_not_found                          | Indicates that the document was not found.                                            |\n       | identifier_validation_failed                | Indicates that the identifier validation failed.                                      |\n       | invalid_pagination                          | Indicates that the pagination parameters are invalid.                                 |\n       | max_size_exceeded                           | Indicates that the maximum size was exceeded.                                         |\n       | object_count_limit_reached                  | Indicates that the object count limit was reached.                                    |\n       | status_list_validation_failed               | Indicates that the status list validation failed.                                     |\n       | trust_onboarding_document_validation_failed | Indicates that the trust onboarding document validation failed.                       |\n       | vc_schema_submission_not_found              | Indicates that the VC schema submission was not found.                                |\n       | vc_type_metadata_validation_failed          | Indicates that the VC type metadata validation failed.                                |\n",
         "enum": [
           "data_invalid",
           "data_invalid_virus_detected",
@@ -237,6 +237,7 @@
           "resource_forbidden",
           "action_forbidden",
           "partner_is_not_governmental",
+          "partner_is_not_trusted",
           "business_data_integrity_violation",
           "crypto_integrity_validation_failed",
           "did_resolve_failed",
@@ -248,7 +249,9 @@
           "status_list_validation_failed",
           "trust_onboarding_document_validation_failed",
           "vc_schema_submission_not_found",
-          "vc_type_metadata_validation_failed"
+          "vc_type_metadata_validation_failed",
+          "vqps_publication_failed",
+          "vqps_publication_wait_timeout"
         ]
       },
       "IdentifierEntry": {

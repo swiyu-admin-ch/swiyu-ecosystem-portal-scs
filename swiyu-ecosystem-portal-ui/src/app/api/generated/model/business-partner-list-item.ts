@@ -45,8 +45,7 @@ export interface BusinessPartnerListItem {
    */
   daysRemainingForTrustVerificationStatus?: number;
   /**
-   * Deadline by which the current verification step must be completed,
-   * reported by the centralized verification-progress endpoint.
+   * Deadline by which the current verification step must be completed, reported by the centralized verification-progress endpoint.
    */
   verificationProgressMaxDate?: string;
   /**
@@ -58,8 +57,7 @@ export namespace BusinessPartnerListItem {
   export const TypeEnum = {
     GovernmentalInstitution: 'GOVERNMENTAL_INSTITUTION',
     Business: 'BUSINESS',
-    Individual: 'INDIVIDUAL',
-    Unknown: 'UNKNOWN'
+    Individual: 'INDIVIDUAL'
   } as const;
   export type TypeEnum = (typeof TypeEnum)[keyof typeof TypeEnum];
 }

@@ -43,8 +43,7 @@ export namespace TrustOnboardingSubmissionRequest {
   export const RequestedPartnerTypeEnum = {
     GovernmentalInstitution: 'GOVERNMENTAL_INSTITUTION',
     Business: 'BUSINESS',
-    Individual: 'INDIVIDUAL',
-    Unknown: 'UNKNOWN'
+    Individual: 'INDIVIDUAL'
   } as const;
   export type RequestedPartnerTypeEnum = (typeof RequestedPartnerTypeEnum)[keyof typeof RequestedPartnerTypeEnum];
 }

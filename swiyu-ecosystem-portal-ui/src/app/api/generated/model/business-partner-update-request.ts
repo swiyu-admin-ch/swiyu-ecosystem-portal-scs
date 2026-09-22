@@ -21,7 +21,6 @@ export interface BusinessPartnerUpdateRequest {
   uid?: string;
   /**
    * Address of the organisation
-   * @deprecated
    */
   address?: Address;
   /**

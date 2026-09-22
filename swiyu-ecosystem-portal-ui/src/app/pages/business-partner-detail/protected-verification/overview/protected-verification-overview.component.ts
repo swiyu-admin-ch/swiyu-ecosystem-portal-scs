@@ -4,7 +4,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTableModule} from '@angular/material/table';
 import {RouterModule} from '@angular/router';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {ObButtonModule} from '@oblique/oblique';
 import {ProtectedVerificationSubmissionApi, ProtectedVerificationSubmissionListItem} from '../../../../api/generated';
 import {AppRoutes} from '../../../../app.routes';
@@ -37,6 +37,7 @@ export class ProtectedVerificationOverviewComponent {
     )
   );
   private readonly protectedVerificationSubmissionApi = inject(ProtectedVerificationSubmissionApi);
+  private readonly lang = inject(TranslateService);
 
   constructor() {
     effect(onCleanup => {
@@ -50,9 +51,18 @@ export class ProtectedVerificationOverviewComponent {
         .subscribe(result => this.submissions.set(result.content ?? []));
       onCleanup(() => sub.unsubscribe());
     });
+    this.translateSetup();
   }
 
   protected categoryGroupKey(category: ProtectedVerificationSubmissionListItem.CategoryEnum): string {
     return PROTECTED_VERIFICATION_CATEGORY_GROUP[category];
+  }
+
+  private translateSetup() {
+    this.lang.instant('eportal_protectedVerificationAttribute_PERSONAL_ADMINISTRATIVE_NUMBER');
+    this.lang.instant('eportal_protectedVerificationCategoryGroup_PERSONAL_ADMINISTRATIVE_NUMBER');
+    this.lang.instant('eportal_protectedVerificationStatus_APPROVED');
+    this.lang.instant('eportal_protectedVerificationStatus_REJECTED');
+    this.lang.instant('eportal_protectedVerificationStatus_SUBMITTED');
   }
 }

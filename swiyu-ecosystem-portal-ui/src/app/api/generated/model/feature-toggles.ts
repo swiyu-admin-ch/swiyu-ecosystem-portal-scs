@@ -12,6 +12,5 @@
  * Feature Flags
  */
 export interface FeatureToggles {
-  EIDARTFE_1122: boolean;
   EIDARTFE_1822_PROTECTED_VERIFICATION: boolean;
 }

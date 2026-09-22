@@ -56,10 +56,7 @@ public class AppConfigController {
                 eportalConfig.infoContactEmail(),
                 toPamsEnvironmentDto(eportalConfig.environment())
             ),
-            new FeatureTogglesDto(
-                featuresProperties.getEidartfe1122(),
-                featuresProperties.getEidartfe1822ProtectedVerification()
-            ),
+            new FeatureTogglesDto(featuresProperties.getEidartfe1822ProtectedVerification()),
             new EnvironmentsConfigDto(
                 frontendProperties.environments().primaryBaseUrl(),
                 frontendProperties.environments().integrationBaseUrl()

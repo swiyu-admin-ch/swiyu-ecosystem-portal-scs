@@ -35,7 +35,7 @@ export interface TrustOnboardingSubmission {
   initiatedAt?: string;
   submittedAt?: string;
   resubmitRequiredUntil?: string;
-  alerts?: Array<TrustOnboardingAlert>;
+  alerts: Array<TrustOnboardingAlert>;
 }
 export namespace TrustOnboardingSubmission {
   export const SigningRuleEnum = {
@@ -56,8 +56,7 @@ export namespace TrustOnboardingSubmission {
   export const BusinessPartnerTypeEnum = {
     GovernmentalInstitution: 'GOVERNMENTAL_INSTITUTION',
     Business: 'BUSINESS',
-    Individual: 'INDIVIDUAL',
-    Unknown: 'UNKNOWN'
+    Individual: 'INDIVIDUAL'
   } as const;
   export type BusinessPartnerTypeEnum = (typeof BusinessPartnerTypeEnum)[keyof typeof BusinessPartnerTypeEnum];
   export const CorrespondingLanguageEnum = {

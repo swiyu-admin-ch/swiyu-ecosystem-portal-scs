@@ -17,7 +17,7 @@ describe('AdministrationOverviewComponent', () => {
   let router: Router;
 
   const appConfigMock = {
-    featureToggles: {EIDARTFE_1122: true},
+    featureToggles: {},
     maxBusinessPartnerPerCustomer: 999999
   };
 

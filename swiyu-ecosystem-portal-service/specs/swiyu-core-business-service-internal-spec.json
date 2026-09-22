@@ -3,11 +3,11 @@
   "info": {
     "title": "Internal API",
     "description": "IF-009 - Internal API",
-    "version": "3.42.27-SNAPSHOT"
+    "version": "4.0.4-20260917152100-be779104"
   },
   "servers": [
     {
-      "url": "http://localhost:8200",
+      "url": "https://swiyu-core-business-service-d.apps.p-szb-ros-shrd-npr-01.cloud.admin.ch",
       "description": "Generated server url"
     }
   ],
@@ -18,12 +18,12 @@
   ],
   "tags": [
     {
-      "name": "Business Partner",
-      "description": "Business Partner API. Note: /api/v1/management/business-entities is deprecated and is replaced by /api/v1/internal/management/business-partners"
-    },
-    {
       "name": "VcSchemaSubmission",
       "description": "VcSchemaSubmission API"
+    },
+    {
+      "name": "DevOps",
+      "description": "Manual triggers for the event-driven business partner sync"
     },
     {
       "name": "Identifier",
@@ -75,6 +75,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -84,9 +87,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "Success",
@@ -139,6 +139,9 @@
           "required": true
         },
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Validation failed",
             "content": {
@@ -148,9 +151,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "Success",
@@ -204,6 +204,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -213,9 +216,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -257,6 +257,9 @@
           "required": true
         },
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Business validation failed. Possible error codes: DATA_INVALID.",
             "content": {
@@ -266,9 +269,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "Success",
@@ -301,244 +301,6 @@
             }
           }
         }
-      }
-    },
-    "/api/v1/management/business-entities/{businessEntityId}": {
-      "put": {
-        "tags": [
-          "Business Partner"
-        ],
-        "summary": "Updates the business entity to the defined specifications.",
-        "operationId": "updateBusinessEntity",
-        "parameters": [
-          {
-            "name": "businessEntityId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateBusinessEntity"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "400": {
-            "description": "Business validation failed. Possible error codes: DATA_INVALID, BUSINESS_DATA_INTEGRITY_VIOLATION.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          },
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BusinessEntity"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Not authorized. Possible error codes: RESOURCE_FORBIDDEN.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found. Possible error codes: RESOURCE_NOT_FOUND.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "deprecated": true
-      },
-      "delete": {
-        "tags": [
-          "Business Partner"
-        ],
-        "summary": "Delete a new business entity controlled by the signed in user.",
-        "operationId": "deleteBusinessEntity",
-        "parameters": [
-          {
-            "name": "businessEntityId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          },
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "No Authentication token provided"
-          },
-          "403": {
-            "description": "Nor Authorized to perform delete on specified entity"
-          }
-        },
-        "deprecated": true
-      }
-    },
-    "/api/v1/internal/management/business-partners/{businessEntityId}": {
-      "put": {
-        "tags": [
-          "Business Partner"
-        ],
-        "summary": "Updates the business entity to the defined specifications.",
-        "operationId": "updateBusinessEntity_1",
-        "parameters": [
-          {
-            "name": "businessEntityId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateBusinessEntity"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "400": {
-            "description": "Business validation failed. Possible error codes: DATA_INVALID, BUSINESS_DATA_INTEGRITY_VIOLATION.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          },
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BusinessEntity"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Not authorized. Possible error codes: RESOURCE_FORBIDDEN.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found. Possible error codes: RESOURCE_NOT_FOUND.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "deprecated": true
-      },
-      "delete": {
-        "tags": [
-          "Business Partner"
-        ],
-        "summary": "Delete a new business entity controlled by the signed in user.",
-        "operationId": "deleteBusinessEntity_1",
-        "parameters": [
-          {
-            "name": "businessEntityId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          },
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "No Authentication token provided"
-          },
-          "403": {
-            "description": "Nor Authorized to perform delete on specified entity"
-          }
-        },
-        "deprecated": true
       }
     },
     "/api/v2/internal/management/business-partners/": {
@@ -581,6 +343,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -590,9 +355,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "Success",
@@ -633,6 +395,9 @@
           "required": true
         },
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Business validation failed. Possible error codes: DATA_INVALID, BUSINESS_DATA_INTEGRITY_VIOLATION, OBJECT_COUNT_LIMIT_REACHED.",
             "content": {
@@ -642,9 +407,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "201": {
             "description": "Created",
@@ -730,6 +492,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -739,9 +504,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -771,6 +533,9 @@
           "required": true
         },
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Business validation failed. Possible error codes: DATA_INVALID.",
             "content": {
@@ -780,9 +545,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "Success",
@@ -857,6 +619,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -866,9 +631,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -911,6 +673,9 @@
           }
         },
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Validation failed. For Declaration of Intent documents the errorCode will be TRUST_ONBOARDING_DOCUMENT_VALIDATION_FAILED and additionalDetails contains the specific DoI violation codes (see DeclarationOfIntentValidatorErrorCode). For general document validation failures the errorCode will be DATA_INVALID.",
             "content": {
@@ -927,9 +692,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "Document uploaded successfully",
@@ -972,6 +734,9 @@
           "required": true
         },
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Business validation failed. Possible error codes: DATA_INVALID.",
             "content": {
@@ -981,9 +746,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "Success"
@@ -1072,6 +834,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1081,9 +846,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -1113,6 +875,9 @@
           "required": true
         },
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Business validation failed. Possible error codes: DATA_INVALID.",
             "content": {
@@ -1122,9 +887,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "Success",
@@ -1147,286 +909,6 @@
             }
           }
         }
-      }
-    },
-    "/api/v1/management/business-entities/": {
-      "get": {
-        "tags": [
-          "Business Partner"
-        ],
-        "summary": "Gets all entities associated with the user.",
-        "description": "Uses the bproles of the bearer token to identify owned roles",
-        "operationId": "getBusinessEntities",
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Zero-based page index (0..N)",
-            "schema": {
-              "type": "integer",
-              "default": 0
-            }
-          },
-          {
-            "name": "size",
-            "in": "query",
-            "description": "The size of the page to be returned",
-            "schema": {
-              "type": "integer",
-              "default": 20
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          },
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PagedModelBusinessEntity"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing authorization token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PagedModelBusinessEntity"
-                }
-              }
-            }
-          }
-        },
-        "deprecated": true
-      },
-      "post": {
-        "tags": [
-          "Business Partner"
-        ],
-        "summary": "Create a new business entity controlled by the signed in user.",
-        "operationId": "createBusinessEntity",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateBusinessEntity"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "400": {
-            "description": "Business validation failed. Possible error codes: DATA_INVALID.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          },
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BusinessEntity"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "No Authentication token provided",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BusinessEntity"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Not authorized. Possible error codes: RESOURCE_FORBIDDEN.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "deprecated": true
-      }
-    },
-    "/api/v1/internal/management/business-partners/": {
-      "get": {
-        "tags": [
-          "Business Partner"
-        ],
-        "summary": "Gets all entities associated with the user.",
-        "description": "Uses the bproles of the bearer token to identify owned roles",
-        "operationId": "getBusinessEntities_1",
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Zero-based page index (0..N)",
-            "schema": {
-              "type": "integer",
-              "default": 0
-            }
-          },
-          {
-            "name": "size",
-            "in": "query",
-            "description": "The size of the page to be returned",
-            "schema": {
-              "type": "integer",
-              "default": 20
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          },
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PagedModelBusinessEntity"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing authorization token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PagedModelBusinessEntity"
-                }
-              }
-            }
-          }
-        },
-        "deprecated": true
-      },
-      "post": {
-        "tags": [
-          "Business Partner"
-        ],
-        "summary": "Create a new business entity controlled by the signed in user.",
-        "operationId": "createBusinessEntity_1",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateBusinessEntity"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "400": {
-            "description": "Business validation failed. Possible error codes: DATA_INVALID.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          },
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BusinessEntity"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "No Authentication token provided",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BusinessEntity"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Not authorized. Possible error codes: RESOURCE_FORBIDDEN.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "deprecated": true
       }
     },
     "/api/v1/internal/identifier/{partnerId}/identifier/{identifierId}/description": {
@@ -1467,6 +949,9 @@
           "required": true
         },
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1477,11 +962,90 @@
               }
             }
           },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/internal/devops/business-partners/sync": {
+      "post": {
+        "tags": [
+          "DevOps"
+        ],
+        "summary": "Re-publish the TiBusinessPartnerUpdatedEvent for all business partners.",
+        "description": "Idempotent, no state change. Forces a full re-sync of the TMS partner copy.",
+        "operationId": "syncAllBusinessPartners",
+        "responses": {
           "500": {
             "description": "Internal Server Error"
           },
-          "200": {
-            "description": "OK"
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Events published for all business partners"
+          },
+          "401": {
+            "description": "Missing authorization token"
+          },
+          "403": {
+            "description": "Not authorized"
+          }
+        }
+      }
+    },
+    "/api/v1/internal/devops/business-partners/sync/{businessPartnerId}": {
+      "post": {
+        "tags": [
+          "DevOps"
+        ],
+        "summary": "Re-publish the TiBusinessPartnerUpdatedEvent for one business partner.",
+        "description": "Idempotent, no state change. E.g. to recover from a dropped event.",
+        "operationId": "syncBusinessPartner",
+        "parameters": [
+          {
+            "name": "businessPartnerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Event published for the business partner"
+          },
+          "401": {
+            "description": "Missing authorization token"
+          },
+          "403": {
+            "description": "Not authorized"
+          },
+          "404": {
+            "description": "Business partner not found"
           }
         }
       }
@@ -1506,6 +1070,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1515,9 +1082,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "Success",
@@ -1571,6 +1135,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1580,9 +1147,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -1615,6 +1179,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1624,9 +1191,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -1671,6 +1235,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1680,9 +1247,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -1725,6 +1289,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1734,9 +1301,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "204": {
             "description": "No Content"
@@ -1773,6 +1337,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1782,9 +1349,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -1819,6 +1383,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1828,9 +1395,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -1853,6 +1417,9 @@
         "summary": "Get all available ProtectedVerificationCategories",
         "operationId": "getProtectedVerificationCategories",
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1862,9 +1429,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -1901,6 +1465,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1910,9 +1477,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -1948,6 +1512,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1957,9 +1524,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -1972,96 +1536,6 @@
             }
           }
         }
-      }
-    },
-    "/api/v1/internal/management/business-partners/{id}": {
-      "get": {
-        "tags": [
-          "Business Partner"
-        ],
-        "operationId": "getBusinessPartner_1",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BusinessEntity"
-                }
-              }
-            }
-          }
-        },
-        "deprecated": true
-      }
-    },
-    "/api/v1/management/business-entities/{id}": {
-      "get": {
-        "tags": [
-          "Business Partner"
-        ],
-        "operationId": "getBusinessPartner_2",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BusinessEntity"
-                }
-              }
-            }
-          }
-        },
-        "deprecated": true
       }
     },
     "/api/v1/internal/identifier/business-entities/{partnerId}/limits": {
@@ -2085,6 +1559,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -2094,9 +1571,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -2143,6 +1617,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -2152,9 +1629,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "OK",
@@ -2219,6 +1693,9 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          },
           "400": {
             "description": "Bad request. Possible error codes: DATA_INVALID, INVALID_PAGINATION.",
             "content": {
@@ -2228,9 +1705,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "200": {
             "description": "Success",
@@ -2562,12 +2036,11 @@
       },
       "BusinessPartnerType": {
         "type": "string",
-        "description": "| Value                        | Description                                                   |\n| ---------------------------- | ------------------------------------------------------------- |\n| GOVERNMENTAL_INSTITUTION     | Governmental institutions like JPD or ASTRA                   |\n| BUSINESS                     | Business entities and corporations                            |\n| INDIVIDUAL                   | Individual persons                                            |\n| UNKNOWN                      | Deprecated \u2013 legacy placeholder, all entries migrated to BUSINESS |\n",
+        "description": "| Value                        | Description                                                   |\n| ---------------------------- | ------------------------------------------------------------- |\n| GOVERNMENTAL_INSTITUTION     | Governmental institutions like JPD or ASTRA                   |\n| BUSINESS                     | Business entities and corporations                            |\n| INDIVIDUAL                   | Individual persons                                            |\n| UNKNOWN                      | Deprecated – legacy placeholder, all entries migrated to BUSINESS |\n",
         "enum": [
           "GOVERNMENTAL_INSTITUTION",
           "BUSINESS",
-          "INDIVIDUAL",
-          "UNKNOWN"
+          "INDIVIDUAL"
         ]
       },
       "Signatory": {
@@ -2625,7 +2098,7 @@
             "example": {
               "default": "Swiss Confederation",
               "de-CH": "Schweizerische Eidgenossenschaft",
-              "fr-CH": "Conf\u00e9d\u00e9ration suisse",
+              "fr-CH": "Confédération suisse",
               "it-CH": "Confederazione Svizzera",
               "en-CH": "Swiss Confederation",
               "rm-CH": "Confederaziun svizra"
@@ -2900,85 +2373,6 @@
           "REJECTED",
           "INFORMATION_REQUESTED",
           "RESUBMITTED"
-        ]
-      },
-      "UpdateBusinessEntity": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Unique name of the entity to be created. Can not be changed once created. Allowed are letters, digits, spaces, and most special characters.",
-            "example": "John Doe",
-            "maxLength": 45,
-            "minLength": 0,
-            "pattern": "[^\\x00-\\x1F\\x7F]*"
-          },
-          "contactEmailAddress": {
-            "type": "string",
-            "description": "Email address how the controller of the entity can be reached. Ideally a shared mailbox.",
-            "example": "example@example.com",
-            "minLength": 1,
-            "pattern": "^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-          }
-        },
-        "required": [
-          "contactEmailAddress",
-          "name"
-        ]
-      },
-      "BusinessEntity": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "description": "Key of the entity under which it is registered with ePortal",
-            "minLength": 1
-          },
-          "name": {
-            "type": "string",
-            "description": "Unique name of the entity",
-            "minLength": 1
-          },
-          "contactEmailAddress": {
-            "type": "string",
-            "minLength": 1
-          },
-          "type": {
-            "type": "null",
-            "$ref": "#/components/schemas/BusinessPartnerType",
-            "description": "Type of the entity"
-          },
-          "isVerified": {
-            "type": "boolean",
-            "description": "Was there a successful trust onboarding"
-          },
-          "payedForTrustVerification": {
-            "type": "boolean",
-            "description": "User payed for trust onboarding"
-          },
-          "payedForDIDSlots": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Number of DID slots the user payed for already"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2024-10-29T09:35:16.809924Z"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2024-10-29T09:35:16.809924Z"
-          }
-        },
-        "required": [
-          "contactEmailAddress",
-          "createdAt",
-          "id",
-          "name",
-          "updatedAt"
         ]
       },
       "CreatePartner": {
@@ -3268,36 +2662,6 @@
           "REJECTED"
         ]
       },
-      "CreateBusinessEntity": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Unique name of the entity to be created. Can not be changed once created. Allowed are letters, digits, spaces, and most special characters.",
-            "example": "John Doe",
-            "maxLength": 45,
-            "minLength": 0,
-            "pattern": "[^\\x00-\\x1F\\x7F]*"
-          },
-          "contactEmailAddress": {
-            "type": "string",
-            "description": "Email address how the controller of the entity can be reached. Ideally a shared mailbox.",
-            "example": "example@example.com",
-            "minLength": 1,
-            "pattern": "^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-          },
-          "type": {
-            "$ref": "#/components/schemas/BusinessPartnerType",
-            "description": "Type of the business partner.",
-            "example": "GOVERNMENTAL_INSTITUTION"
-          }
-        },
-        "required": [
-          "contactEmailAddress",
-          "name",
-          "type"
-        ]
-      },
       "IdentifierUpdateRequest": {
         "type": "object",
         "properties": {
@@ -3445,6 +2809,12 @@
       "JsonNode": {
         "type": "object",
         "properties": {
+          "float": {
+            "type": "boolean"
+          },
+          "object": {
+            "type": "boolean"
+          },
           "empty": {
             "type": "boolean"
           },
@@ -3454,25 +2824,44 @@
           "null": {
             "type": "boolean"
           },
-          "object": {
+          "number": {
             "type": "boolean"
           },
-          "float": {
+          "double": {
             "type": "boolean"
           },
-          "container": {
+          "int": {
             "type": "boolean"
           },
-          "string": {
+          "short": {
             "type": "boolean"
           },
-          "integralNumber": {
+          "long": {
             "type": "boolean"
           },
-          "valueNode": {
+          "boolean": {
+            "type": "boolean"
+          },
+          "pojo": {
+            "type": "boolean"
+          },
+          "floatingPointNumber": {
+            "type": "boolean"
+          },
+          "bigInteger": {
             "type": "boolean"
           },
           "missingNode": {
+            "type": "boolean"
+          },
+          "textual": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "binary": {
+            "type": "boolean"
+          },
+          "bigDecimal": {
             "type": "boolean"
           },
           "nodeType": {
@@ -3489,41 +2878,16 @@
               "STRING"
             ]
           },
-          "pojo": {
+          "integralNumber": {
             "type": "boolean"
           },
-          "floatingPointNumber": {
+          "container": {
             "type": "boolean"
           },
-          "short": {
+          "string": {
             "type": "boolean"
           },
-          "int": {
-            "type": "boolean"
-          },
-          "long": {
-            "type": "boolean"
-          },
-          "double": {
-            "type": "boolean"
-          },
-          "bigDecimal": {
-            "type": "boolean"
-          },
-          "bigInteger": {
-            "type": "boolean"
-          },
-          "textual": {
-            "type": "boolean",
-            "deprecated": true
-          },
-          "boolean": {
-            "type": "boolean"
-          },
-          "binary": {
-            "type": "boolean"
-          },
-          "number": {
+          "valueNode": {
             "type": "boolean"
           },
           "embeddedValue": {
@@ -3910,20 +3274,6 @@
         "required": [
           "count"
         ]
-      },
-      "PagedModelBusinessEntity": {
-        "type": "object",
-        "properties": {
-          "content": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/BusinessEntity"
-            }
-          },
-          "page": {
-            "$ref": "#/components/schemas/PageMetadata"
-          }
-        }
       },
       "IdentifierEntryLimits": {
         "type": "object",
