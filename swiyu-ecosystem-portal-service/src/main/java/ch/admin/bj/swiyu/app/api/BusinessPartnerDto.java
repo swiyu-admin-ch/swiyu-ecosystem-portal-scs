@@ -1,5 +1,6 @@
 package ch.admin.bj.swiyu.app.api;
 
+import ch.admin.bj.swiyu.app.common.validation.ValidLocalizedMap;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,9 +11,9 @@ import java.util.UUID;
 @Schema(name = "BusinessPartner")
 public record BusinessPartnerDto(
     @Schema(description = "Key of the partner under which it is registered with ePortal") @NotBlank UUID id,
-    @Schema(description = "Unique name of the partner") @NotBlank String name,
-    @Schema(description = "Localized entity name map with required default key and BCP-47 locale keys")
+    @Schema(description = "Localized entity name, keyed by \"default\" and BCP 47 locale tags")
     @NotNull
+    @ValidLocalizedMap
     Map<String, String> entityName,
     @NotBlank String contactEmailAddress,
     @Schema(description = "Type of the partner") @NotNull BusinessPartnerTypeDto type,

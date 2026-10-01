@@ -5,7 +5,7 @@
       {{ "eportal_global_label_selectedProfile" | translate }}
     </span>
     <span>
-      {{ wizardService.businessPartner()?.name }}
+      {{ wizardService.businessPartner()?.entityName?.["default"] }}
     </span>
   </div>
   <div class="sw-wizard-lvl-3">

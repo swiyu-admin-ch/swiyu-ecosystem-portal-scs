@@ -49,6 +49,15 @@ describe('OnboardingStepDocumentsComponent', () => {
     ]
   };
 
+  let wizardServiceMock: {
+    requestedBusinessPartnerType: jest.Mock;
+    isFieldVisible: jest.Mock;
+    isFieldEditable: jest.Mock;
+    isNotificationVisible: jest.Mock;
+    fieldState: jest.Mock;
+    [key: string]: unknown;
+  };
+
   beforeEach(async () => {
     const documentsApiSpy = {
       listAllDocumentsForTrustOnboarding: jest.fn(),
@@ -56,11 +65,15 @@ describe('OnboardingStepDocumentsComponent', () => {
       deleteTrustOnboardingSubmissionDocument: jest.fn()
     };
 
-    const wizardServiceMock = {
+    wizardServiceMock = {
       submissionId: MOCK_SUBMISSION_ID,
       partnerId: 'partner-001',
       submission: jest.fn().mockReturnValue(undefined),
       requestedBusinessPartnerType: jest.fn().mockReturnValue(undefined),
+      isFieldVisible: jest.fn().mockReturnValue(true),
+      isFieldEditable: jest.fn().mockReturnValue(true),
+      isNotificationVisible: jest.fn().mockReturnValue(true),
+      fieldState: jest.fn().mockReturnValue({visible: true, editable: true}),
       submissionRequest: {},
       saveAndNext: jest.fn(),
       navigateToPreviousStep: jest.fn(),
@@ -91,6 +104,30 @@ describe('OnboardingStepDocumentsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('Flow configuration', () => {
+    it('hides the additional documents section when the flow does not show it', () => {
+      wizardServiceMock.requestedBusinessPartnerType.mockReturnValue(BusinessPartner.TypeEnum.GovernmentalInstitution);
+      wizardServiceMock.isFieldVisible.mockImplementation((id: string) => id !== 'additionalDocuments');
+      wizardServiceMock.fieldState.mockReturnValue({visible: true, editable: true});
+
+      fixture.detectChanges();
+
+      expect(component.showAdditionalDocuments()).toBe(false);
+      expect(component.form.controls.otherDocuments.hasError('required')).toBe(false);
+    });
+
+    it('disables the declaration of intent upload when the flow marks it as not editable', () => {
+      wizardServiceMock.fieldState.mockImplementation((id: string) =>
+        id === 'declarationOfIntent' ? {visible: true, editable: false} : {visible: true, editable: true}
+      );
+
+      fixture.detectChanges();
+
+      expect(component.form.controls.uploadedFiles.disabled).toBe(true);
+      expect(component.form.controls.doiLanguage.disabled).toBe(false);
+    });
   });
 
   describe('ngOnInit', () => {

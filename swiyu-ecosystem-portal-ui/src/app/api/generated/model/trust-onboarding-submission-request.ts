@@ -21,7 +21,6 @@ export interface TrustOnboardingSubmissionRequest {
   signatories?: Array<Signatory>;
   registryIds?: {[key: string]: string};
   isRegisteredInCommercialRegister?: boolean;
-  correspondingLanguage?: TrustOnboardingSubmissionRequest.CorrespondingLanguageEnum;
   dids?: Array<string>;
   requestedPartnerType?: TrustOnboardingSubmissionRequest.RequestedPartnerTypeEnum;
 }
@@ -32,14 +31,6 @@ export namespace TrustOnboardingSubmissionRequest {
     JointSignatureThree: 'JOINT_SIGNATURE_THREE'
   } as const;
   export type SigningRuleEnum = (typeof SigningRuleEnum)[keyof typeof SigningRuleEnum];
-  export const CorrespondingLanguageEnum = {
-    En: 'EN',
-    De: 'DE',
-    Fr: 'FR',
-    It: 'IT',
-    Rm: 'RM'
-  } as const;
-  export type CorrespondingLanguageEnum = (typeof CorrespondingLanguageEnum)[keyof typeof CorrespondingLanguageEnum];
   export const RequestedPartnerTypeEnum = {
     GovernmentalInstitution: 'GOVERNMENTAL_INSTITUTION',
     Business: 'BUSINESS',

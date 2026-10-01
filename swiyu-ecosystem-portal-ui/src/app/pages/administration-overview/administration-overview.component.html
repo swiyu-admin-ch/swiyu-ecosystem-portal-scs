@@ -45,7 +45,7 @@
         class="ob-table"
         mat-table
         matSort
-        matSortActive="name"
+        matSortActive="entityName"
         matSortDirection="asc"
         noda
       >
@@ -55,11 +55,11 @@
           </th>
           <td *matCellDef="let element" mat-cell>{{ element.id }}</td>
         </ng-container>
-        <ng-container matColumnDef="name">
+        <ng-container matColumnDef="entityName">
           <th *matHeaderCellDef mat-header-cell mat-sort-header>
             {{ "eportal_adminOverview_table_business-partner-name" | translate }}
           </th>
-          <td *matCellDef="let element" mat-cell>{{ element.name }}</td>
+          <td *matCellDef="let element" mat-cell>{{ element.entityName?.["default"] }}</td>
         </ng-container>
 
         <ng-container matColumnDef="trustVerificationStatus">
@@ -86,7 +86,7 @@
           </td>
         </ng-container>
 
-        @let displayColumns = ["name", "id", "trustVerificationStatus", "details"];
+        @let displayColumns = ["entityName", "id", "trustVerificationStatus", "details"];
         <tr *matHeaderRowDef="displayColumns" mat-header-row></tr>
         <tr
           *matRowDef="let row; columns: displayColumns"

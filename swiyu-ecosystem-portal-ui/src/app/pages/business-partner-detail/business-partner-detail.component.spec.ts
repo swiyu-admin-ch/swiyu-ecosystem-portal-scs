@@ -31,7 +31,6 @@ describe('BusinessPartnerDetailComponent', () => {
     const translateService = TestBed.inject(TranslateService);
     const partner: BusinessPartner = {
       id: 'test-id',
-      name: 'Fallback Name',
       entityName: {
         default: 'Deutsch',
         'de-CH': 'Deutsch',

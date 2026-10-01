@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, effect, inject, signal} from '@angular/core';
 import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {MatChip} from '@angular/material/chips';
@@ -14,6 +14,7 @@ import {MailtoTemplateService} from '../../../../../shared/email/mailto-template
 import {ProcessStepComponent} from '../../../../../shared/process/process-step/process-step.component';
 import {ProcessComponent} from '../../../../../shared/process/process.component';
 import {RadioCardComponent} from '../../../../../shared/radio-card/radio-card.component';
+import {applyFieldState} from '../../wizard/trust-onboarding-field-state.util';
 import {TrustOnboardingWizardService} from '../../wizard/trust-onboarding-wizard.service';
 import {AbstractOnboardingStepComponent} from '../abstract-onboarding-step-component';
 import {SetupVariant} from './explainer-steps.types';
@@ -64,6 +65,11 @@ export class OnboardingStepTechnicalVerificationComponent extends AbstractOnboar
   constructor() {
     super();
     this.translateSetup();
+
+    // Apply the active flow's field configuration to the backing control.
+    effect(() => {
+      applyFieldState(this.setupForm.controls.setupVariant, this.wizardService.fieldState('setupVariant'));
+    });
   }
 
   get eportalInviteLink() {

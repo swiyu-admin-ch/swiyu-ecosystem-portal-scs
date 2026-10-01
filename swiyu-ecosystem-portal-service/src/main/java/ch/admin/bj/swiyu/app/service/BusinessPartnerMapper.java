@@ -11,19 +11,17 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class BusinessPartnerMapper {
 
-    @SuppressWarnings({ "java:S1874" }) // Remove name with contract in EID-6303
     public static BusinessPartnerListItemDto toBusinessPartnerListItemDto(BusinessPartnerListItem businessPartner) {
         return toBusinessPartnerListItemDto(businessPartner, null);
     }
 
-    @SuppressWarnings({ "java:S1874" }) // Remove name with contract in EID-6303
     public static BusinessPartnerListItemDto toBusinessPartnerListItemDto(
         BusinessPartnerListItem businessPartner,
         Instant verificationProgressMaxDate
     ) {
         return new BusinessPartnerListItemDto(
             businessPartner.getId(),
-            businessPartner.getName(),
+            businessPartner.getEntityName(),
             toBusinessPartnerTypeDto(businessPartner.getType()),
             businessPartner.getPayedForTrustVerification(),
             businessPartner.getPayedForDIDSlots(),
@@ -58,12 +56,12 @@ public class BusinessPartnerMapper {
         };
     }
 
-    @SuppressWarnings({ "java:S1874" }) // Remove name with contract in EID-6303
+    @SuppressWarnings({ "java:S1874" })
     public static BusinessPartnerDto toBusinessPartnerDto(BusinessPartner businessPartner) {
         return toBusinessPartnerDto(businessPartner, null);
     }
 
-    @SuppressWarnings({ "java:S1874" }) // Remove name with contract in EID-6303
+    @SuppressWarnings({ "java:S1874" })
     public static BusinessPartnerDto toBusinessPartnerDto(
         BusinessPartner businessPartner,
         Instant verificationProgressMaxDate
@@ -71,7 +69,6 @@ public class BusinessPartnerMapper {
         if (businessPartner == null) return null;
         return new BusinessPartnerDto(
             businessPartner.getId(),
-            businessPartner.getName(),
             businessPartner.getEntityName(),
             businessPartner.getContactEmailAddress(),
             toBusinessPartnerTypeDto(businessPartner.getType()),
@@ -138,7 +135,7 @@ public class BusinessPartnerMapper {
         return LanguageDto.valueOf(language.getValue());
     }
 
-    @SuppressWarnings("java:S1874") // remove with EID-6303
+    @SuppressWarnings("java:S1874")
     static ContactDto toContactDto(Contact contact) {
         if (contact == null) return null;
         return new ContactDto(

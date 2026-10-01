@@ -1,6 +1,12 @@
 /** Key used by CBS for the fallback value in localized text maps. */
 export const DEFAULT_LOCALIZED_TEXT_KEY = 'default';
 
+/**
+ * Locale tags a localized text map may be keyed by, next to the default entry. These are keys of
+ * the map itself and unrelated to the correspondence language a contact person picks.
+ */
+export const LOCALIZED_MAP_LOCALES = ['de-CH', 'fr-CH', 'it-CH', 'en-CH', 'rm-CH'] as const;
+
 export type LocalizedTextMap = Record<string, string>;
 export interface LocalizedTextTranslation {
   name: string;

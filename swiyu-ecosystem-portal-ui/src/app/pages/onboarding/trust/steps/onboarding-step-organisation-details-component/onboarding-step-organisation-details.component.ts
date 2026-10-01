@@ -34,17 +34,23 @@ import {AppConfigService} from '../../../../../core/appconfig/app-config.service
 import {CountryService} from '../../../../../core/util/country.service';
 import {CheckboxA11yDirective} from '../../../../../shared/checkbox-a11y/checkbox-a11y.directive';
 import {FullLangPipe} from '../../../../../shared/full-lang/full-lang.pipe';
-import {fromLocalizedMap, LocalizedTextMap, toLocalizedMap} from '../../../../../shared/i18n/localized-map.util';
-import {SWISS_LANGUAGE_TAGS, SWISS_LANGUAGES} from '../../../../../shared/i18n/swiss-languages.util';
+import {
+  fromLocalizedMap,
+  LOCALIZED_MAP_LOCALES,
+  LocalizedTextMap,
+  toLocalizedMap
+} from '../../../../../shared/i18n/localized-map.util';
+import {SWISS_LANGUAGES} from '../../../../../shared/i18n/swiss-languages.util';
 import {InfoIconComponent} from '../../../../../shared/info-icon/info-icon.component';
 import {RadioCardComponent} from '../../../../../shared/radio-card/radio-card.component';
 import {CustomValidators} from '../../../../../shared/validators/custom-validators';
+import {applyFieldState} from '../../wizard/trust-onboarding-field-state.util';
 import {TrustOnboardingWizardService} from '../../wizard/trust-onboarding-wizard.service';
 import {AbstractOnboardingStepComponent} from '../abstract-onboarding-step-component';
 import {DUPLICATE_LANGUAGE_ERROR, duplicateLanguageValidator} from './duplicate-language.validator';
 import PartnerTypeEnum = PartnerCreationRequest.BusinessPartnerTypeEnum;
 import SigningRuleEnum = TrustOnboardingSubmissionRequest.SigningRuleEnum;
-import CorrespondingLanguageEnum = TrustOnboardingSubmissionRequest.CorrespondingLanguageEnum;
+import CorrespondingLanguageEnum = TrustOnboardingSubmission.CorrespondingLanguageEnum;
 
 type SignatoryFormGroup = FormGroup<{
   [K in keyof Signatory]: FormControl<Signatory[K]>;
@@ -89,11 +95,17 @@ export type EntityNameEntryFormGroup = FormGroup<{
 })
 export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardingStepComponent implements OnInit {
   readonly languages = SWISS_LANGUAGES;
-  readonly entityNameLanguages = SWISS_LANGUAGE_TAGS;
+  readonly entityNameLanguages = LOCALIZED_MAP_LOCALES;
   protected readonly wizardService = inject(TrustOnboardingWizardService);
   protected readonly countryService = inject(CountryService);
   protected readonly appConfigService = inject(AppConfigService);
 
+  // The actor type cannot be changed for an existing GOV partner, and a flow may hide the choice entirely.
+  readonly showPartnerTypeSelection = computed(
+    () =>
+      this.wizardService.isFieldVisible('partnerType') &&
+      this.wizardService.businessPartner()?.type !== BusinessPartner.TypeEnum.GovernmentalInstitution
+  );
   readonly partnerTypeBusinessDisabled = computed(
     () =>
       !this.appConfigService.isFunctionalityAllowPartnerBaseOnboardingBusinessEnabled || // App does not support business onboarding
@@ -222,6 +234,21 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
         this.form.patchValue({partnerType: partnerType});
       }
     });
+    // Apply the active flow's field configuration to the backing controls.
+    effect(() => {
+      applyFieldState(this.form.controls.partnerType, this.wizardService.fieldState('partnerType'));
+      applyFieldState(this.form.controls.hasUid, this.wizardService.fieldState('commercialRegister'));
+      applyFieldState(this.form.controls.entityNameDefault, this.wizardService.fieldState('entityName'));
+      applyFieldState(this.form.controls.entityNameEntries, this.wizardService.fieldState('entityName'));
+      applyFieldState(this.form.controls.entityAddress, this.wizardService.fieldState('entityAddress'));
+      applyFieldState(this.form.controls.contactPerson, this.wizardService.fieldState('contactPerson'));
+      applyFieldState(this.form.controls.signingRule, this.wizardService.fieldState('signatories'));
+      applyFieldState(this.form.controls.signatories, this.wizardService.fieldState('signatories'));
+      applyFieldState(this.form.controls.readTermsAndConditions, this.wizardService.fieldState('termsAndConditions'));
+      applyFieldState(this.form.controls.readPrivacyPolicy, this.wizardService.fieldState('privacyPolicy'));
+      // The UID additionally depends on the partner type and the commercial register answer.
+      this.applyUidRules(this.form.controls.partnerType.value, this.form.controls.hasUid.value);
+    });
     effect(() => {
       const partner = this.wizardService.businessPartner();
       const submission = this.wizardService.submission();
@@ -313,7 +340,7 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
   }
 
   canAddEntityNameEntry(): boolean {
-    return this.form.controls.entityNameEntries.length < SWISS_LANGUAGES.length;
+    return this.form.controls.entityNameEntries.length < LOCALIZED_MAP_LOCALES.length;
   }
 
   addEntityNameEntry(): void {
@@ -357,7 +384,8 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
   private applyUidRules(partnerType: string | undefined | null, hasUid: boolean) {
     const uid = this.form.controls.uid;
     const uidMustBeProvided =
-      partnerType === PartnerTypeEnum.GovernmentalInstitution || (partnerType === PartnerTypeEnum.Business && hasUid);
+      this.wizardService.isFieldEditable('uid') &&
+      (partnerType === PartnerTypeEnum.GovernmentalInstitution || (partnerType === PartnerTypeEnum.Business && hasUid));
 
     if (uidMustBeProvided) {
       uid.enable({emitEvent: false});

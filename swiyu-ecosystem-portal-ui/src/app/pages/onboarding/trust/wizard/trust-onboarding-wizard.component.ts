@@ -5,7 +5,8 @@ import {ActivatedRoute, NavigationEnd, Router, RouterOutlet} from '@angular/rout
 import {TranslateModule} from '@ngx-translate/core';
 import {filter, Subscription} from 'rxjs';
 import {AbstractOnboardingStepComponent} from '../steps/abstract-onboarding-step-component';
-import {TRUST_STEP_MAP, TrustOnboardingWizardService} from './trust-onboarding-wizard.service';
+import {TrustOnboardingFlow} from './trust-onboarding-flow.config';
+import {TrustOnboardingWizardService} from './trust-onboarding-wizard.service';
 
 @Component({
   selector: 'app-trust-onboarding-wizard',
@@ -26,8 +27,10 @@ export class TrustOnboardingWizardComponent implements OnInit, AfterViewInit, On
   ngOnInit() {
     const partnerId = this.route.snapshot.paramMap.get('partnerId');
     const submissionId = this.route.snapshot.paramMap.get('submissionId');
+    const flow =
+      (this.route.snapshot.data['flow'] as TrustOnboardingFlow | undefined) ?? TrustOnboardingFlow.Registration;
     if (partnerId && submissionId) {
-      this.service.init(partnerId, submissionId);
+      this.service.init(partnerId, submissionId, flow);
     }
   }
 
@@ -64,8 +67,8 @@ export class TrustOnboardingWizardComponent implements OnInit, AfterViewInit, On
     }
     const segments = child.snapshot.url;
     const segment = segments[0]?.path;
-    const stepIndex = TRUST_STEP_MAP[segment];
-    if (stepIndex !== undefined) {
+    const stepIndex = this.service.visibleSteps().findIndex(step => step.id === segment);
+    if (stepIndex >= 0) {
       this.stepper.selectedIndex = stepIndex;
       this.service.currentStepIndex.set(stepIndex);
       this.updateStepAriaInfo();

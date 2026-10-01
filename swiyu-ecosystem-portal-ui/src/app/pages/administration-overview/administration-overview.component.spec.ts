@@ -24,7 +24,7 @@ describe('AdministrationOverviewComponent', () => {
   const createBusinessPartnerPage = (totalElements: number) => ({
     content: Array.from({length: 10}, (_, i) => ({
       id: `bp-${i}`,
-      name: `Business Partner ${i}`,
+      entityName: {default: `Business Partner ${i}`},
       type: BusinessPartnerListItem.TypeEnum.Business
     })),
     page: {

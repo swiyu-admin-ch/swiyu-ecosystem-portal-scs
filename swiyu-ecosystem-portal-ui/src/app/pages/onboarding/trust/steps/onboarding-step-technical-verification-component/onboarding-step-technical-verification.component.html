@@ -13,41 +13,43 @@
     </div>
   </div>
   <div class="sw-wizard-lvl-2">
-    <h3>{{ "eportal_onboardingTR_technicalProof_sectionTitle_proofOfOwnership" | translate }}</h3>
-    <div class="pop-summary">
-      <div class="group">
-        <div class="cell" data-cy="didToVerify" [class.error-text]="showError()">
-          <div class="caption">{{ "eportal_onboardingTR_technicalProof_label_open" | translate }}</div>
-          <div class="body">{{ wizardService.submission()?.proofOfPossessionList?.length }} DID(s)</div>
+    @if (wizardService.isFieldVisible("popSummary")) {
+      <h3>{{ "eportal_onboardingTR_technicalProof_sectionTitle_proofOfOwnership" | translate }}</h3>
+      <div class="pop-summary">
+        <div class="group">
+          <div class="cell" data-cy="didToVerify" [class.error-text]="showError()">
+            <div class="caption">{{ "eportal_onboardingTR_technicalProof_label_open" | translate }}</div>
+            <div class="body">{{ wizardService.submission()?.proofOfPossessionList?.length }} DID(s)</div>
+          </div>
+          <div class="cell" data-cy="didVerified" [class.error-text]="showError()">
+            <div class="caption">{{ "eportal_onboardingTR_technicalProof_label_done" | translate }}</div>
+            <div class="body">{{ numberOfSuccessfulVerifications() }} DID(s)</div>
+          </div>
+          <div class="cell" data-cy="remainingTime">
+            <div class="caption">{{ "eportal_onboardingTR_technicalProof_label_time" | translate }}</div>
+            <div class="body">{{ daysRemainingForVerification() }} {{ "eportal_global_days" | translate }}</div>
+          </div>
         </div>
-        <div class="cell" data-cy="didVerified" [class.error-text]="showError()">
-          <div class="caption">{{ "eportal_onboardingTR_technicalProof_label_done" | translate }}</div>
-          <div class="body">{{ numberOfSuccessfulVerifications() }} DID(s)</div>
-        </div>
-        <div class="cell" data-cy="remainingTime">
-          <div class="caption">{{ "eportal_onboardingTR_technicalProof_label_time" | translate }}</div>
-          <div class="body">{{ daysRemainingForVerification() }} {{ "eportal_global_days" | translate }}</div>
-        </div>
+        @if (anyVerificationMissing) {
+          <mat-chip [class.proof-warning-chip]="!showError()" [class.proof-error-chip]="showError()">
+            <div class="content">
+              <mat-icon [svgIcon]="'exclamation_circle'" />
+              <span class="caption"
+                >{{ numberOfMissingVerifications() }}
+                {{ "eportal_onboardingTR_technicalProof_status_moreThanOne" | translate }}</span
+              >
+            </div>
+          </mat-chip>
+        } @else {
+          <mat-chip class="proof-success-chip">
+            <div class="content">
+              <mat-icon [svgIcon]="'checkmark_circle'" />
+              <span class="caption"> {{ "eportal_onboardingTR_technicalProof_status_allReceived" | translate }}</span>
+            </div>
+          </mat-chip>
+        }
       </div>
-      @if (anyVerificationMissing) {
-        <mat-chip [class.proof-warning-chip]="!showError()" [class.proof-error-chip]="showError()">
-          <div class="content">
-            <mat-icon [svgIcon]="'exclamation_circle'" />
-            <span class="caption"
-              >{{ numberOfMissingVerifications() }}
-              {{ "eportal_onboardingTR_technicalProof_status_moreThanOne" | translate }}</span
-            >
-          </div>
-        </mat-chip>
-      } @else {
-        <mat-chip class="proof-success-chip">
-          <div class="content">
-            <mat-icon [svgIcon]="'checkmark_circle'" />
-            <span class="caption"> {{ "eportal_onboardingTR_technicalProof_status_allReceived" | translate }}</span>
-          </div>
-        </mat-chip>
-      }
-    </div>
+    }
     @if (showError()) {
       <div class="sw-form-error">
         <mat-icon [svgIcon]="'exclamation_circle'" color="warn" />
@@ -55,7 +57,7 @@
       </div>
     }
 
-    @if (anyVerificationMissing) {
+    @if (wizardService.isFieldVisible("setupVariant") && anyVerificationMissing) {
       <form [formGroup]="setupForm" class="sw-setup-form">
         <div formControlName="setupVariant" role="radiogroup" obSelectableGroup class="sw-radio-card-container">
           <app-radio-card
@@ -168,9 +170,11 @@
 
         <app-process-step [step]="2" [title]="'eportal_onboardingTR_technicalProof_createProof_cardTitle' | translate">
           <ng-container processStepAlert>
-            <ob-alert type="warning"
-              >{{ "eportal_onboardingTR_technicalProof_createProof_alert" | translate }}
-            </ob-alert>
+            @if (wizardService.isNotificationVisible("technicalProofCreateProofAlert")) {
+              <ob-alert type="warning"
+                >{{ "eportal_onboardingTR_technicalProof_createProof_alert" | translate }}
+              </ob-alert>
+            }
           </ng-container>
 
           <div>{{ "eportal_onboardingTR_technicalProof_createProof_cardText" | translate }}</div>

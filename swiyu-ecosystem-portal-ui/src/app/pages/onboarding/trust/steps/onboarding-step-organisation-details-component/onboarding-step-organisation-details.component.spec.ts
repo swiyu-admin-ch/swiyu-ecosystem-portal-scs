@@ -25,6 +25,10 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
     saveAndNext: jest.Mock;
     navigateToPreviousStep: jest.Mock;
     onSaveAndContinueLater: jest.Mock;
+    isFieldVisible: jest.Mock;
+    isFieldEditable: jest.Mock;
+    isNotificationVisible: jest.Mock;
+    fieldState: jest.Mock;
   };
 
   beforeEach(async () => {
@@ -46,7 +50,11 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
       updateOrganisationData: jest.fn(),
       saveAndNext: jest.fn(),
       navigateToPreviousStep: jest.fn(),
-      onSaveAndContinueLater: jest.fn()
+      onSaveAndContinueLater: jest.fn(),
+      isFieldVisible: jest.fn().mockReturnValue(true),
+      isFieldEditable: jest.fn().mockReturnValue(true),
+      isNotificationVisible: jest.fn().mockReturnValue(true),
+      fieldState: jest.fn().mockReturnValue({visible: true, editable: true})
     };
     await TestBed.configureTestingModule({
       imports: [OnboardingStepOrganisationDetailsComponent, ReactiveFormsModule, TranslateModule.forRoot()],
@@ -345,7 +353,6 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
     it('should patch form values on initial load when business partner is loaded', () => {
       const mockPartner: BusinessPartner = {
         id: 'test-partner-id',
-        name: 'Partner Organisation',
         entityName: {default: 'Partner Organisation', 'de-CH': 'Partner Organisation'},
         type: BusinessPartner.TypeEnum.Business,
         contactEmailAddress: 'partner@test.ch',
@@ -374,7 +381,6 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
     it('should not override form values when the submission overrode them', () => {
       const mockPartner: BusinessPartner = {
         id: 'test-partner-id',
-        name: 'Partner Organisation',
         entityName: {default: 'Partner Organisation', 'de-CH': 'Partner Organisation'},
         type: BusinessPartner.TypeEnum.Business,
         contactEmailAddress: 'partner@test.ch',
@@ -429,6 +435,52 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
       expect(component.form.get('entityAddress.postalCode')?.value).toBe('3000');
       expect(component.form.get('uid')?.value).toBe('CHE-999.888.777');
       expect(component.form.get('partnerType')?.value).toBe(BusinessPartner.TypeEnum.Business);
+    });
+  });
+
+  describe('Flow configuration', () => {
+    // The field configuration is read once when the component's effects first run, so the mock has to be
+    // adjusted before a fresh fixture is created.
+    const recreateComponent = (): void => {
+      fixture = TestBed.createComponent(OnboardingStepOrganisationDetailsComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    };
+
+    it('hides a field the flow does not show', () => {
+      wizardServiceMock.isFieldVisible.mockImplementation((id: string) => id !== 'contactPerson');
+      wizardServiceMock.fieldState.mockImplementation((id: string) =>
+        id === 'contactPerson' ? {visible: false, editable: false} : {visible: true, editable: true}
+      );
+
+      recreateComponent();
+
+      expect(fixture.nativeElement.querySelector('[data-cy="contactFirstName"]')).toBeNull();
+      expect(component.form.controls.contactPerson.disabled).toBe(true);
+    });
+
+    it('disables a field the flow marks as not editable', () => {
+      wizardServiceMock.fieldState.mockImplementation((id: string) =>
+        id === 'entityAddress' ? {visible: true, editable: false} : {visible: true, editable: true}
+      );
+
+      recreateComponent();
+
+      expect(component.form.controls.entityAddress.disabled).toBe(true);
+      expect(component.form.controls.entityNameDefault.disabled).toBe(false);
+    });
+
+    it('does not require the UID when the flow does not allow editing it', () => {
+      wizardServiceMock.isFieldEditable.mockImplementation((id: string) => id !== 'uid');
+      wizardServiceMock.fieldState.mockImplementation((id: string) =>
+        id === 'uid' ? {visible: true, editable: false} : {visible: true, editable: true}
+      );
+
+      recreateComponent();
+      component.form.controls.partnerType.setValue(BusinessPartner.TypeEnum.GovernmentalInstitution);
+
+      expect(component.form.controls.uid.disabled).toBe(true);
+      expect(component.form.controls.uid.hasError('required')).toBe(false);
     });
   });
 });

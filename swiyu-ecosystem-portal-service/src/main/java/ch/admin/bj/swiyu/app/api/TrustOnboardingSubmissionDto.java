@@ -1,5 +1,6 @@
 package ch.admin.bj.swiyu.app.api;
 
+import ch.admin.bj.swiyu.app.common.validation.ValidLocalizedMap;
 import ch.admin.bj.swiyu.client.business.internal.model.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +14,7 @@ public record TrustOnboardingSubmissionDto(
     @NotNull UUID id,
     @NotNull Long version,
     @NotNull UUID partnerId,
-    @NotNull Map<String, String> entityName,
+    @NotNull @ValidLocalizedMap Map<String, String> entityName,
     @NotNull String entityEmail,
     @NotNull AddressDto entityAddress,
     @NotNull ContactDto contactPerson,

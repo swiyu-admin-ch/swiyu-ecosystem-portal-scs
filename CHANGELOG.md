@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.0.6
+
+### Added
+
+- add GitHub action for SBOM generation
+
+## 2.0.5
+
+### Changed
+
+- Adopt CBS contract for localized organization names: entityName instead of deprecated name, correspondence language only on contactPerson
+- Validate localized maps with `@ValidLocalizedMap` and take their locale keys from the localized map contract instead of the correspondence language enum
+
+## 2.0.4
+
+### Changed
+
+- Trust onboarding wizard steps, fields and static notifications are now driven by a per-flow configuration so that registration, profile change and renewal can share the same components. The registration flow is configured to behave exactly as before.
+
 ## 2.0.3
 
 ### Fixed

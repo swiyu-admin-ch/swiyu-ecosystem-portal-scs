@@ -16,6 +16,7 @@ import {OnboardingStepDocumentsComponent} from './pages/onboarding/trust/steps/o
 import {OnboardingStepFinalComponent} from './pages/onboarding/trust/steps/onboarding-step-final-component/onboarding-step-final.component';
 import {OnboardingStepOrganisationDetailsComponent} from './pages/onboarding/trust/steps/onboarding-step-organisation-details-component/onboarding-step-organisation-details.component';
 import {OnboardingStepTechnicalVerificationComponent} from './pages/onboarding/trust/steps/onboarding-step-technical-verification-component/onboarding-step-technical-verification.component';
+import {TrustOnboardingFlow} from './pages/onboarding/trust/wizard/trust-onboarding-flow.config';
 import {TrustOnboardingWizardComponent} from './pages/onboarding/trust/wizard/trust-onboarding-wizard.component';
 import {AdditionalDidsExplainerComponent} from './pages/organizations/additional-dids-explainer/additional-dids-explainer.component';
 import {DidDetailsComponent} from './pages/organizations/did-details/did-details.component';
@@ -138,6 +139,7 @@ export const routes: Routes = [
             path: ':partnerId/:submissionId',
             component: TrustOnboardingWizardComponent,
             canDeactivate: [ObUnsavedChangesGuard],
+            data: {flow: TrustOnboardingFlow.Registration},
             children: [
               {
                 path: '',

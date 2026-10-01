@@ -18,10 +18,6 @@ export interface BusinessPartner {
    */
   id: string;
   /**
-   * Unique name of the partner
-   */
-  name: string;
-  /**
    * Localized entity name map with required default key and BCP-47 locale keys
    */
   entityName: {[key: string]: string};

@@ -1,4 +1,4 @@
-import {inject, Injectable, signal} from '@angular/core';
+import {computed, inject, Injectable, signal} from '@angular/core';
 import {Router} from '@angular/router';
 import {forkJoin, Subject} from 'rxjs';
 import {
@@ -11,9 +11,18 @@ import {
 import {AppRoutes} from '../../../../app.routes';
 import {AppConfigService} from '../../../../core/appconfig/app-config.service';
 import {AbstractOnboardingStepComponent} from '../steps/abstract-onboarding-step-component';
+import {
+  getTrustOnboardingFlowConfig,
+  TrustFieldConfig,
+  TrustFieldId,
+  TrustNotificationId,
+  TrustOnboardingFlow,
+  TrustStepConfig,
+  TrustStepId
+} from './trust-onboarding-flow.config';
 
-export const TRUST_STEP_SEGMENTS = ['profile', 'dids', 'formal-proof', 'technical-proof', 'approval'];
-export const TRUST_STEP_MAP = Object.fromEntries(TRUST_STEP_SEGMENTS.map((s, i) => [s, i]));
+/** A step of the active flow with its label already resolved against the app configuration. */
+export type ResolvedTrustStep = Omit<TrustStepConfig, 'labelKeyAutomaticApproval'>;
 
 @Injectable()
 export class TrustOnboardingWizardService {
@@ -32,14 +41,30 @@ export class TrustOnboardingWizardService {
   submissionRequest: TrustOnboardingSubmissionRequest = {};
   initialSubmissionRequest: TrustOnboardingSubmissionRequest = {};
 
+  readonly flow = signal<TrustOnboardingFlow>(TrustOnboardingFlow.Registration);
+  readonly config = computed(() => getTrustOnboardingFlowConfig(this.flow()));
+  readonly visibleSteps = computed<ResolvedTrustStep[]>(() =>
+    this.config()
+      .steps.filter(step => step.visible)
+      .map(({labelKeyAutomaticApproval, ...step}) => ({
+        ...step,
+        labelKey:
+          labelKeyAutomaticApproval && this.appConfigService.isFunctionalityAutomaticApprovalEnabled
+            ? labelKeyAutomaticApproval
+            : step.labelKey
+      }))
+  );
+
   private activeStep: AbstractOnboardingStepComponent | null = null;
+  /** Index into visibleSteps(), kept in sync with the route by the wizard component. */
   readonly currentStepIndex = signal(0);
   private readonly submissionUpdatedSubject = new Subject<void>();
   readonly submissionUpdated$ = this.submissionUpdatedSubject.asObservable();
 
-  init(partnerId: string, submissionId: string): void {
+  init(partnerId: string, submissionId: string, flow: TrustOnboardingFlow = TrustOnboardingFlow.Registration): void {
     this.partnerId = partnerId;
     this.submissionId = submissionId;
+    this.flow.set(flow);
 
     forkJoin({
       businessPartner: this.businessPartnerApi.getBusinessPartner({businessPartnerId: partnerId}),
@@ -64,6 +89,27 @@ export class TrustOnboardingWizardService {
         }
       }
     });
+  }
+
+  isStepVisible(id: TrustStepId): boolean {
+    return this.visibleSteps().some(step => step.id === id);
+  }
+
+  fieldState(id: TrustFieldId): TrustFieldConfig {
+    return this.config().fields[id];
+  }
+
+  isFieldVisible(id: TrustFieldId): boolean {
+    return this.fieldState(id).visible;
+  }
+
+  isFieldEditable(id: TrustFieldId): boolean {
+    const {visible, editable} = this.fieldState(id);
+    return visible && editable;
+  }
+
+  isNotificationVisible(id: TrustNotificationId): boolean {
+    return this.config().notifications[id];
   }
 
   setActiveStep(step: AbstractOnboardingStepComponent | null): void {
@@ -129,7 +175,7 @@ export class TrustOnboardingWizardService {
       return;
     }
     if (this.currentStepIndex() > 0) {
-      const prevSegment = TRUST_STEP_SEGMENTS[this.currentStepIndex() - 1];
+      const prevSegment = this.visibleSteps()[this.currentStepIndex() - 1].id;
       this.router.navigate([...AppRoutes.trustOnboardingWizard(this.partnerId, this.submissionId), prevSegment]);
     }
   }
@@ -146,8 +192,8 @@ export class TrustOnboardingWizardService {
     if (!this.partnerId || !this.submissionId) {
       return;
     }
-    if (this.currentStepIndex() < TRUST_STEP_SEGMENTS.length - 1) {
-      const nextSegment = TRUST_STEP_SEGMENTS[this.currentStepIndex() + 1];
+    if (this.currentStepIndex() < this.visibleSteps().length - 1) {
+      const nextSegment = this.visibleSteps()[this.currentStepIndex() + 1].id;
       this.router.navigate([...AppRoutes.trustOnboardingWizard(this.partnerId, this.submissionId), nextSegment]);
     }
   }
@@ -171,7 +217,7 @@ export class TrustOnboardingWizardService {
             lastName: result.contactPerson.lastName,
             email: result.contactPerson.email,
             phone: result.contactPerson.phone,
-            correspondingLanguage: result.contactPerson.correspondingLanguage ?? result.correspondingLanguage,
+            correspondingLanguage: result.contactPerson.correspondingLanguage,
             address: result.contactPerson.address
           }
         : result.contactPerson,

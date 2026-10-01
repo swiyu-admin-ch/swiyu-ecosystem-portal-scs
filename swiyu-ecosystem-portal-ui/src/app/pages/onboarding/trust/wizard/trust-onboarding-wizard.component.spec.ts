@@ -4,7 +4,7 @@ import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing'
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatIconTestingModule} from '@angular/material/icon/testing';
 import {MatStepper} from '@angular/material/stepper';
-import {ActivatedRoute, convertToParamMap, Router} from '@angular/router';
+import {ActivatedRoute, convertToParamMap, Data, ParamMap, Router} from '@angular/router';
 import {TranslateModule} from '@ngx-translate/core';
 import {of} from 'rxjs';
 import {
@@ -14,6 +14,7 @@ import {
   TrustOnboardingApi,
   TrustOnboardingSubmission
 } from '../../../../api/generated';
+import {TrustOnboardingFlow} from './trust-onboarding-flow.config';
 import {TrustOnboardingWizardComponent} from './trust-onboarding-wizard.component';
 import {TrustOnboardingWizardService} from './trust-onboarding-wizard.service';
 
@@ -23,8 +24,9 @@ describe('TrustOnboardingWizardComponent', () => {
   let router: Router;
   let service: TrustOnboardingWizardService;
   let trustOnboardingApi: TrustOnboardingApi;
-  const mockSnapshot = {
-    paramMap: convertToParamMap({}) // Start with empty params
+  const mockSnapshot: {paramMap: ParamMap; data: Data} = {
+    paramMap: convertToParamMap({}), // Start with empty params
+    data: {flow: TrustOnboardingFlow.Registration}
   };
   const MOCK_SUBMISSION_ID = 'sub-123';
   const MOCK_SUBMISSION: TrustOnboardingSubmission = {
@@ -142,6 +144,30 @@ describe('TrustOnboardingWizardComponent', () => {
         id: MOCK_SUBMISSION_ID
       });
       expect(service.submission()).toEqual(MOCK_SUBMISSION);
+    }));
+
+    it('should take the flow from the route data', fakeAsync(() => {
+      (trustOnboardingApi.getTrustOnboardingSubmission as jest.Mock).mockReturnValue(of(MOCK_SUBMISSION));
+
+      mockSnapshot.paramMap = convertToParamMap({submissionId: MOCK_SUBMISSION_ID, partnerId: 'org-123-abc'});
+      mockSnapshot.data = {flow: TrustOnboardingFlow.Renewal};
+      tick();
+      fixture.detectChanges();
+
+      expect(service.flow()).toBe(TrustOnboardingFlow.Renewal);
+    }));
+  });
+
+  describe('Stepper', () => {
+    it('should render one step per visible step of the flow', fakeAsync(() => {
+      (trustOnboardingApi.getTrustOnboardingSubmission as jest.Mock).mockReturnValue(of(MOCK_SUBMISSION));
+
+      mockSnapshot.paramMap = convertToParamMap({submissionId: MOCK_SUBMISSION_ID, partnerId: 'org-123-abc'});
+      mockSnapshot.data = {flow: TrustOnboardingFlow.Registration};
+      tick();
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelectorAll('.mat-step-header').length).toBe(service.visibleSteps().length);
     }));
   });
 });

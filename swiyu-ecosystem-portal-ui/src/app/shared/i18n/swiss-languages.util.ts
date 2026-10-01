@@ -1,6 +1,7 @@
-import {TrustOnboardingSubmissionRequest} from '../../api/generated';
-import CorrespondingLanguageEnum = TrustOnboardingSubmissionRequest.CorrespondingLanguageEnum;
+import {TrustOnboardingSubmission} from '../../api/generated';
+import CorrespondingLanguageEnum = TrustOnboardingSubmission.CorrespondingLanguageEnum;
 
+/** The correspondence languages a contact person can be written to in. */
 export const SWISS_LANGUAGES = [
   CorrespondingLanguageEnum.De,
   CorrespondingLanguageEnum.Fr,
@@ -8,11 +9,3 @@ export const SWISS_LANGUAGES = [
   CorrespondingLanguageEnum.En,
   CorrespondingLanguageEnum.Rm
 ] as const;
-
-export type SwissLanguage = (typeof SWISS_LANGUAGES)[number];
-
-export function toSwissLocale(lang: SwissLanguage): string {
-  return `${lang.toLowerCase()}-CH`;
-}
-
-export const SWISS_LANGUAGE_TAGS = SWISS_LANGUAGES.map(toSwissLocale);

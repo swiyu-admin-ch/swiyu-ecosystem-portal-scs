@@ -15,13 +15,24 @@ import {OnboardingStepDidsComponent} from './onboarding-step-dids.component';
 describe('OnboardingStepDidsComponent', () => {
   let component: OnboardingStepDidsComponent;
   let fixture: ComponentFixture<OnboardingStepDidsComponent>;
+  let wizardServiceMock: {
+    isFieldVisible: jest.Mock;
+    isFieldEditable: jest.Mock;
+    isNotificationVisible: jest.Mock;
+    fieldState: jest.Mock;
+    [key: string]: unknown;
+  };
 
   beforeEach(async () => {
-    const wizardServiceMock = {
+    wizardServiceMock = {
       partnerId: 'test-partner-id',
       submissionId: 'sub-123',
       submission: signal(undefined),
       submissionRequest: {},
+      isFieldVisible: jest.fn().mockReturnValue(true),
+      isFieldEditable: jest.fn().mockReturnValue(true),
+      isNotificationVisible: jest.fn().mockReturnValue(true),
+      fieldState: jest.fn().mockReturnValue({visible: true, editable: true}),
       updateDidSelection: jest.fn(),
       saveAndNext: jest.fn(),
       navigateToPreviousStep: jest.fn(),
@@ -54,6 +65,27 @@ describe('OnboardingStepDidsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('Flow configuration', () => {
+    it('hides the DID table when the flow does not show the selection', () => {
+      wizardServiceMock.isFieldVisible.mockReturnValue(false);
+      wizardServiceMock.fieldState.mockReturnValue({visible: false, editable: false});
+
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('[data-cy="tablDid"]')).toBeNull();
+      expect(component.form.controls.dids.disabled).toBe(true);
+    });
+
+    it('disables the selection when the flow marks it as not editable', () => {
+      wizardServiceMock.fieldState.mockReturnValue({visible: true, editable: false});
+
+      fixture.detectChanges();
+
+      expect(component.form.controls.dids.disabled).toBe(true);
+      expect(fixture.nativeElement.querySelector('[data-cy="tablDid"]')).not.toBeNull();
+    });
   });
 
   describe('Initialization and Input Handling', () => {

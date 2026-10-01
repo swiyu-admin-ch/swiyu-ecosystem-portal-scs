@@ -22,6 +22,7 @@ import {AppConfigService} from '../../../../../core/appconfig/app-config.service
 import {FullLangPipe} from '../../../../../shared/full-lang/full-lang.pipe';
 import {SWISS_LANGUAGES} from '../../../../../shared/i18n/swiss-languages.util';
 import {UploadComponent, UploadedFile, UploadItem} from '../../../../../shared/upload/upload.component';
+import {applyFieldState} from '../../wizard/trust-onboarding-field-state.util';
 import {TrustOnboardingWizardService} from '../../wizard/trust-onboarding-wizard.service';
 import {AbstractOnboardingStepComponent} from '../abstract-onboarding-step-component';
 import CorrespondingLanguageEnum = TrustOnboardingSubmission.CorrespondingLanguageEnum;
@@ -84,12 +85,13 @@ export class OnboardingStepDocumentsComponent extends AbstractOnboardingStepComp
 
   // Additional documents are only required for BUSINESS partners that are not registered in the
   // commercial register (i.e. have no UID) and for GOVERNMENTAL_INSTITUTION partners. All other
-  // partner types must not see the section.
+  // partner types must not see the section, and a flow may hide it altogether.
   readonly showAdditionalDocuments = computed(
     () =>
-      (this.wizardService.requestedBusinessPartnerType() === BusinessPartner.TypeEnum.Business &&
+      this.wizardService.isFieldVisible('additionalDocuments') &&
+      ((this.wizardService.requestedBusinessPartnerType() === BusinessPartner.TypeEnum.Business &&
         this.wizardService.submission()?.isRegisteredInCommercialRegister === false) ||
-      this.wizardService.requestedBusinessPartnerType() === BusinessPartner.TypeEnum.GovernmentalInstitution
+        this.wizardService.requestedBusinessPartnerType() === BusinessPartner.TypeEnum.GovernmentalInstitution)
   );
 
   readonly isGov = computed(
@@ -100,10 +102,16 @@ export class OnboardingStepDocumentsComponent extends AbstractOnboardingStepComp
 
   constructor() {
     super();
+    // Apply the active flow's field configuration to the backing controls.
+    effect(() => {
+      applyFieldState(this.form.controls.uploadedFiles, this.wizardService.fieldState('declarationOfIntent'));
+      applyFieldState(this.form.controls.doiLanguage, this.wizardService.fieldState('doiLanguage'));
+    });
+
     // Toggle validators on the additional-documents control so it only affects form validity when shown.
     effect(() => {
       const otherDocuments = this.form.controls.otherDocuments;
-      if (this.showAdditionalDocuments()) {
+      if (this.showAdditionalDocuments() && this.wizardService.isFieldEditable('additionalDocuments')) {
         otherDocuments.enable({emitEvent: false});
         otherDocuments.setValidators([Validators.required, Validators.minLength(1)]);
       } else {

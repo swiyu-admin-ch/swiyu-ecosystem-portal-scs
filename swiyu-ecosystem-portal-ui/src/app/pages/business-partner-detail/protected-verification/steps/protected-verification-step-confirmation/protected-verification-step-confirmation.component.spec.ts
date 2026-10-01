@@ -34,7 +34,7 @@ describe('ProtectedVerificationStepConfirmationComponent', () => {
     const component = setup({
       partnerId: 'partner-001',
       submission: () => ({id: 'pv-1'}),
-      businessPartner: () => ({id: 'partner-001', name: 'Test Corp'})
+      businessPartner: () => ({id: 'partner-001', entityName: {default: 'Test Corp'}})
     });
 
     expect(component).toBeTruthy();
@@ -45,7 +45,7 @@ describe('ProtectedVerificationStepConfirmationComponent', () => {
     const component = setup({
       partnerId: 'partner-001',
       submission: () => ({id: 'pv-1'}),
-      businessPartner: () => ({id: 'partner-001', name: 'Test Corp'})
+      businessPartner: () => ({id: 'partner-001', entityName: {default: 'Test Corp'}})
     });
 
     expect(await component.validate()).toBe(true);
@@ -55,7 +55,7 @@ describe('ProtectedVerificationStepConfirmationComponent', () => {
     setup({
       partnerId: 'partner-001',
       submission: () => ({id: 'pv-1'}),
-      businessPartner: () => ({id: 'partner-001', name: 'Test Corp'})
+      businessPartner: () => ({id: 'partner-001', entityName: {default: 'Test Corp'}})
     });
 
     expect(fixture.nativeElement.textContent).toContain('Test Corp');
@@ -65,7 +65,7 @@ describe('ProtectedVerificationStepConfirmationComponent', () => {
     setup({
       partnerId: 'partner-001',
       submission: () => undefined,
-      businessPartner: () => ({id: 'partner-001', name: 'Test Corp'})
+      businessPartner: () => ({id: 'partner-001', entityName: {default: 'Test Corp'}})
     });
 
     expect(routerNavigateSpy).toHaveBeenCalledWith([

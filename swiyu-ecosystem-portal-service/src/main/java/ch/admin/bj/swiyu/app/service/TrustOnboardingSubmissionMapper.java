@@ -53,7 +53,9 @@ public class TrustOnboardingSubmissionMapper {
             dto.signatories(),
             dto.registryIds(),
             dto.isRegisteredInCommercialRegister(),
-            dto.correspondingLanguage(),
+            // the request-level correspondingLanguage is deprecated in the CBS contract; the portal
+            // sends the language on contactPerson only and stops populating this field
+            null,
             dto.dids(),
             dto.requestedPartnerType()
         );

@@ -23,7 +23,6 @@ const appConfigMock = {
 function createPartner(trustVerificationStatus: BusinessPartnerTrustStatus, payedForDIDSlots = 5): BusinessPartner {
   return {
     id: PARTNER_ID,
-    name: 'Test',
     entityName: {default: 'Test', 'de-CH': 'Test'},
     contactEmailAddress: 'a@b.com',
     contactPhone: '0',

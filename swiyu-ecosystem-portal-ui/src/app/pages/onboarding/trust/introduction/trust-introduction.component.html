@@ -3,7 +3,7 @@
     <h1>{{ "eportal_onboardingTR_overview_pageTitle" | translate }}</h1>
     <div class="introduction-partner-info">
       <span class="caption">{{ "eportal_global_label_selectedProfile" | translate }}</span>
-      <span>{{ partner()?.name }}</span>
+      <span>{{ partner()?.entityName?.["default"] }}</span>
     </div>
     <p>
       {{ "eportal_onboardingTR_overview_inroText_TE" | translate }}

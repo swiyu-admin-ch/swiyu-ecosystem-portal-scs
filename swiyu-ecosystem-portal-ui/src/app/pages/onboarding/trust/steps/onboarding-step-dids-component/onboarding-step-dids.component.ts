@@ -22,6 +22,7 @@ import {ObButtonDirective, ObUnsavedChangesDirective} from '@oblique/oblique';
 import {IdentifierApi, IdentifierResponse, PagedModelIdentifierResponse} from '../../../../../api/generated';
 import {AppRoutes} from '../../../../../app.routes';
 import {IdentifierBaseOnboardingStatusComponent} from '../../../../../shared/identifier-base-onboarding-status/identifier-base-onboarding-status.component';
+import {applyFieldState} from '../../wizard/trust-onboarding-field-state.util';
 import {TrustOnboardingWizardService} from '../../wizard/trust-onboarding-wizard.service';
 import {AbstractOnboardingStepComponent} from '../abstract-onboarding-step-component';
 
@@ -79,6 +80,11 @@ export class OnboardingStepDidsComponent extends AbstractOnboardingStepComponent
       if (dids) {
         this.form.controls.dids.setValue(dids);
       }
+    });
+
+    // Apply the active flow's field configuration to the backing control.
+    effect(() => {
+      applyFieldState(this.form.controls.dids, this.wizardService.fieldState('didSelection'));
     });
   }
 

@@ -22,12 +22,6 @@ public class TrustOnboardingTestData {
         return Map.copyOf(map);
     }
 
-    public static MultiLanguageText defaultEntityName() {
-        var entityName = new MultiLanguageText();
-        entityName.de("Name de").en("Name en").it("Name it").fr("Name fr").rm("Name rm");
-        return entityName;
-    }
-
     public static Address defaultAddress() {
         var address = new Address();
         address.city("City").country("Country").street("Street").postalCode("8000");
@@ -50,7 +44,6 @@ public class TrustOnboardingTestData {
         request
             .partnerId(TEST_PARTNER)
             .contactPerson(defaultContact())
-            .correspondingLanguage(Language.DE)
             .entityName(defaultEntityNameMap())
             .entityAddress(defaultAddress())
             .entityEmail("Email")
@@ -64,7 +57,7 @@ public class TrustOnboardingTestData {
         submission
             .partnerId(TEST_PARTNER)
             .id(TEST_SUBMISSION_ID)
-            .entityName(defaultEntityName())
+            .name(defaultEntityNameMap())
             .address(defaultAddress())
             .contactPerson(defaultContact())
             .correspondingLanguage(Language.DE)
