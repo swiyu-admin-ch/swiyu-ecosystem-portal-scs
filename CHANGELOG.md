@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - add GitHub action for SBOM generation
 
+### Fixed
+
+- Resolve Snyk findings: update jeap-spring-boot-parent to 41.14.0 (brings Jackson 2.22.3 and 3.2.3), update Angular
+  framework packages to 21.2.25 and force shell-quote 1.11.0 via npm override
+
 ## 2.0.5
 
 ### Changed

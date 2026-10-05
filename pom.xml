@@ -5,7 +5,7 @@
         <groupId>ch.admin.bit.jeap</groupId>
         <artifactId>jeap-spring-boot-parent</artifactId>
         <!-- ACHTUNG: Immer wenn wir die Version updaten auch die CVE-OVERRIDES section aktualisieren -->
-        <version>40.13.0</version>
+        <version>41.14.0</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
@@ -44,34 +44,9 @@
         </plugins>
     </build>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- START CVE-OVERRIDES -->
-            <!-- SNYK-JAVA-TOOLSJACKSONCORE-19778371: jackson-databind < 3.1.6 (transitive via jeap logging starter) -->
-            <dependency>
-                <groupId>tools.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>3.1.6</version>
-            </dependency>
-            <dependency>
-                <groupId>tools.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>3.1.6</version>
-            </dependency>
-            <!-- SNYK-JAVA-COMFASTERXMLJACKSONCORE-19778370: jackson-databind 2.x < 2.22.2 (transitive via springdoc/swagger) -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>2.22.2</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>2.22.2</version>
-            </dependency>
-            <!-- END CVE-OVERRIDES -->
-        </dependencies>
-    </dependencyManagement>
+    <!-- START CVE-OVERRIDES -->
+    <!-- Currently no CVE overrides are needed. -->
+    <!-- END CVE-OVERRIDES -->
 
     <profiles>
         <profile>
