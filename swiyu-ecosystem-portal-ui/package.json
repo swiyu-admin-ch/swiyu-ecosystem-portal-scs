@@ -1,6 +1,6 @@
 {
   "name": "swiyu-ecosystem-portal-ui",
-  "version": "2.0.5",
+  "version": "2.0.8",
   "private": true,
   "scripts": {
     "build": "ng build --optimization true --output-hashing all --i18n-missing-translation error --i18n-duplicate-translation error",
@@ -73,7 +73,9 @@
     "typescript": "~5.9.3"
   },
   "overrides": {
-    "shell-quote": "^1.11.0"
+    "shell-quote": "^1.11.0",
+    "piscina": "^5.3.2",
+    "basic-ftp": "^6.2.2"
   },
   "engines": {
     "node": ">=22.0.0"
