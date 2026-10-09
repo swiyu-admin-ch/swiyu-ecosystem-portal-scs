@@ -11,7 +11,7 @@
 
     <groupId>ch.admin.bj.swiyu</groupId>
     <artifactId>swiyu-ecosystem-portal-scs</artifactId>
-    <version>2.0.8-SNAPSHOT</version>
+    <version>2.0.9-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Selfservice portal for the ecosystem</description>
 
@@ -25,6 +25,12 @@
         <!-- Disable javadoc by default to improve pipeline throughput -->
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <maven.compiler.release>25</maven.compiler.release>
+        <!-- CVE-OVERRIDE start -->
+        <!-- Override Tomcat to >= 11.0.26 to fix SNYK-JAVA-ORGAPACHETOMCATEMBED-20552494
+             (Authentication Bypass by Alternate Name). Spring Boot manages 11.0.25.
+             Remove when the parent manages Spring Boot with Tomcat >= 11.0.26. -->
+        <tomcat.version>11.0.26</tomcat.version>
+        <!-- CVE-OVERRIDE end -->
     </properties>
 
     <build>
