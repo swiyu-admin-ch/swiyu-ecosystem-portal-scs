@@ -67,4 +67,18 @@ ignore:
           build-angular/Angular 22 upgrade (EID-6915).
         expires: 2026-11-09T09:00:00.000Z
         created: 2026-09-21T00:00:00.000Z
+  SNYK-JS-PICOMATCH-21248802:
+    - '*':
+        reason: >-
+          Transitive build-time-only dependency via @angular/build,
+          @angular-builders/jest > @angular-devkit/build-angular and
+          webpack-dev-server. New CVE-2026-112366 with no fixed version of
+          picomatch available (4.0.7 is the latest and is affected, the flaw is
+          in analyzeRepeatedExtglob, the code added to fix CVE-2026-33671); the
+          @angular-devkit/build-angular 22.2.3 upgrade Snyk suggests pins
+          picomatch 4.0.7 as well. Glob patterns come from our own build config,
+          never from untrusted input, and picomatch is not shipped to
+          production. Track upstream picomatch fix (EID-6992).
+        expires: 2026-11-09T09:00:00.000Z
+        created: 2026-10-20T00:00:00.000Z
 patch: {}

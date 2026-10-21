@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.0.12
+
+### Fixed
+
+- Ignore Snyk high severity finding SNYK-JS-PICOMATCH-21248802 (CVE-2026-112366, regular expression denial of service) in `swiyu-ecosystem-portal-ui/.snyk` until 2026-11-09. The 2.0.11 root override to picomatch 4.0.7 did not resolve it: there is no patched picomatch release (4.0.7 is the latest and is affected), and the `@angular-devkit/build-angular` 22.x upgrade Snyk suggests pins picomatch 4.0.7 as well. picomatch is a build-time-only transitive dependency and is not shipped to production
+
+## 2.0.11
+
+### Fixed
+
+- Override picomatch to 4.0.7 at the root to fix Snyk high severity finding SNYK-JS-PICOMATCH-21248802 (regular expression denial of service), pulled in transitively as 4.0.4 via `@angular-devkit/build-angular`, `@angular/build` and `@angular-devkit/core`. The picomatch 2.x consumers (`micromatch`, `anymatch`, `webpack-dev-server`) stay on the patched 2.3.2, so this avoids the `@angular-devkit/build-angular` 22.x upgrade Snyk suggests
+
+## 2.0.10
+
+### Fixed
+
+- Override undici to a patched release per major (7.30.1 at the root, 8.12.2 under jsdom, 6.29.1 under node-gyp) to fix the Snyk critical and high severity findings SNYK-JS-UNDICI-21181005, -21181009, -21181011, -21181013, -21181015, -21181017, -21181019 and -21185768
+- Override qs to 6.16.1 to fix Snyk high severity finding SNYK-JS-QS-20943482 (uncaught exception)
+
 ## 2.0.9
 
 ### Fixed
