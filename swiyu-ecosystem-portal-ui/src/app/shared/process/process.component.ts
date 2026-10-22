@@ -13,6 +13,7 @@ import {ProcessStepComponent} from './process-step/process-step.component';
 export class ProcessComponent {
   title = input.required<string>();
   stepsPerRow = input<number>();
+  dataCy = input<string>();
   steps = contentChildren(ProcessStepComponent);
   resolvedStepsPerRow = computed(() => this.stepsPerRow() ?? this.steps().length);
 

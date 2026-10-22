@@ -203,6 +203,7 @@
             <div class="entity-name-row-actions">
               <button
                 (click)="removeEntityNameEntry(i)"
+                [disabled]="!canRemoveEntityNameEntry()"
                 [attr.aria-label]="'eportal_onboarding_profile_btn_removeNameTranslation_aria' | translate"
                 [attr.data-cy]="'removeOrganizationName' + (i + 1)"
                 mat-icon-button

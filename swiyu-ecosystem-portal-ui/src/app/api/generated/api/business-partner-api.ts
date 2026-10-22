@@ -23,6 +23,8 @@ import {BusinessPartnerUpdateRequest} from '../model/business-partner-update-req
 import {PagedModelBusinessPartnerListItem} from '../model/paged-model-business-partner-list-item';
 // @ts-ignore
 import {PartnerCreationRequest} from '../model/partner-creation-request';
+// @ts-ignore
+import {VerificationProgress} from '../model/verification-progress';
 
 // @ts-ignore
 import {BaseService} from '../api.base.service';
@@ -40,6 +42,10 @@ export interface GetBusinessPartnersRequestParams {
   size?: number;
   /** Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
   sort?: Array<string>;
+}
+
+export interface GetVerificationProgressRequestParams {
+  businessPartnerId: string;
 }
 
 export interface RegisterBusinessPartnerRequestParams {
@@ -248,6 +254,92 @@ export class BusinessPartnerApi extends BaseService {
     return this.httpClient.request<PagedModelBusinessPartnerListItem>('get', `${basePath}${localVarPath}`, {
       context: localVarHttpContext,
       params: localVarQueryParameters.toHttpParams(),
+      responseType: <any>responseType_,
+      ...(withCredentials ? {withCredentials} : {}),
+      headers: localVarHeaders,
+      observe: observe,
+      ...(localVarTransferCache !== undefined ? {transferCache: localVarTransferCache} : {}),
+      reportProgress: reportProgress
+    });
+  }
+
+  /**
+   * Get the identity verification progress for a business partner
+   * @endpoint get /api/business-partner/{businessPartnerId}/verification-progress
+   * @param requestParameters
+   * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+   * @param reportProgress flag to report request and response progress.
+   * @param options additional options
+   */
+  public getVerificationProgress(
+    requestParameters: GetVerificationProgressRequestParams,
+    observe?: 'body',
+    reportProgress?: boolean,
+    options?: {httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean}
+  ): Observable<VerificationProgress>;
+  public getVerificationProgress(
+    requestParameters: GetVerificationProgressRequestParams,
+    observe?: 'response',
+    reportProgress?: boolean,
+    options?: {httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean}
+  ): Observable<HttpResponse<VerificationProgress>>;
+  public getVerificationProgress(
+    requestParameters: GetVerificationProgressRequestParams,
+    observe?: 'events',
+    reportProgress?: boolean,
+    options?: {httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean}
+  ): Observable<HttpEvent<VerificationProgress>>;
+  public getVerificationProgress(
+    requestParameters: GetVerificationProgressRequestParams,
+    observe: any = 'body',
+    reportProgress: boolean = false,
+    options?: {httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean}
+  ): Observable<any> {
+    const businessPartnerId = requestParameters?.businessPartnerId;
+    if (businessPartnerId === null || businessPartnerId === undefined) {
+      throw new Error(
+        'Required parameter businessPartnerId was null or undefined when calling getVerificationProgress.'
+      );
+    }
+
+    let localVarHeaders = this.defaultHeaders;
+
+    // authentication (OIDC) required
+    localVarHeaders = this.configuration.addCredentialToHeaders('OIDC', 'Authorization', localVarHeaders, 'Bearer ');
+
+    // authentication (bearer-jwt) required
+    localVarHeaders = this.configuration.addCredentialToHeaders(
+      'bearer-jwt',
+      'Authorization',
+      localVarHeaders,
+      'Bearer '
+    );
+
+    const localVarHttpHeaderAcceptSelected: string | undefined =
+      options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+    if (localVarHttpHeaderAcceptSelected !== undefined) {
+      localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+    }
+
+    const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+    const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+    let responseType_: 'text' | 'json' | 'blob' = 'json';
+    if (localVarHttpHeaderAcceptSelected) {
+      if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+        responseType_ = 'text';
+      } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+        responseType_ = 'json';
+      } else {
+        responseType_ = 'blob';
+      }
+    }
+
+    let localVarPath = `/api/business-partner/${this.configuration.encodeParam({name: 'businessPartnerId', value: businessPartnerId, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: 'uuid'})}/verification-progress`;
+    const {basePath, withCredentials} = this.configuration;
+    return this.httpClient.request<VerificationProgress>('get', `${basePath}${localVarPath}`, {
+      context: localVarHttpContext,
       responseType: <any>responseType_,
       ...(withCredentials ? {withCredentials} : {}),
       headers: localVarHeaders,

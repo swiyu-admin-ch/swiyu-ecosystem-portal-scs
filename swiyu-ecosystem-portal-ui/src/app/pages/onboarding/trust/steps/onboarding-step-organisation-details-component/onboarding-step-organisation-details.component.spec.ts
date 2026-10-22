@@ -6,7 +6,12 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {TranslateModule} from '@ngx-translate/core';
 import {provideObliqueTestingConfiguration} from '@oblique/oblique';
 import {of} from 'rxjs';
-import {BusinessPartner, BusinessPartnerApi, TrustOnboardingSubmission} from '../../../../../api/generated';
+import {
+  BusinessPartner,
+  BusinessPartnerApi,
+  TrustOnboardingSubmission,
+  TrustOnboardingSubmissionType
+} from '../../../../../api/generated';
 import {CountryService} from '../../../../../core/util/country.service';
 import {TrustOnboardingWizardService} from '../../wizard/trust-onboarding-wizard.service';
 import {OnboardingStepOrganisationDetailsComponent} from './onboarding-step-organisation-details.component';
@@ -161,16 +166,16 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
         component.addEntityNameEntry();
       }
 
-      expect(component.form.controls.entityNameEntries.length).toBe(5);
+      expect(component.form.controls.entityNameEntries).toHaveLength(5);
       expect(component.canAddEntityNameEntry()).toBe(false);
     });
 
     it('should remove translation rows', () => {
       component.addEntityNameEntry();
-      expect(component.form.controls.entityNameEntries.length).toBe(1);
+      expect(component.form.controls.entityNameEntries).toHaveLength(1);
 
       component.removeEntityNameEntry(0);
-      expect(component.form.controls.entityNameEntries.length).toBe(0);
+      expect(component.form.controls.entityNameEntries).toHaveLength(0);
     });
 
     it('should send localized entity name map to wizard service', fakeAsync(() => {
@@ -315,6 +320,7 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
         version: 1,
         partnerId: '000-000',
         entityEmail: 'test@test.ch',
+        type: TrustOnboardingSubmissionType.Registration,
         status: TrustOnboardingSubmission.StatusEnum.Unsubmitted,
         proofOfPossessionList: [],
         registryIds: {},
@@ -335,7 +341,8 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
           lastName: 'Doe',
           email: 'john.doe@example.com',
           phone: '+41 12 345 67 89'
-        }
+        },
+        alerts: []
       };
 
       wizardServiceMock.submission.set(mockData);
@@ -398,6 +405,7 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
         id: 'DEAD-BEEF-000',
         version: 1,
         partnerId: '000-000',
+        type: TrustOnboardingSubmissionType.Registration,
         entityEmail: 'test@test.ch',
         businessPartnerType: BusinessPartner.TypeEnum.Business,
         status: TrustOnboardingSubmission.StatusEnum.Unsubmitted,
@@ -419,7 +427,8 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
           lastName: 'Doe',
           email: 'john.doe@example.com',
           phone: '+41 12 345 67 89'
-        }
+        },
+        alerts: []
       };
 
       wizardServiceMock.submission.set(mockSubmission);
@@ -468,6 +477,20 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
 
       expect(component.form.controls.entityAddress.disabled).toBe(true);
       expect(component.form.controls.entityNameDefault.disabled).toBe(false);
+    });
+
+    it('disables the entity name inputs when the flow marks entityName as not editable', () => {
+      wizardServiceMock.isFieldEditable.mockReturnValue(false);
+      wizardServiceMock.fieldState.mockImplementation((id: string) =>
+        id === 'entityName' ? {visible: true, editable: false} : {visible: true, editable: true}
+      );
+
+      recreateComponent();
+
+      expect(component.form.controls.entityNameDefault.disabled).toBe(true);
+      expect(component.form.controls.entityNameEntries.disabled).toBe(true);
+      expect(component.canAddEntityNameEntry()).toBe(false);
+      expect(component.canRemoveEntityNameEntry()).toBe(false);
     });
 
     it('does not require the UID when the flow does not allow editing it', () => {

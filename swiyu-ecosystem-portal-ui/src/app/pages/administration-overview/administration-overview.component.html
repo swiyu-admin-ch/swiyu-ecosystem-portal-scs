@@ -67,7 +67,9 @@
             {{ "eportal_adminOverview_table_business-partner-trustVerificationStatus" | translate }}
           </th>
           <td *matCellDef="let element" class="align-right" mat-cell>
-            <app-business-partner-trust-chip [businessPartner]="element"></app-business-partner-trust-chip>
+            <app-business-partner-trust-chip
+              [progress]="progressByPartner()[element.id]"
+            ></app-business-partner-trust-chip>
           </td>
         </ng-container>
 

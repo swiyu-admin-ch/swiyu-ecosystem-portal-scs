@@ -23,6 +23,7 @@ export interface TrustOnboardingSubmissionRequest {
   isRegisteredInCommercialRegister?: boolean;
   dids?: Array<string>;
   requestedPartnerType?: TrustOnboardingSubmissionRequest.RequestedPartnerTypeEnum;
+  submissionType?: TrustOnboardingSubmissionRequest.SubmissionTypeEnum;
 }
 export namespace TrustOnboardingSubmissionRequest {
   export const SigningRuleEnum = {
@@ -37,4 +38,11 @@ export namespace TrustOnboardingSubmissionRequest {
     Individual: 'INDIVIDUAL'
   } as const;
   export type RequestedPartnerTypeEnum = (typeof RequestedPartnerTypeEnum)[keyof typeof RequestedPartnerTypeEnum];
+  export const SubmissionTypeEnum = {
+    Registration: 'REGISTRATION',
+    ProfileChangeMandatory: 'PROFILE_CHANGE_MANDATORY',
+    ProfileChangeVoluntary: 'PROFILE_CHANGE_VOLUNTARY',
+    Renewal: 'RENEWAL'
+  } as const;
+  export type SubmissionTypeEnum = (typeof SubmissionTypeEnum)[keyof typeof SubmissionTypeEnum];
 }

@@ -12,6 +12,7 @@ import {Contact} from './contact';
 import {ProofOfPossession} from './proof-of-possession';
 import {Signatory} from './signatory';
 import {TrustOnboardingAlert} from './trust-onboarding-alert';
+import {TrustOnboardingSubmissionType} from './trust-onboarding-submission-type';
 
 export interface TrustOnboardingSubmission {
   id: string;
@@ -23,6 +24,7 @@ export interface TrustOnboardingSubmission {
   contactPerson: Contact;
   signingRule?: TrustOnboardingSubmission.SigningRuleEnum;
   signatories?: Array<Signatory>;
+  type: TrustOnboardingSubmissionType;
   status: TrustOnboardingSubmission.StatusEnum;
   proofOfPossessionList: Array<ProofOfPossession>;
   businessPartnerType?: TrustOnboardingSubmission.BusinessPartnerTypeEnum;

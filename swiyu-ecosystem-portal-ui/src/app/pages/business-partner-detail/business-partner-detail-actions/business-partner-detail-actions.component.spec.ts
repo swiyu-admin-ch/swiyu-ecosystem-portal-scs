@@ -4,11 +4,12 @@ import {RouterModule} from '@angular/router';
 import {TranslateModule} from '@ngx-translate/core';
 import {provideObliqueTestingConfiguration} from '@oblique/oblique';
 import {
-  BusinessPartner,
-  BusinessPartnerTrustStatus,
   IdentifierResponse,
   IdentifierStatus,
-  TrustOnboardingSubmission
+  TrustOnboardingSubmission,
+  TrustOnboardingSubmissionType,
+  VerificationProgress,
+  VerificationProgressStatus
 } from '../../../api/generated';
 import {AppRoutes} from '../../../app.routes';
 import {AppConfigService} from '../../../core/appconfig/app-config.service';
@@ -20,16 +21,8 @@ const appConfigMock = {
   featureToggles: {EIDARTFE_1822_PROTECTED_VERIFICATION: true}
 };
 
-function createPartner(trustVerificationStatus: BusinessPartnerTrustStatus, payedForDIDSlots = 5): BusinessPartner {
-  return {
-    id: PARTNER_ID,
-    entityName: {default: 'Test', 'de-CH': 'Test'},
-    contactEmailAddress: 'a@b.com',
-    contactPhone: '0',
-    type: BusinessPartner.TypeEnum.Business,
-    trustVerificationStatus,
-    payedForDIDSlots
-  };
+function createProgress(status: VerificationProgressStatus): VerificationProgress {
+  return {status};
 }
 
 function createIdentifier(status: IdentifierStatus): IdentifierResponse {
@@ -53,7 +46,9 @@ function createSubmission(status: TrustOnboardingSubmission.StatusEnum): TrustOn
     },
     status,
     proofOfPossessionList: [],
-    registryIds: {}
+    registryIds: {},
+    type: TrustOnboardingSubmissionType.Registration,
+    alerts: []
   };
 }
 
@@ -91,52 +86,63 @@ describe('BusinessPartnerDetailActionsComponent', () => {
   });
 
   describe('showSensitiveDataAccess', () => {
-    it('is true when partner is Verified and the feature toggle is enabled', () => {
-      componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.Verified));
+    it('is true when partner is verified and the feature toggle is enabled', () => {
+      componentRef.setInput('verificationProgress', createProgress(VerificationProgressStatus.VerificationSucceeded));
       expect(component.showSensitiveDataAccess()).toBe(true);
     });
 
-    it('is false when partner is not Verified', () => {
-      componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.NotVerified));
+    it('is false when partner is not verified', () => {
+      componentRef.setInput('verificationProgress', createProgress(VerificationProgressStatus.VerificationNotStarted));
       expect(component.showSensitiveDataAccess()).toBe(false);
     });
 
-    it('is false when the feature toggle is disabled, even if partner is Verified', () => {
+    it('is false when the feature toggle is disabled, even if partner is verified', () => {
       appConfigMock.featureToggles.EIDARTFE_1822_PROTECTED_VERIFICATION = false;
-      componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.Verified));
+      componentRef.setInput('verificationProgress', createProgress(VerificationProgressStatus.VerificationSucceeded));
       expect(component.showSensitiveDataAccess()).toBe(false);
       appConfigMock.featureToggles.EIDARTFE_1822_PROTECTED_VERIFICATION = true;
     });
   });
 
   describe('showEnterIdentifiers', () => {
-    it('is true when Verified and at least one NotInitialized identifier', () => {
-      componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.Verified));
+    it('is true when verified and at least one NotInitialized identifier', () => {
+      componentRef.setInput('verificationProgress', createProgress(VerificationProgressStatus.VerificationSucceeded));
       componentRef.setInput('identifiers', [createIdentifier(IdentifierStatus.NotInitialized)]);
       expect(component.showEnterIdentifiers()).toBe(true);
     });
 
-    it('is false when Verified but all identifiers are Initialized', () => {
-      componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.Verified));
+    it('is false when verified but all identifiers are Initialized', () => {
+      componentRef.setInput('verificationProgress', createProgress(VerificationProgressStatus.VerificationSucceeded));
       componentRef.setInput('identifiers', [createIdentifier(IdentifierStatus.Initialized)]);
       expect(component.showEnterIdentifiers()).toBe(false);
     });
 
-    it('is false when not Verified, even with NotInitialized identifiers', () => {
-      componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.NotVerified));
+    it('is false when not verified, even with NotInitialized identifiers', () => {
+      componentRef.setInput('verificationProgress', createProgress(VerificationProgressStatus.VerificationNotStarted));
       componentRef.setInput('identifiers', [createIdentifier(IdentifierStatus.NotInitialized)]);
       expect(component.showEnterIdentifiers()).toBe(false);
     });
   });
 
   describe('showSupplementRequest', () => {
-    it('is true when partner trustVerificationStatus is InformationRequested', () => {
-      componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.InformationRequested));
+    it('is true when verification progress is VerificationInformationRequestedRequired', () => {
+      componentRef.setInput(
+        'verificationProgress',
+        createProgress(VerificationProgressStatus.VerificationInformationRequestedRequired)
+      );
+      expect(component.showSupplementRequest()).toBe(true);
+    });
+
+    it('is true when verification progress is VerificationInformationRequestedStarted', () => {
+      componentRef.setInput(
+        'verificationProgress',
+        createProgress(VerificationProgressStatus.VerificationInformationRequestedStarted)
+      );
       expect(component.showSupplementRequest()).toBe(true);
     });
 
     it('is true when submission status is InformationRequested', () => {
-      componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.VerificationInProgress));
+      componentRef.setInput('verificationProgress', createProgress(VerificationProgressStatus.VerificationInProgress));
       componentRef.setInput(
         'trustOnboardingSubmission',
         createSubmission(TrustOnboardingSubmission.StatusEnum.InformationRequested)
@@ -145,7 +151,7 @@ describe('BusinessPartnerDetailActionsComponent', () => {
     });
 
     it('is false otherwise', () => {
-      componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.Verified));
+      componentRef.setInput('verificationProgress', createProgress(VerificationProgressStatus.VerificationSucceeded));
       componentRef.setInput(
         'trustOnboardingSubmission',
         createSubmission(TrustOnboardingSubmission.StatusEnum.Submitted)
@@ -154,42 +160,59 @@ describe('BusinessPartnerDetailActionsComponent', () => {
     });
   });
 
-  describe('showRenewVerification', () => {
-    it('is true when trustVerificationStatus is ReVerificationStarted', () => {
-      componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.ReVerificationStarted));
-      expect(component.showRenewVerification()).toBe(true);
+  describe('showStartRenewVerification', () => {
+    it('is true when verification progress is ReVerificationRequired or ReVerificationRejected', () => {
+      for (const status of [
+        VerificationProgressStatus.ReVerificationRequired,
+        VerificationProgressStatus.ReVerificationRejected
+      ]) {
+        componentRef.setInput('verificationProgress', createProgress(status));
+        expect(component.showStartRenewVerification()).toBe(true);
+      }
     });
 
     it('is false for other statuses', () => {
-      componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.Verified));
-      expect(component.showRenewVerification()).toBe(false);
+      componentRef.setInput('verificationProgress', createProgress(VerificationProgressStatus.VerificationSucceeded));
+      expect(component.showStartRenewVerification()).toBe(false);
+    });
+  });
+
+  describe('showContinueRenewVerification', () => {
+    it('is true when verification progress is ReVerificationStarted', () => {
+      for (const status of [VerificationProgressStatus.ReVerificationStarted]) {
+        componentRef.setInput('verificationProgress', createProgress(status));
+        expect(component.showContinueRenewVerification()).toBe(true);
+      }
     });
   });
 
   describe('showVerifyProfile', () => {
-    it('is true when partner is NotVerified, VerificationStarted, VerificationInProgress or ReVerificationInProgress', () => {
+    it('is true when partner is VerificationNotStarted, VerificationStarted, VerificationInProgress or ReVerificationInProgress', () => {
       for (const status of [
-        BusinessPartnerTrustStatus.NotVerified,
-        BusinessPartnerTrustStatus.VerificationStarted,
-        BusinessPartnerTrustStatus.VerificationInProgress,
-        BusinessPartnerTrustStatus.ReVerificationInProgress
+        VerificationProgressStatus.VerificationNotStarted,
+        VerificationProgressStatus.VerificationStarted,
+        VerificationProgressStatus.VerificationInProgress,
+        VerificationProgressStatus.ReVerificationInProgress
       ]) {
-        componentRef.setInput('businessPartner', createPartner(status));
+        componentRef.setInput('verificationProgress', createProgress(status));
         expect(component.showVerifyProfile()).toBe(true);
       }
     });
 
-    it('is false when partner is Verified', () => {
-      componentRef.setInput('businessPartner', createPartner(BusinessPartnerTrustStatus.Verified));
+    it('is false when partner is verified', () => {
+      componentRef.setInput('verificationProgress', createProgress(VerificationProgressStatus.VerificationSucceeded));
       expect(component.showVerifyProfile()).toBe(false);
     });
 
-    it('is false when partner is InformationRequested or ReVerificationStarted', () => {
+    it('is false when partner is InformationRequested or ReVerificationRequired/Started/Rejected', () => {
       for (const status of [
-        BusinessPartnerTrustStatus.InformationRequested,
-        BusinessPartnerTrustStatus.ReVerificationStarted
+        VerificationProgressStatus.VerificationInformationRequestedRequired,
+        VerificationProgressStatus.VerificationInformationRequestedStarted,
+        VerificationProgressStatus.ReVerificationRequired,
+        VerificationProgressStatus.ReVerificationStarted,
+        VerificationProgressStatus.ReVerificationRejected
       ]) {
-        componentRef.setInput('businessPartner', createPartner(status));
+        componentRef.setInput('verificationProgress', createProgress(status));
         expect(component.showVerifyProfile()).toBe(false);
       }
     });
@@ -205,7 +228,7 @@ describe('BusinessPartnerDetailActionsComponent', () => {
       const submission = createSubmission(TrustOnboardingSubmission.StatusEnum.Submitted);
       componentRef.setInput('trustOnboardingSubmission', submission);
       expect(component.trustOnboardingStepActionRoute()).toEqual(
-        AppRoutes.trustOnboardingApproval(PARTNER_ID, 'sub-1')
+        AppRoutes.trustOnboardingWizardStepApproval(PARTNER_ID, 'sub-1')
       );
     });
   });

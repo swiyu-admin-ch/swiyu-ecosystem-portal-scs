@@ -1,5 +1,5 @@
 <div class="sw-upload-container">
-  @if (uploadedFiles().length === 0 && !uploadItem()) {
+  @if (uploadedFiles().length === 0 && !uploadItem() && !disabled()) {
     <ob-drop-zone [accept]="['.pdf']" [maxFileSize]="10" [multiple]="false" (uploadEvent)="onFilesChosen($event)" />
   } @else {
     <div class="sw-file-info">
@@ -25,6 +25,7 @@
               mat-icon-button
               obButton="tertiary"
               (click)="retryUpload.emit()"
+              [disabled]="disabled()"
               [attr.aria-label]="'eportal_global_retry' | translate"
               [matTooltip]="'eportal_global_retry' | translate"
             >
@@ -36,6 +37,7 @@
               mat-icon-button
               obButton="tertiary"
               (click)="removeUpload.emit()"
+              [disabled]="disabled()"
               [attr.aria-label]="'eportal_global_remove' | translate"
               [matTooltip]="'eportal_global_remove' | translate"
             >
@@ -59,6 +61,7 @@
               [attr.aria-label]="'eportal_onboardingTR_formalProof_deleteDocument_aria' | translate"
               mat-icon-button
               obButton="tertiary"
+              [disabled]="disabled()"
               type="button"
               [matTooltip]="'eportal_onboardingTR_formalProof_deleteDocument_aria' | translate"
             >

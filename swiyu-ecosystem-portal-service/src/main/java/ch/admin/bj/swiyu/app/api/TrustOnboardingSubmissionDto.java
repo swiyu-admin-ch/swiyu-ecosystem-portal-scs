@@ -20,6 +20,7 @@ public record TrustOnboardingSubmissionDto(
     @NotNull ContactDto contactPerson,
     SigningRule signingRule,
     List<Signatory> signatories,
+    @NotNull TrustOnboardingSubmissionTypeDto type,
     @NotNull TrustOnboardingSubmissionStatus status,
     @NotNull List<ProofOfPossession> proofOfPossessionList,
     BusinessPartnerType businessPartnerType,

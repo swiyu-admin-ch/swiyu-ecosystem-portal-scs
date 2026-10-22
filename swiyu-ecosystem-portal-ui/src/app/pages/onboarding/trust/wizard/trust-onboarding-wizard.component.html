@@ -1,5 +1,5 @@
 <div class="sw-wizard">
-  @if (service.submissionId && service.partnerId) {
+  @if (service.submissionId && service.partnerId && service.submission()) {
     <mat-horizontal-stepper #stepper [linear]="false" class="sw-stepper">
       <ng-template matStepperIcon="edit">
         <mat-icon [svgIcon]="'pencil'" />

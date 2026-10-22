@@ -8,8 +8,8 @@ import {MatIcon} from '@angular/material/icon';
 import {MatError} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {ObButtonDirective, ObMatErrorDirective, ObUnsavedChangesDirective} from '@oblique/oblique';
-import {EMPTY, Subject, switchMap, timer} from 'rxjs';
+import {ObAlertComponent, ObButtonDirective, ObMatErrorDirective, ObUnsavedChangesDirective} from '@oblique/oblique';
+import {EMPTY, filter, map, Subject, switchMap, timer} from 'rxjs';
 import {
   BusinessPartner,
   GetDeclarationOfIntentForTrustOnboardingRequestParams,
@@ -19,6 +19,7 @@ import {
   UploadTrustOnboardingSubmissionDocumentRequestParams
 } from '../../../../../api/generated';
 import {AppConfigService} from '../../../../../core/appconfig/app-config.service';
+import {requiresAdditionalDocument} from '../../../../../core/util/trust-onboarding-step-requirements';
 import {FullLangPipe} from '../../../../../shared/full-lang/full-lang.pipe';
 import {SWISS_LANGUAGES} from '../../../../../shared/i18n/swiss-languages.util';
 import {UploadComponent, UploadedFile, UploadItem} from '../../../../../shared/upload/upload.component';
@@ -59,7 +60,8 @@ interface InternalUploadItem extends UploadItem {
     MatOption,
     MatSelect,
     ObMatErrorDirective,
-    UploadComponent
+    UploadComponent,
+    ObAlertComponent
   ],
   templateUrl: './onboarding-step-documents.component.html',
   providers: [{provide: AbstractOnboardingStepComponent, useExisting: OnboardingStepDocumentsComponent}],
@@ -86,13 +88,22 @@ export class OnboardingStepDocumentsComponent extends AbstractOnboardingStepComp
   // Additional documents are only required for BUSINESS partners that are not registered in the
   // commercial register (i.e. have no UID) and for GOVERNMENTAL_INSTITUTION partners. All other
   // partner types must not see the section, and a flow may hide it altogether.
-  readonly showAdditionalDocuments = computed(
-    () =>
-      this.wizardService.isFieldVisible('additionalDocuments') &&
-      ((this.wizardService.requestedBusinessPartnerType() === BusinessPartner.TypeEnum.Business &&
-        this.wizardService.submission()?.isRegisteredInCommercialRegister === false) ||
-        this.wizardService.requestedBusinessPartnerType() === BusinessPartner.TypeEnum.GovernmentalInstitution)
-  );
+  readonly isAdditionalDocumentsSectionVisible = computed(() => {
+    if (!this.wizardService.isFieldVisible('additionalDocuments')) {
+      return false;
+    }
+    return requiresAdditionalDocument(
+      this.wizardService.requestedBusinessPartnerType(),
+      this.wizardService.submission()?.isRegisteredInCommercialRegister
+    );
+  });
+
+  readonly isAdditionalDocumentUploadRequired = computed(() => {
+    if (!this.wizardService.isFieldEditable('additionalDocuments')) {
+      return false;
+    }
+    return this.isAdditionalDocumentsSectionVisible();
+  });
 
   readonly isGov = computed(
     () => this.wizardService.requestedBusinessPartnerType() === BusinessPartner.TypeEnum.GovernmentalInstitution
@@ -102,22 +113,19 @@ export class OnboardingStepDocumentsComponent extends AbstractOnboardingStepComp
 
   constructor() {
     super();
-    // Apply the active flow's field configuration to the backing controls.
-    effect(() => {
-      applyFieldState(this.form.controls.uploadedFiles, this.wizardService.fieldState('declarationOfIntent'));
-      applyFieldState(this.form.controls.doiLanguage, this.wizardService.fieldState('doiLanguage'));
-    });
 
     // Toggle validators on the additional-documents control so it only affects form validity when shown.
     effect(() => {
       const otherDocuments = this.form.controls.otherDocuments;
-      if (this.showAdditionalDocuments() && this.wizardService.isFieldEditable('additionalDocuments')) {
+      if (this.isAdditionalDocumentUploadRequired()) {
         otherDocuments.enable({emitEvent: false});
         otherDocuments.setValidators([Validators.required, Validators.minLength(1)]);
       } else {
         otherDocuments.disable({emitEvent: false});
         otherDocuments.clearValidators();
       }
+      applyFieldState(this.form.controls.uploadedFiles, this.wizardService.fieldState('declarationOfIntent'));
+      applyFieldState(this.form.controls.doiLanguage, this.wizardService.fieldState('doiLanguage'));
       otherDocuments.updateValueAndValidity({emitEvent: false});
     });
   }
@@ -126,44 +134,30 @@ export class OnboardingStepDocumentsComponent extends AbstractOnboardingStepComp
     this.loadTrigger$
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        switchMap(() => {
-          const submissionId = this.wizardService.submissionId;
-          if (!submissionId) {
-            return EMPTY;
-          }
-          return this.documentsApi.listAllDocumentsForTrustOnboarding({
-            id: submissionId,
-            size: 50, // declaration of intent + potentially several additional ("other") documents
-            page: 0,
-            sort: ['createdAt,desc']
-          });
-        })
+        switchMap(() => this.loadDocuments()),
+        filter(response => !!response.content),
+        map(response => response.content!),
+        map(documents => documents?.filter(doc => doc.id && doc.name)) // valid only
       )
       .subscribe(documents => {
-        if (documents.content) {
-          const valid = documents.content.filter(doc => doc.id && doc.name);
-          const toUploadedDocument = (doc: TrustOnboardingSubmissionDocumentListItem): UploadedDocument => ({
-            id: doc.id,
-            name: doc.name,
-            canBeDeleted: doc.canBeDeleted
-          });
-          this.form.patchValue({
-            uploadedFiles: valid
-              .filter(doc => doc.type === DocumentTypeEnum.TrustOnboardingDeclarationOfIntent)
-              .map(toUploadedDocument),
-            otherDocuments: valid
-              .filter(doc => doc.type === DocumentTypeEnum.TrustOnboardingOther)
-              .map(toUploadedDocument)
-          });
-          this.form.updateValueAndValidity();
-        }
+        this.form.patchValue({
+          uploadedFiles: documents
+            .filter(doc => doc.type === DocumentTypeEnum.TrustOnboardingDeclarationOfIntent)
+            .map(toUploadedDocument),
+          otherDocuments: documents
+            .filter(doc => doc.type === DocumentTypeEnum.TrustOnboardingOther)
+            .map(toUploadedDocument)
+        });
+        this.form.updateValueAndValidity();
       });
     const currentLang = this.translateService.getCurrentLang();
     if (currentLang) {
       this.form.controls.doiLanguage.patchValue(currentLang.toUpperCase() as CorrespondingLanguageEnum);
     }
 
-    (this.wizardService.submissionUpdated$ ?? EMPTY)
+    // When another step saves the submission and the wizard service announces “submission updated”:
+    // this documents step listen to it and then it reloads the current documents list
+    this.wizardService.submissionUpdated$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.refreshDocumentsAfterSubmissionUpdate());
 
@@ -171,27 +165,16 @@ export class OnboardingStepDocumentsComponent extends AbstractOnboardingStepComp
     this.translateSetup();
   }
 
-  private refreshDocumentsAfterSubmissionUpdate(): void {
-    this.loadTrigger$.next();
-
-    // The backend can remove or re-create documents shortly after submission updates.
-    timer(1000)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.loadTrigger$.next());
-  }
-
   override async validate(): Promise<boolean> {
-    const isValid = this.form.valid;
-
-    if (!isValid) {
+    const valid = this.isValid();
+    if (!valid) {
       this.form.markAllAsTouched();
     }
-
-    return isValid;
+    return valid;
   }
 
   override isValid(): boolean {
-    return this.form.valid;
+    return this.form.disabled ? this.hasRequiredDocuments() : this.form.valid;
   }
 
   downloadDoi() {
@@ -209,6 +192,71 @@ export class OnboardingStepDocumentsComponent extends AbstractOnboardingStepComp
         'response'
       )
       .subscribe(response => this.downloadDeclarationOfIntentResponse(response, submissionId));
+  }
+
+  onFileChosen(file: File): void {
+    this.startUpload(file);
+  }
+
+  retryUpload(): void {
+    if (this.uploadItem?.file) {
+      this.startUpload(this.uploadItem.file);
+    }
+  }
+
+  removeUpload(): void {
+    this.uploadItem = undefined;
+
+    const control = this.form.controls.uploadedFiles;
+    control.patchValue([]);
+    control.markAsTouched();
+    control.updateValueAndValidity();
+  }
+
+  onOtherFileChosen(file: File): void {
+    this.startOtherUpload(file);
+  }
+
+  retryOtherUpload(): void {
+    if (this.otherUploadItem?.file) {
+      this.startOtherUpload(this.otherUploadItem.file);
+    }
+  }
+
+  removeOtherUpload(): void {
+    this.otherUploadItem = undefined;
+  }
+
+  private hasRequiredDocuments(): boolean {
+    const uploadedFiles = this.form.controls.uploadedFiles.value ?? [];
+    const otherDocuments = this.form.controls.otherDocuments.value ?? [];
+
+    const hasDeclarationOfIntent = uploadedFiles.length > 0;
+    const hasAdditionalDocuments = !this.isAdditionalDocumentUploadRequired() || otherDocuments.length > 0;
+
+    return hasDeclarationOfIntent && hasAdditionalDocuments;
+  }
+
+  private loadDocuments() {
+    const submissionId = this.wizardService.submissionId;
+    if (!submissionId) {
+      return EMPTY;
+    }
+    return this.documentsApi.listAllDocumentsForTrustOnboarding({
+      id: submissionId,
+      size: 50, // declaration of intent + potentially several additional ("other") documents
+      page: 0,
+      sort: ['createdAt,desc']
+    });
+  }
+
+  private refreshDocumentsAfterSubmissionUpdate(): void {
+    this.loadTrigger$.next();
+
+    // The backend can remove or re-create documents shortly after submission updates.
+    timer(1000)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.loadTrigger$.next());
   }
 
   private downloadDeclarationOfIntentResponse(response: HttpResponse<Blob>, submissionId: string): void {
@@ -246,25 +294,6 @@ export class OnboardingStepDocumentsComponent extends AbstractOnboardingStepComp
 
     const filenameMatch = /filename\s*=\s*"?([^";]+)"?/i.exec(contentDisposition);
     return filenameMatch?.[1] ?? null;
-  }
-
-  onFileChosen(file: File): void {
-    this.startUpload(file);
-  }
-
-  retryUpload(): void {
-    if (this.uploadItem?.file) {
-      this.startUpload(this.uploadItem.file);
-    }
-  }
-
-  removeUpload(): void {
-    this.uploadItem = undefined;
-
-    const control = this.form.controls.uploadedFiles;
-    control.patchValue([]);
-    control.markAsTouched();
-    control.updateValueAndValidity();
   }
 
   private startUpload(file: File): void {
@@ -313,20 +342,6 @@ export class OnboardingStepDocumentsComponent extends AbstractOnboardingStepComp
       }
       return acc;
     }, {});
-  }
-
-  onOtherFileChosen(file: File): void {
-    this.startOtherUpload(file);
-  }
-
-  retryOtherUpload(): void {
-    if (this.otherUploadItem?.file) {
-      this.startOtherUpload(this.otherUploadItem.file);
-    }
-  }
-
-  removeOtherUpload(): void {
-    this.otherUploadItem = undefined;
   }
 
   private startOtherUpload(file: File): void {
@@ -402,4 +417,12 @@ export class OnboardingStepDocumentsComponent extends AbstractOnboardingStepComp
   }
 
   protected readonly Object = Object;
+}
+
+function toUploadedDocument(doc: TrustOnboardingSubmissionDocumentListItem): UploadedDocument {
+  return {
+    id: doc.id,
+    name: doc.name,
+    canBeDeleted: doc.canBeDeleted
+  };
 }

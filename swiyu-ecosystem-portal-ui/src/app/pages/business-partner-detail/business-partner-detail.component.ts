@@ -20,7 +20,8 @@ import {
   ProofOfPossession,
   TrustOnboardingAlert,
   TrustOnboardingApi,
-  TrustOnboardingSubmission
+  TrustOnboardingSubmission,
+  VerificationProgress
 } from '../../api/generated';
 import {AppRoutes} from '../../app.routes';
 import {SUPPRESS_ERROR_ALERT_STATUSES} from '../../core/interceptor/error-http-interceptor';
@@ -66,6 +67,7 @@ export class BusinessPartnerDetailComponent {
   @ViewChild(MatSort) sort!: MatSort;
   dataSource = new MatTableDataSource<IdentifierResponse>([]);
   businessPartner = signal<BusinessPartner | undefined>(undefined);
+  verificationProgress = signal<VerificationProgress | undefined>(undefined);
   remainingDidSlots = signal<number>(0);
   trustOnboardingSubmission = signal<TrustOnboardingSubmission | undefined>(undefined);
   alertNoDIDsVisible = signal<boolean>(false);
@@ -131,6 +133,14 @@ export class BusinessPartnerDetailComponent {
           concatMap(() => this.reloadDataOnTableChanges())
         )
         .subscribe();
+
+      const progressSub = this.businessPartnerApi
+        .getVerificationProgress({businessPartnerId: this.businessPartnerId()})
+        .pipe(catchError(() => of(undefined)))
+        .subscribe(progress => this.verificationProgress.set(progress));
+
+      onCleanup(() => sub.unsubscribe());
+      onCleanup(() => progressSub.unsubscribe());
 
       onCleanup(() => sub.unsubscribe());
     });

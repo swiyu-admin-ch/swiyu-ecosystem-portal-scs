@@ -12,11 +12,18 @@ export function hasSelectedDids(submission: TrustOnboardingSubmission): boolean 
 // Additional documents are only required for BUSINESS partners that are not registered in the
 // commercial register (i.e. have no UID) and for GOVERNMENTAL_INSTITUTION partners.
 // @see OnboardingStepDocumentsComponent.showAdditionalDocuments
-function requiresAdditionalDocument(submission: TrustOnboardingSubmission): boolean {
+function submissionRequiresAdditionalDocument(submission: TrustOnboardingSubmission): boolean {
+  return requiresAdditionalDocument(submission.businessPartnerType, submission.isRegisteredInCommercialRegister);
+}
+
+export function requiresAdditionalDocument(
+  partnerType?: TrustOnboardingSubmission.BusinessPartnerTypeEnum,
+  isRegisteredInCommercialRegister?: boolean
+): boolean {
   return (
-    (submission.businessPartnerType === TrustOnboardingSubmission.BusinessPartnerTypeEnum.Business &&
-      submission.isRegisteredInCommercialRegister === false) ||
-    submission.businessPartnerType === TrustOnboardingSubmission.BusinessPartnerTypeEnum.GovernmentalInstitution
+    (partnerType === TrustOnboardingSubmission.BusinessPartnerTypeEnum.Business &&
+      isRegisteredInCommercialRegister === false) ||
+    partnerType === TrustOnboardingSubmission.BusinessPartnerTypeEnum.GovernmentalInstitution
   );
 }
 
@@ -31,7 +38,7 @@ export function hasCompletedFormalProof(
     return false;
   }
 
-  if (!requiresAdditionalDocument(submission)) {
+  if (!submissionRequiresAdditionalDocument(submission)) {
     return true;
   }
 

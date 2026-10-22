@@ -6,7 +6,7 @@ import {MatIconTestingModule} from '@angular/material/icon/testing';
 import {provideRouter, Router} from '@angular/router';
 import {provideTranslateService} from '@ngx-translate/core';
 import {of} from 'rxjs';
-import {BusinessPartnerApi, BusinessPartnerListItem} from '../../api/generated';
+import {BusinessPartnerApi, BusinessPartnerListItem, VerificationProgressStatus} from '../../api/generated';
 import {AppRoutes} from '../../app.routes';
 import {AppConfigService} from '../../core/appconfig/app-config.service';
 import {AdministrationOverviewComponent} from './administration-overview.component';
@@ -36,12 +36,19 @@ describe('AdministrationOverviewComponent', () => {
 
   const businessPartnerApiMock = {
     hasBusinessPartners: jest.fn(),
-    getBusinessPartners: jest.fn()
+    getBusinessPartners: jest.fn(),
+    getVerificationProgress: jest.fn(() =>
+      of({status: VerificationProgressStatus.VerificationSucceeded, maxDateForStatus: undefined})
+    )
   };
 
   beforeEach(async () => {
     businessPartnerApiMock.getBusinessPartners.mockReset();
     businessPartnerApiMock.hasBusinessPartners.mockReset();
+    businessPartnerApiMock.getVerificationProgress.mockReset();
+    businessPartnerApiMock.getVerificationProgress.mockReturnValue(
+      of({status: VerificationProgressStatus.VerificationSucceeded, maxDateForStatus: undefined})
+    );
 
     await TestBed.configureTestingModule({
       imports: [MatIconTestingModule, AdministrationOverviewComponent],

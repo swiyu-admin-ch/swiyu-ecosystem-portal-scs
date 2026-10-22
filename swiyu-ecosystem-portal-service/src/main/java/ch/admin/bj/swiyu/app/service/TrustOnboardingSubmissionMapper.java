@@ -2,6 +2,7 @@ package ch.admin.bj.swiyu.app.service;
 
 import ch.admin.bj.swiyu.app.api.TrustOnboardingSubmissionDto;
 import ch.admin.bj.swiyu.app.api.TrustOnboardingSubmissionRequestDto;
+import ch.admin.bj.swiyu.app.api.TrustOnboardingSubmissionTypeDto;
 import ch.admin.bj.swiyu.client.business.internal.model.TrustOnboardingSubmission;
 import ch.admin.bj.swiyu.client.business.internal.model.TrustOnboardingSubmissionRequest;
 import java.time.Instant;
@@ -11,53 +12,63 @@ import lombok.experimental.UtilityClass;
 public class TrustOnboardingSubmissionMapper {
 
     public static TrustOnboardingSubmissionDto toTrustOnboardingSubmissionDto(
-        TrustOnboardingSubmission apiDto,
+        TrustOnboardingSubmission source,
         Instant maxDateForStatus
     ) {
         return new TrustOnboardingSubmissionDto(
-            apiDto.getId(),
-            apiDto.getVersion(),
-            apiDto.getPartnerId(),
-            apiDto.getName(),
-            apiDto.getEntityEmail(),
-            BusinessPartnerMapper.toAddressDto(apiDto.getAddress()),
-            BusinessPartnerMapper.toContactDto(apiDto.getContactPerson()),
-            apiDto.getSigningRule(),
-            apiDto.getSignatories(),
-            apiDto.getStatus(),
-            apiDto.getProofOfPossessions(),
-            apiDto.getBusinessPartnerType(),
-            apiDto.getRegistryIds(),
-            Boolean.TRUE.equals(apiDto.getIsRegisteredInCommercialRegister()),
-            apiDto.getRejectionReason(),
-            apiDto.getDeclineReason(),
-            apiDto.getPartnerNote(),
-            apiDto.getCorrespondingLanguage(),
-            apiDto.getInitiatedAt(),
-            apiDto.getSubmittedAt(),
-            apiDto.getResubmitRequiredUntil(),
-            TrustOnboardingAlertEvaluator.evaluate(apiDto, maxDateForStatus)
+            source.getId(),
+            source.getVersion(),
+            source.getPartnerId(),
+            source.getName(),
+            source.getEntityEmail(),
+            BusinessPartnerMapper.toAddressDto(source.getAddress()),
+            BusinessPartnerMapper.toContactDto(source.getContactPerson()),
+            source.getSigningRule(),
+            source.getSignatories(),
+            toTrustOnboardingSubmissionTypeDto(source.getType()),
+            source.getStatus(),
+            source.getProofOfPossessions(),
+            source.getBusinessPartnerType(),
+            source.getRegistryIds(),
+            Boolean.TRUE.equals(source.getIsRegisteredInCommercialRegister()),
+            source.getRejectionReason(),
+            source.getDeclineReason(),
+            source.getPartnerNote(),
+            source.getCorrespondingLanguage(),
+            source.getInitiatedAt(),
+            source.getSubmittedAt(),
+            source.getResubmitRequiredUntil(),
+            TrustOnboardingAlertEvaluator.evaluate(source, maxDateForStatus)
         );
     }
 
     public static TrustOnboardingSubmissionRequest toTrustOnboardingSubmissionRequest(
-        TrustOnboardingSubmissionRequestDto dto
+        TrustOnboardingSubmissionRequestDto source
     ) {
         return new TrustOnboardingSubmissionRequest(
-            dto.partnerId(),
-            dto.entityName(),
-            BusinessPartnerMapper.toAddress(dto.entityAddress()),
-            dto.entityEmail(),
-            BusinessPartnerMapper.toContact(dto.contactPerson()),
-            dto.signingRule(),
-            dto.signatories(),
-            dto.registryIds(),
-            dto.isRegisteredInCommercialRegister(),
-            // the request-level correspondingLanguage is deprecated in the CBS contract; the portal
-            // sends the language on contactPerson only and stops populating this field
-            null,
-            dto.dids(),
-            dto.requestedPartnerType()
+            source.partnerId(),
+            source.entityName(),
+            BusinessPartnerMapper.toAddress(source.entityAddress()),
+            source.entityEmail(),
+            BusinessPartnerMapper.toContact(source.contactPerson()),
+            source.signingRule(),
+            source.signatories(),
+            source.registryIds(),
+            source.isRegisteredInCommercialRegister(),
+            source.dids(),
+            source.requestedPartnerType(),
+            source.submissionType()
         );
+    }
+
+    private static TrustOnboardingSubmissionTypeDto toTrustOnboardingSubmissionTypeDto(
+        TrustOnboardingSubmission.TypeEnum source
+    ) {
+        return switch (source) {
+            case REGISTRATION -> TrustOnboardingSubmissionTypeDto.REGISTRATION;
+            case PROFILE_CHANGE_MANDATORY -> TrustOnboardingSubmissionTypeDto.PROFILE_CHANGE_MANDATORY;
+            case PROFILE_CHANGE_VOLUNTARY -> TrustOnboardingSubmissionTypeDto.PROFILE_CHANGE_VOLUNTARY;
+            case RENEWAL -> TrustOnboardingSubmissionTypeDto.RENEWAL;
+        };
     }
 }

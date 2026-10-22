@@ -1,27 +1,38 @@
 <mat-chip-set>
-  @if (businessPartner() !== undefined) {
-    @switch (businessPartner()!.trustVerificationStatus) {
-      @case (BusinessPartnerTrustStatus.Verified) {
-        <mat-chip [class]="businessPartner()!.trustVerificationStatus">
-          <mat-icon matChipAvatar svgIcon="checkmark_star" />
-          {{ "eportal_global_status_trust_identity_onboarding_Verified" | translate }}
+  @if (isLoading()) {
+    <mat-chip class="loading">
+      <mat-icon matChipAvatar svgIcon="info_circle" />
+      {{ "eportal_global_status_verification_progress_loading" | translate }}
+    </mat-chip>
+  } @else {
+    @switch (progress()!.status) {
+      @case (VerificationProgressStatus.VerificationNotStarted) {
+        <mat-chip [class]="progress()!.status">
+          <mat-icon matChipAvatar svgIcon="question_circle" />
+          {{ "eportal_global_status_verification_progress_VerificationNotStarted" | translate }}
         </mat-chip>
       }
-      @case (BusinessPartnerTrustStatus.VerificationStarted) {
-        <mat-chip [class]="businessPartner()!.trustVerificationStatus">
+      @case (VerificationProgressStatus.VerificationStarted) {
+        <mat-chip [class]="progress()!.status">
           <mat-icon matChipAvatar svgIcon="info_circle" />
           @if (daysRemainingForVerification() !== null) {
             {{
-              "eportal_global_status_trust_identity_onboarding_VerificationStarted"
+              "eportal_global_status_verification_progress_VerificationStarted"
                 | translate: { days: daysRemainingForVerification() }
             }}
           } @else {
-            {{ "eportal_global_status_trust_identity_onboarding_VerificationStarted_noDays" | translate }}
+            {{ "eportal_global_status_verification_progress_VerificationStarted_noDays" | translate }}
           }
         </mat-chip>
       }
-      @case (BusinessPartnerTrustStatus.InformationRequested) {
-        <mat-chip [class]="businessPartner()!.trustVerificationStatus">
+      @case (VerificationProgressStatus.VerificationInProgress) {
+        <mat-chip [class]="progress()!.status">
+          <mat-icon matChipAvatar svgIcon="clock" />
+          {{ "eportal_global_status_verification_progress_VerificationInProgress" | translate }}
+        </mat-chip>
+      }
+      @case (VerificationProgressStatus.VerificationInformationRequestedRequired) {
+        <mat-chip [class]="progress()!.status">
           <mat-icon
             matChipAvatar
             svgIcon="info_circle"
@@ -29,43 +40,78 @@
           />
           @if (daysRemainingForVerification() !== null) {
             {{
-              "eportal_global_status_trust_identity_onboarding_InformationRequested"
+              "eportal_global_status_verification_progress_InformationRequested"
                 | translate: { days: daysRemainingForVerification() }
             }}
           } @else {
-            {{ "eportal_global_status_trust_identity_onboarding_InformationRequested_noDays" | translate }}
+            {{ "eportal_global_status_verification_progress_InformationRequested_noDays" | translate }}
           }
         </mat-chip>
       }
-      @case (BusinessPartnerTrustStatus.VerificationInProgress) {
-        <mat-chip [class]="businessPartner()!.trustVerificationStatus">
-          <mat-icon matChipAvatar svgIcon="clock" />
-          {{ "eportal_global_status_trust_identity_onboarding_VerificationInProgress" | translate }}
+      @case (VerificationProgressStatus.VerificationInformationRequestedStarted) {
+        <mat-chip [class]="progress()!.status">
+          <mat-icon
+            matChipAvatar
+            svgIcon="info_circle"
+            [matTooltip]="'eportal_adminOverview_informationRequested_tooltip' | translate"
+          />
+          @if (daysRemainingForVerification() !== null) {
+            {{
+              "eportal_global_status_verification_progress_InformationRequested"
+                | translate: { days: daysRemainingForVerification() }
+            }}
+          } @else {
+            {{ "eportal_global_status_verification_progress_InformationRequested_noDays" | translate }}
+          }
         </mat-chip>
       }
-      @case (BusinessPartnerTrustStatus.NotVerified) {
-        <mat-chip [class]="businessPartner()!.trustVerificationStatus">
-          <mat-icon matChipAvatar svgIcon="question_circle" />
-          {{ "eportal_global_status_trust_identity_onboarding_NotVerified" | translate }}
+      @case (VerificationProgressStatus.VerificationRejected) {
+        <mat-chip [class]="progress()!.status">
+          <mat-icon matChipAvatar svgIcon="xmark_circle" />
+          {{ "eportal_global_status_verification_progress_VerificationRejected" | translate }}
         </mat-chip>
       }
-      @case (BusinessPartnerTrustStatus.ReVerificationInProgress) {
-        <mat-chip [class]="businessPartner()!.trustVerificationStatus">
+      @case (VerificationProgressStatus.VerificationSucceeded) {
+        <mat-chip [class]="progress()!.status">
+          <mat-icon matChipAvatar svgIcon="checkmark_star" />
+          {{ "eportal_global_status_verification_progress_VerificationSucceeded" | translate }}
+        </mat-chip>
+      }
+      @case (VerificationProgressStatus.ReVerificationRequired) {
+        <mat-chip [class]="progress()!.status">
           <mat-icon matChipAvatar svgIcon="info_circle" />
-          {{ "eportal_global_status_trust_identity_onboarding_ReVerificationInProgress" | translate }}
+          {{ "eportal_global_status_verification_progress_ReVerificationRequired" | translate }}
         </mat-chip>
       }
-      @case (BusinessPartnerTrustStatus.ReVerificationStarted) {
-        <mat-chip [class]="businessPartner()!.trustVerificationStatus">
+      @case (VerificationProgressStatus.ReVerificationStarted) {
+        <mat-chip [class]="progress()!.status">
           <mat-icon matChipAvatar svgIcon="info_circle" />
           @if (daysRemainingForVerification() !== null) {
             {{
-              "eportal_global_status_trust_identity_onboarding_ReVerificationStarted"
+              "eportal_global_status_verification_progress_ReVerificationStarted"
                 | translate: { days: daysRemainingForVerification() }
             }}
           } @else {
-            {{ "eportal_global_status_trust_identity_onboarding_ReVerificationStarted_noDays" | translate }}
+            {{ "eportal_global_status_verification_progress_ReVerificationStarted_noDays" | translate }}
           }
+        </mat-chip>
+      }
+      @case (VerificationProgressStatus.ReVerificationInProgress) {
+        <mat-chip [class]="progress()!.status">
+          <mat-icon matChipAvatar svgIcon="clock" />
+          {{ "eportal_global_status_verification_progress_ReVerificationInProgress" | translate }}
+        </mat-chip>
+      }
+      @case (VerificationProgressStatus.ReVerificationRejected) {
+        <mat-chip [class]="progress()!.status">
+          <mat-icon matChipAvatar svgIcon="xmark_circle" />
+          {{ "eportal_global_status_verification_progress_ReVerificationRejected" | translate }}
+        </mat-chip>
+      }
+      @case (VerificationProgressStatus.ReVerificationSucceeded) {
+        <mat-chip [class]="progress()!.status">
+          <mat-icon matChipAvatar svgIcon="checkmark_star" />
+          {{ "eportal_global_status_verification_progress_ReVerificationSucceeded" | translate }}
         </mat-chip>
       }
     }

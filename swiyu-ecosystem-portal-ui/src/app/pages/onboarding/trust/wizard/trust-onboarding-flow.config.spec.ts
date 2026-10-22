@@ -1,9 +1,9 @@
+import {TrustOnboardingSubmissionType} from '../../../../api/generated';
 import {
   getTrustOnboardingFlowConfig,
   TRUST_STEP_SEGMENTS,
   TrustFieldId,
-  TrustNotificationId,
-  TrustOnboardingFlow
+  TrustNotificationId
 } from './trust-onboarding-flow.config';
 
 const ALL_FIELD_IDS: TrustFieldId[] = [
@@ -30,12 +30,36 @@ const ALL_NOTIFICATION_IDS: TrustNotificationId[] = [
   'formalProofIntro',
   'formalProofAutoApprovalWarning',
   'formalProofSignatureAutoApprovalWarning',
-  'technicalProofCreateProofAlert'
+  'technicalProofCreateProofAlert',
+  'formalProofProfileChangedDoiDownloadWarning',
+  'formalProofProfileChangedDoiUploadWarning'
 ];
+
+const REGISTRATION_NOTIFICATION_EXPECTATIONS: Partial<Record<TrustNotificationId, boolean>> = {
+  profileIntro: true,
+  profileAutoApprovalWarning: true,
+  formalProofIntro: true,
+  formalProofAutoApprovalWarning: true,
+  formalProofSignatureAutoApprovalWarning: true,
+  technicalProofCreateProofAlert: true,
+  formalProofProfileChangedDoiDownloadWarning: false,
+  formalProofProfileChangedDoiUploadWarning: false
+};
+
+const PROFILE_CHANGE_NOTIFICATION_EXPECTATIONS: Partial<Record<TrustNotificationId, boolean>> = {
+  profileIntro: true,
+  profileAutoApprovalWarning: true,
+  formalProofIntro: true,
+  formalProofAutoApprovalWarning: true,
+  formalProofSignatureAutoApprovalWarning: true,
+  technicalProofCreateProofAlert: true,
+  formalProofProfileChangedDoiDownloadWarning: true,
+  formalProofProfileChangedDoiUploadWarning: true
+};
 
 describe('trustOnboardingFlowConfig', () => {
   describe('REGISTRATION', () => {
-    const config = getTrustOnboardingFlowConfig(TrustOnboardingFlow.Registration);
+    const config = getTrustOnboardingFlowConfig(TrustOnboardingSubmissionType.Registration);
 
     it('shows all steps in the wizard order', () => {
       expect(config.steps.map(step => step.id)).toEqual([
@@ -63,9 +87,9 @@ describe('trustOnboardingFlowConfig', () => {
       expect(Object.keys(config.fields).sort()).toEqual([...ALL_FIELD_IDS].sort());
     });
 
-    it('shows every static notification', () => {
-      ALL_NOTIFICATION_IDS.forEach(id => {
-        expect(config.notifications[id]).toBe(true);
+    it('shows the expected static notifications for the registration flow', () => {
+      Object.entries(REGISTRATION_NOTIFICATION_EXPECTATIONS).forEach(([id, expected]) => {
+        expect(config.notifications[id as TrustNotificationId]).toBe(expected);
       });
     });
 
@@ -74,16 +98,27 @@ describe('trustOnboardingFlowConfig', () => {
     });
   });
 
-  it('uses the step ids as wizard route segments', () => {
-    const config = getTrustOnboardingFlowConfig(TrustOnboardingFlow.Registration);
+  describe('PROFILE_CHANGE', () => {
+    const voluntaryConfig = getTrustOnboardingFlowConfig(TrustOnboardingSubmissionType.ProfileChangeVoluntary);
+    const mandatoryConfig = getTrustOnboardingFlowConfig(TrustOnboardingSubmissionType.ProfileChangeMandatory);
 
-    expect(config.steps.map(step => step.id)).toEqual([...TRUST_STEP_SEGMENTS]);
+    it('enables the profile-change DOI warnings in both profile change flows', () => {
+      [voluntaryConfig, mandatoryConfig].forEach(config => {
+        Object.entries(PROFILE_CHANGE_NOTIFICATION_EXPECTATIONS).forEach(([id, expected]) => {
+          expect(config.notifications[id as TrustNotificationId]).toBe(expected);
+        });
+      });
+    });
   });
 
-  it.each([TrustOnboardingFlow.ProfileChange, TrustOnboardingFlow.Renewal])(
-    'falls back to the registration configuration for the not yet configured flow %s',
-    flow => {
-      expect(getTrustOnboardingFlowConfig(flow)).toBe(getTrustOnboardingFlowConfig(TrustOnboardingFlow.Registration));
-    }
-  );
+  it('falls back to the registration flow for unsupported loaded types', () => {
+    const config = getTrustOnboardingFlowConfig('UNSUPPORTED' as TrustOnboardingSubmissionType);
+
+    expect(config.flow).toBe(TrustOnboardingSubmissionType.Registration);
+  });
+
+  it('uses the step ids as wizard route segments', () => {
+    const config = getTrustOnboardingFlowConfig(TrustOnboardingSubmissionType.Registration);
+    expect(config.steps.map(step => step.id)).toEqual([...TRUST_STEP_SEGMENTS]);
+  });
 });

@@ -4,6 +4,7 @@ import ch.admin.bj.swiyu.app.api.BusinessPartnerDto;
 import ch.admin.bj.swiyu.app.api.BusinessPartnerListItemDto;
 import ch.admin.bj.swiyu.app.api.BusinessPartnerUpdateRequestDto;
 import ch.admin.bj.swiyu.app.api.PartnerCreationRequestDto;
+import ch.admin.bj.swiyu.app.api.VerificationProgressDto;
 import ch.admin.bj.swiyu.app.service.BusinessPartnerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -53,6 +54,13 @@ public class BusinessPartnerController {
     @GetMapping("/{businessPartnerId}")
     public BusinessPartnerDto getBusinessPartner(@PathVariable UUID businessPartnerId) {
         return this.businessPartnerService.getBusinessPartner(businessPartnerId);
+    }
+
+    @PreAuthorize("hasRoleForPartner('businesspartner','read',#businessPartnerId)")
+    @Operation(summary = "Get the identity verification progress for a business partner")
+    @GetMapping("/{businessPartnerId}/verification-progress")
+    public VerificationProgressDto getVerificationProgress(@PathVariable UUID businessPartnerId) {
+        return this.businessPartnerService.getVerificationProgress(businessPartnerId);
     }
 
     @PreAuthorize("hasRoleForPartner('businesspartner','write',#businessPartnerId)")

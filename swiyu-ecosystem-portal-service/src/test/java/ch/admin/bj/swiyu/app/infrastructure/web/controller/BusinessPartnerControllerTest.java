@@ -12,11 +12,15 @@ import ch.admin.bj.swiyu.app.api.BusinessPartnerUpdateRequestDto;
 import ch.admin.bj.swiyu.app.api.ContactDto;
 import ch.admin.bj.swiyu.app.api.LanguageDto;
 import ch.admin.bj.swiyu.app.api.PartnerCreationRequestDto;
+import ch.admin.bj.swiyu.app.api.VerificationProgressStatusDto;
 import ch.admin.bj.swiyu.app.common.config.FunctionalityProperties;
 import ch.admin.bj.swiyu.app.exceptions.BusinessPartnerTypeNotAllowedException;
 import ch.admin.bj.swiyu.client.business.internal.api.BusinessPartnerV2Api;
 import ch.admin.bj.swiyu.client.business.internal.model.BusinessPartner;
 import ch.admin.bj.swiyu.client.business.internal.model.BusinessPartnerType;
+import ch.admin.bj.swiyu.client.business.internal.model.IdentityVerificationProgress;
+import ch.admin.bj.swiyu.client.business.internal.model.IdentityVerificationProgressStatus;
+import java.time.Instant;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,5 +147,25 @@ class BusinessPartnerControllerTest {
         // THEN
         assertThat(result.id()).isEqualTo(id);
         verify(businessPartnerV2Api).updateBusinessPartner(any(), any());
+    }
+
+    @Test
+    @WithJeapAuthenticationToken(bpRoles = { "39f92e48-619e-4e92-8958-468ae138d8a3 = ti_@businesspartner_#read" })
+    void getVerificationProgress_delegatesToServiceAndReturnsStatus() {
+        // GIVEN
+        var id = UUID.fromString("39f92e48-619e-4e92-8958-468ae138d8a3");
+        var maxDate = Instant.now().plus(30, java.time.temporal.ChronoUnit.DAYS);
+        when(businessPartnerV2Api.getVerificationProgress(id)).thenReturn(
+            new IdentityVerificationProgress(IdentityVerificationProgressStatus.VERIFICATION_REJECTED, maxDate)
+        );
+
+        // WHEN
+        var result = businessPartnerController.getVerificationProgress(id);
+
+        // THEN
+        assertThat(result).isNotNull();
+        assertThat(result.status()).isEqualTo(VerificationProgressStatusDto.VERIFICATION_REJECTED);
+        assertThat(result.maxDateForStatus()).isEqualTo(maxDate);
+        verify(businessPartnerV2Api).getVerificationProgress(id);
     }
 }

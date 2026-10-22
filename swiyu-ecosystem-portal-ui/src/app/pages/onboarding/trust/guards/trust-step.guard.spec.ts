@@ -6,7 +6,8 @@ import {
   TrustOnboardingApi,
   TrustOnboardingDocumentsApi,
   TrustOnboardingSubmission,
-  TrustOnboardingSubmissionDocumentListItem
+  TrustOnboardingSubmissionDocumentListItem,
+  TrustOnboardingSubmissionType
 } from '../../../../api/generated';
 import {AppRoutes} from '../../../../app.routes';
 import {AuthService} from '../../../../core/security/auth.service';
@@ -52,6 +53,8 @@ describe('trust-step guards', () => {
       businessPartnerType: TrustOnboardingSubmission.BusinessPartnerTypeEnum.Individual,
       proofOfPossessionList: [],
       registryIds: {},
+      type: TrustOnboardingSubmissionType.Registration,
+      alerts: [],
       ...overrides
     };
   }
@@ -130,7 +133,7 @@ describe('trust-step guards', () => {
 
       (runGuard(route) as Observable<boolean | UrlTree>).subscribe(() => {
         expect(mockRouter.createUrlTree).toHaveBeenCalledWith(
-          AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID)
+          AppRoutes.trustOnboardingWizardStepApproval(PARTNER_ID, SUBMISSION_ID)
         );
         done();
       });
@@ -154,7 +157,7 @@ describe('trust-step guards', () => {
 
       (runGuard(route) as Observable<boolean | UrlTree>).subscribe(() => {
         expect(mockRouter.createUrlTree).toHaveBeenCalledWith(
-          AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID)
+          AppRoutes.trustOnboardingWizardStepApproval(PARTNER_ID, SUBMISSION_ID)
         );
         done();
       });
@@ -167,7 +170,7 @@ describe('trust-step guards', () => {
 
       (runGuard(route) as Observable<boolean | UrlTree>).subscribe(() => {
         expect(mockRouter.createUrlTree).toHaveBeenCalledWith(
-          AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID)
+          AppRoutes.trustOnboardingWizardStepApproval(PARTNER_ID, SUBMISSION_ID)
         );
         done();
       });
@@ -200,7 +203,7 @@ describe('trust-step guards', () => {
 
         (runGuard(route) as Observable<boolean | UrlTree>).subscribe(() => {
           expect(mockRouter.createUrlTree).toHaveBeenCalledWith(
-            AppRoutes.trustOnboardingDids(PARTNER_ID, SUBMISSION_ID)
+            AppRoutes.trustOnboardingWizardStepDids(PARTNER_ID, SUBMISSION_ID)
           );
           done();
         });
@@ -226,7 +229,7 @@ describe('trust-step guards', () => {
 
         (runGuard(route) as Observable<boolean | UrlTree>).subscribe(() => {
           expect(mockRouter.createUrlTree).toHaveBeenCalledWith(
-            AppRoutes.trustOnboardingDids(PARTNER_ID, SUBMISSION_ID)
+            AppRoutes.trustOnboardingWizardStepDids(PARTNER_ID, SUBMISSION_ID)
           );
           done();
         });
@@ -240,7 +243,7 @@ describe('trust-step guards', () => {
 
         (runGuard(route) as Observable<boolean | UrlTree>).subscribe(() => {
           expect(mockRouter.createUrlTree).toHaveBeenCalledWith(
-            AppRoutes.trustOnboardingFormalProof(PARTNER_ID, SUBMISSION_ID)
+            AppRoutes.trustOnboardingWizardStepFormalProof(PARTNER_ID, SUBMISSION_ID)
           );
           done();
         });
@@ -281,7 +284,7 @@ describe('trust-step guards', () => {
 
       (runGuard(route) as Observable<boolean | UrlTree>).subscribe(() => {
         expect(mockRouter.createUrlTree).toHaveBeenCalledWith(
-          AppRoutes.trustOnboardingProfile(PARTNER_ID, SUBMISSION_ID)
+          AppRoutes.trustOnboardingWizardStepProfile(PARTNER_ID, SUBMISSION_ID)
         );
         done();
       });
@@ -294,7 +297,7 @@ describe('trust-step guards', () => {
 
       (runGuard(route) as Observable<boolean | UrlTree>).subscribe(() => {
         expect(mockRouter.createUrlTree).toHaveBeenCalledWith(
-          AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID)
+          AppRoutes.trustOnboardingWizardStepApproval(PARTNER_ID, SUBMISSION_ID)
         );
         done();
       });
@@ -308,7 +311,7 @@ describe('trust-step guards', () => {
 
       (runGuard(route) as Observable<boolean | UrlTree>).subscribe(() => {
         expect(mockRouter.createUrlTree).toHaveBeenCalledWith(
-          AppRoutes.trustOnboardingFormalProof(PARTNER_ID, SUBMISSION_ID)
+          AppRoutes.trustOnboardingWizardStepFormalProof(PARTNER_ID, SUBMISSION_ID)
         );
         done();
       });

@@ -7,7 +7,8 @@ import {
   BusinessPartner,
   BusinessPartnerApi,
   TrustOnboardingApi,
-  TrustOnboardingSubmission
+  TrustOnboardingSubmission,
+  TrustOnboardingSubmissionRequest
 } from '../../../../api/generated';
 import {AppRoutes} from '../../../../app.routes';
 import {AppConfigService} from '../../../../core/appconfig/app-config.service';
@@ -56,7 +57,8 @@ export class TrustIntroductionComponent implements OnInit {
     this.trustOnboardingApi
       .createTrustOnboardingSubmission({
         trustOnboardingSubmissionRequest: {
-          partnerId: this.businessPartnerId()
+          partnerId: this.businessPartnerId(),
+          submissionType: TrustOnboardingSubmissionRequest.SubmissionTypeEnum.Registration
         }
       })
       .subscribe({

@@ -39,7 +39,7 @@
         <div>
           <h1 class="ob-grow-3">{{ entityName() }}</h1>
           <div class="ob-flex">
-            <app-business-partner-trust-chip [businessPartner]="businessPartner()"></app-business-partner-trust-chip>
+            <app-business-partner-trust-chip [progress]="verificationProgress()"></app-business-partner-trust-chip>
             <app-info-icon>
               <h3>{{ "eportal_adminOverview_upgradeTrustLevel_tooltip_title" | translate }}</h3>
               <p>{{ "eportal_adminOverview_upgradeTrustLevel_tooltip_text" | translate }}</p>
@@ -51,6 +51,7 @@
         [businessPartner]="businessPartner()"
         [identifiers]="dataSource.data"
         [trustOnboardingSubmission]="trustOnboardingSubmission()"
+        [verificationProgress]="verificationProgress()"
         [businessPartnerId]="businessPartnerId()"
         [remainingDidSlots]="remainingDidSlots()"
       />

@@ -1,0 +1,75 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+
+.introduction {
+  width: 100%;
+  display: flex;
+  padding: var(--Spacing-spc-lg, 48px) var(--Padding-pad-body, 32px) var(--Spacing-spc-xxl, 96px)
+    var(--Padding-pad-body, 32px);
+  flex-direction: column;
+  align-items: center;
+  gap: $ob-spacing-xl;
+  align-self: stretch;
+}
+
+.card-price {
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: auto;
+  padding-top: var(--sw-spc-sm);
+  align-self: flex-end;
+}
+
+.introduction-top {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sw-spc-default);
+
+  .introduction-partner-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .introduction-info {
+    margin-bottom: var(--sw-spc-xl);
+  }
+
+  .renewal-data-current {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sw-spc-sm);
+  }
+
+  .list-style {
+    display: flex;
+    gap: var(--sw-spc-sm);
+    padding-top: var(--Padding-pad-default, 32px);
+    padding-bottom: var(--Padding-pad-xl, 64px);
+
+    .list-style-item {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  .renewal-fields {
+    display: flex;
+    gap: var(--sw-spc-sm);
+    margin: var(--sw-spc-sm) 0;
+
+    mat-form-field {
+      flex: 1;
+    }
+  }
+
+  .introduction-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--sw-spc-sm);
+    align-self: stretch;
+    margin-top: var(--sw-spc-xl);
+    margin-bottom: var(--sw-spc-xxl);
+  }
+}

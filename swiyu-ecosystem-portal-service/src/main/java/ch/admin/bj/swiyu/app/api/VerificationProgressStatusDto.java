@@ -1,0 +1,19 @@
+package ch.admin.bj.swiyu.app.api;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "VerificationProgressStatus", enumAsRef = true)
+public enum VerificationProgressStatusDto {
+    VERIFICATION_NOT_STARTED,
+    VERIFICATION_STARTED,
+    VERIFICATION_IN_PROGRESS,
+    VERIFICATION_INFORMATION_REQUESTED_REQUIRED,
+    VERIFICATION_INFORMATION_REQUESTED_STARTED,
+    VERIFICATION_REJECTED,
+    VERIFICATION_SUCCEEDED,
+    RE_VERIFICATION_REQUIRED,
+    RE_VERIFICATION_STARTED,
+    RE_VERIFICATION_IN_PROGRESS,
+    RE_VERIFICATION_REJECTED,
+    RE_VERIFICATION_SUCCEEDED,
+}

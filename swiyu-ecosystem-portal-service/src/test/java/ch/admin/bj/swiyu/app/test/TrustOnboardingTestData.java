@@ -57,6 +57,7 @@ public class TrustOnboardingTestData {
         submission
             .partnerId(TEST_PARTNER)
             .id(TEST_SUBMISSION_ID)
+            .type(TrustOnboardingSubmission.TypeEnum.REGISTRATION)
             .name(defaultEntityNameMap())
             .address(defaultAddress())
             .contactPerson(defaultContact())

@@ -3,7 +3,8 @@ import {
   ProofOfPossession,
   TrustOnboardingDocumentsApi,
   TrustOnboardingSubmission,
-  TrustOnboardingSubmissionDocumentListItem
+  TrustOnboardingSubmissionDocumentListItem,
+  TrustOnboardingSubmissionType
 } from '../../api/generated';
 import {AppRoutes} from '../../app.routes';
 import {getLastValidTrustStepRoute, getLastValidTrustStepRoute$} from './last-valid-trust-step-route';
@@ -15,6 +16,8 @@ describe('getLastValidTrustStepRoute', () => {
   function createSubmission(overrides: Partial<TrustOnboardingSubmission> = {}): TrustOnboardingSubmission {
     return {
       id: SUBMISSION_ID,
+      type: TrustOnboardingSubmissionType.Registration,
+      alerts: [],
       version: 1,
       partnerId: PARTNER_ID,
       entityName: {default: 'Test', 'de-CH': 'Test'},
@@ -31,28 +34,28 @@ describe('getLastValidTrustStepRoute', () => {
   it('should return approval route for submitted status', () => {
     const submission = createSubmission({status: TrustOnboardingSubmission.StatusEnum.Submitted});
     expect(getLastValidTrustStepRoute(submission)).toEqual(
-      AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID)
+      AppRoutes.trustOnboardingWizardStepApproval(PARTNER_ID, SUBMISSION_ID)
     );
   });
 
   it('should return approval route for succeeded status', () => {
     const submission = createSubmission({status: TrustOnboardingSubmission.StatusEnum.Succeeded});
     expect(getLastValidTrustStepRoute(submission)).toEqual(
-      AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID)
+      AppRoutes.trustOnboardingWizardStepApproval(PARTNER_ID, SUBMISSION_ID)
     );
   });
 
   it('should return approval route for rejected status', () => {
     const submission = createSubmission({status: TrustOnboardingSubmission.StatusEnum.Rejected});
     expect(getLastValidTrustStepRoute(submission)).toEqual(
-      AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID)
+      AppRoutes.trustOnboardingWizardStepApproval(PARTNER_ID, SUBMISSION_ID)
     );
   });
 
   it('should return approval route for resubmitted status', () => {
     const submission = createSubmission({status: TrustOnboardingSubmission.StatusEnum.Resubmitted});
     expect(getLastValidTrustStepRoute(submission)).toEqual(
-      AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID)
+      AppRoutes.trustOnboardingWizardStepApproval(PARTNER_ID, SUBMISSION_ID)
     );
   });
 
@@ -61,7 +64,9 @@ describe('getLastValidTrustStepRoute', () => {
       status: TrustOnboardingSubmission.StatusEnum.InformationRequested,
       proofOfPossessionList: [{did: 'did:key:1', nonce: 'n1', status: ProofOfPossession.StatusEnum.Valid}]
     });
-    expect(getLastValidTrustStepRoute(submission)).toEqual(AppRoutes.trustOnboardingProfile(PARTNER_ID, SUBMISSION_ID));
+    expect(getLastValidTrustStepRoute(submission)).toEqual(
+      AppRoutes.trustOnboardingWizardStepProfile(PARTNER_ID, SUBMISSION_ID)
+    );
   });
 
   it('should return technical-proof route when a proof has been supplied', () => {
@@ -69,7 +74,7 @@ describe('getLastValidTrustStepRoute', () => {
       proofOfPossessionList: [{did: 'did:key:1', nonce: 'n1', status: ProofOfPossession.StatusEnum.Valid}]
     });
     expect(getLastValidTrustStepRoute(submission)).toEqual(
-      AppRoutes.trustOnboardingTechnicalProof(PARTNER_ID, SUBMISSION_ID)
+      AppRoutes.trustOnboardingWizardStepTechnicalProof(PARTNER_ID, SUBMISSION_ID)
     );
   });
 
@@ -77,12 +82,16 @@ describe('getLastValidTrustStepRoute', () => {
     const submission = createSubmission({
       proofOfPossessionList: [{did: 'did:key:1', nonce: 'n1', status: ProofOfPossession.StatusEnum.NotSupplied}]
     });
-    expect(getLastValidTrustStepRoute(submission)).toEqual(AppRoutes.trustOnboardingDids(PARTNER_ID, SUBMISSION_ID));
+    expect(getLastValidTrustStepRoute(submission)).toEqual(
+      AppRoutes.trustOnboardingWizardStepDids(PARTNER_ID, SUBMISSION_ID)
+    );
   });
 
   it('should return profile route for unsubmitted with no data', () => {
     const submission = createSubmission();
-    expect(getLastValidTrustStepRoute(submission)).toEqual(AppRoutes.trustOnboardingProfile(PARTNER_ID, SUBMISSION_ID));
+    expect(getLastValidTrustStepRoute(submission)).toEqual(
+      AppRoutes.trustOnboardingWizardStepProfile(PARTNER_ID, SUBMISSION_ID)
+    );
   });
 });
 
@@ -93,6 +102,8 @@ describe('getLastValidTrustStepRoute$', () => {
   function createSubmission(overrides: Partial<TrustOnboardingSubmission> = {}): TrustOnboardingSubmission {
     return {
       id: SUBMISSION_ID,
+      type: TrustOnboardingSubmissionType.Registration,
+      alerts: [],
       version: 1,
       partnerId: PARTNER_ID,
       entityName: {default: 'Test', 'de-CH': 'Test'},
@@ -120,22 +131,22 @@ describe('getLastValidTrustStepRoute$', () => {
 
   it('should return approval route for submitted status', async () => {
     const submission = createSubmission({status: TrustOnboardingSubmission.StatusEnum.Submitted});
-    expect(await runFn(submission)).toEqual(AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID));
+    expect(await runFn(submission)).toEqual(AppRoutes.trustOnboardingWizardStepApproval(PARTNER_ID, SUBMISSION_ID));
   });
 
   it('should return approval route for succeeded status', async () => {
     const submission = createSubmission({status: TrustOnboardingSubmission.StatusEnum.Succeeded});
-    expect(await runFn(submission)).toEqual(AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID));
+    expect(await runFn(submission)).toEqual(AppRoutes.trustOnboardingWizardStepApproval(PARTNER_ID, SUBMISSION_ID));
   });
 
   it('should return approval route for rejected status', async () => {
     const submission = createSubmission({status: TrustOnboardingSubmission.StatusEnum.Rejected});
-    expect(await runFn(submission)).toEqual(AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID));
+    expect(await runFn(submission)).toEqual(AppRoutes.trustOnboardingWizardStepApproval(PARTNER_ID, SUBMISSION_ID));
   });
 
   it('should return approval route for resubmitted status', async () => {
     const submission = createSubmission({status: TrustOnboardingSubmission.StatusEnum.Resubmitted});
-    expect(await runFn(submission)).toEqual(AppRoutes.trustOnboardingApproval(PARTNER_ID, SUBMISSION_ID));
+    expect(await runFn(submission)).toEqual(AppRoutes.trustOnboardingWizardStepApproval(PARTNER_ID, SUBMISSION_ID));
   });
 
   it('should always return profile route for information_requested status', async () => {
@@ -144,13 +155,13 @@ describe('getLastValidTrustStepRoute$', () => {
       proofOfPossessionList: [{did: 'did:key:1', nonce: 'n1', status: ProofOfPossession.StatusEnum.NotSupplied}]
     });
     expect(await runFn(submission, createDocumentsApi([]))).toEqual(
-      AppRoutes.trustOnboardingProfile(PARTNER_ID, SUBMISSION_ID)
+      AppRoutes.trustOnboardingWizardStepProfile(PARTNER_ID, SUBMISSION_ID)
     );
   });
 
   it('should return profile route for unsubmitted with no data', async () => {
     const submission = createSubmission();
-    expect(await runFn(submission)).toEqual(AppRoutes.trustOnboardingProfile(PARTNER_ID, SUBMISSION_ID));
+    expect(await runFn(submission)).toEqual(AppRoutes.trustOnboardingWizardStepProfile(PARTNER_ID, SUBMISSION_ID));
   });
 
   it('should return formal-proof route when dids are selected but no documents are uploaded', async () => {
@@ -158,7 +169,7 @@ describe('getLastValidTrustStepRoute$', () => {
       proofOfPossessionList: [{did: 'did:key:1', nonce: 'n1', status: ProofOfPossession.StatusEnum.NotSupplied}]
     });
     expect(await runFn(submission, createDocumentsApi([]))).toEqual(
-      AppRoutes.trustOnboardingFormalProof(PARTNER_ID, SUBMISSION_ID)
+      AppRoutes.trustOnboardingWizardStepFormalProof(PARTNER_ID, SUBMISSION_ID)
     );
   });
 
@@ -180,7 +191,7 @@ describe('getLastValidTrustStepRoute$', () => {
       }
     ]);
     expect(await runFn(submission, documentsApi)).toEqual(
-      AppRoutes.trustOnboardingTechnicalProof(PARTNER_ID, SUBMISSION_ID)
+      AppRoutes.trustOnboardingWizardStepTechnicalProof(PARTNER_ID, SUBMISSION_ID)
     );
   });
 });

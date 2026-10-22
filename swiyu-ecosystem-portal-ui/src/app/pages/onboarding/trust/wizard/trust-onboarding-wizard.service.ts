@@ -16,7 +16,7 @@ import {
   TrustFieldConfig,
   TrustFieldId,
   TrustNotificationId,
-  TrustOnboardingFlow,
+  TrustOnboardingFlowConfig,
   TrustStepConfig,
   TrustStepId
 } from './trust-onboarding-flow.config';
@@ -41,19 +41,29 @@ export class TrustOnboardingWizardService {
   submissionRequest: TrustOnboardingSubmissionRequest = {};
   initialSubmissionRequest: TrustOnboardingSubmissionRequest = {};
 
-  readonly flow = signal<TrustOnboardingFlow>(TrustOnboardingFlow.Registration);
-  readonly config = computed(() => getTrustOnboardingFlowConfig(this.flow()));
-  readonly visibleSteps = computed<ResolvedTrustStep[]>(() =>
-    this.config()
-      .steps.filter(step => step.visible)
+  // Do not resolve a flow before the submission is loaded. Otherwise a browser reload would
+  // briefly derive the wizard from the registration flow and compute stale step indices.
+  readonly config = computed<TrustOnboardingFlowConfig | undefined>(() => {
+    const submissionType = this.submission()?.type;
+    return submissionType ? getTrustOnboardingFlowConfig(submissionType) : undefined;
+  });
+
+  readonly visibleSteps = computed<ResolvedTrustStep[]>(() => {
+    const config = this.config();
+    if (!config) {
+      return [];
+    }
+
+    return config.steps
+      .filter(step => step.visible)
       .map(({labelKeyAutomaticApproval, ...step}) => ({
         ...step,
         labelKey:
           labelKeyAutomaticApproval && this.appConfigService.isFunctionalityAutomaticApprovalEnabled
             ? labelKeyAutomaticApproval
             : step.labelKey
-      }))
-  );
+      }));
+  });
 
   private activeStep: AbstractOnboardingStepComponent | null = null;
   /** Index into visibleSteps(), kept in sync with the route by the wizard component. */
@@ -61,10 +71,9 @@ export class TrustOnboardingWizardService {
   private readonly submissionUpdatedSubject = new Subject<void>();
   readonly submissionUpdated$ = this.submissionUpdatedSubject.asObservable();
 
-  init(partnerId: string, submissionId: string, flow: TrustOnboardingFlow = TrustOnboardingFlow.Registration): void {
+  init(partnerId: string, submissionId: string): void {
     this.partnerId = partnerId;
     this.submissionId = submissionId;
-    this.flow.set(flow);
 
     forkJoin({
       businessPartner: this.businessPartnerApi.getBusinessPartner({businessPartnerId: partnerId}),
@@ -96,7 +105,7 @@ export class TrustOnboardingWizardService {
   }
 
   fieldState(id: TrustFieldId): TrustFieldConfig {
-    return this.config().fields[id];
+    return this.config()?.fields[id] ?? {visible: false, editable: false};
   }
 
   isFieldVisible(id: TrustFieldId): boolean {
@@ -109,7 +118,7 @@ export class TrustOnboardingWizardService {
   }
 
   isNotificationVisible(id: TrustNotificationId): boolean {
-    return this.config().notifications[id];
+    return this.config()?.notifications[id] ?? false;
   }
 
   setActiveStep(step: AbstractOnboardingStepComponent | null): void {

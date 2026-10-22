@@ -1,47 +1,46 @@
 package ch.admin.bj.swiyu.app.service;
 
+import static ch.admin.bj.swiyu.app.service.TrustOnboardingSubmissionMapper.toTrustOnboardingSubmissionDto;
 import static ch.admin.bj.swiyu.app.test.TrustOnboardingTestData.defaultSubmission;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import ch.admin.bj.swiyu.app.api.TrustOnboardingSubmissionDto;
-import ch.admin.bj.swiyu.client.business.internal.model.TrustOnboardingSubmission;
 import org.junit.jupiter.api.Test;
 
 class TrustOnboardingSubmissionMapperTest {
 
     @Test
     void toTrustOnboardingSubmissionDto_whenApiDtoIsValid_thenMapsCorrectly() {
-        var apiDto = defaultSubmission();
+        var source = defaultSubmission();
 
         // Act
-        TrustOnboardingSubmissionDto dto = TrustOnboardingSubmissionMapper.toTrustOnboardingSubmissionDto(apiDto, null);
+        var target = toTrustOnboardingSubmissionDto(source, null);
 
         // Assert
-        assertEquals(apiDto.getId(), dto.id());
-        assertEquals(apiDto.getVersion(), dto.version());
-        assertEquals(apiDto.getPartnerId(), dto.partnerId());
-        assertEquals(apiDto.getName(), dto.entityName());
-        assertEquals(apiDto.getEntityEmail(), dto.entityEmail());
-        assertEquals(BusinessPartnerMapper.toAddressDto(apiDto.getAddress()), dto.entityAddress());
-        assertEquals(BusinessPartnerMapper.toContactDto(apiDto.getContactPerson()), dto.contactPerson());
-        assertEquals(apiDto.getStatus(), dto.status());
-        assertEquals(apiDto.getProofOfPossessions(), dto.proofOfPossessionList());
-        assertEquals(apiDto.getRegistryIds(), dto.registryIds());
-        assertEquals(apiDto.getRejectionReason(), dto.rejectionReason());
-        assertEquals(apiDto.getDeclineReason(), dto.declineReason());
-        assertEquals(apiDto.getPartnerNote(), dto.partnerNote());
-        assertEquals(apiDto.getCorrespondingLanguage(), dto.correspondingLanguage());
+        assertEquals(source.getId(), target.id());
+        assertEquals(source.getVersion(), target.version());
+        assertEquals(source.getPartnerId(), target.partnerId());
+        assertEquals(source.getName(), target.entityName());
+        assertEquals(source.getEntityEmail(), target.entityEmail());
+        assertEquals(BusinessPartnerMapper.toAddressDto(source.getAddress()), target.entityAddress());
+        assertEquals(BusinessPartnerMapper.toContactDto(source.getContactPerson()), target.contactPerson());
+        assertEquals(source.getStatus(), target.status());
+        assertEquals(source.getProofOfPossessions(), target.proofOfPossessionList());
+        assertEquals(source.getRegistryIds(), target.registryIds());
+        assertEquals(source.getRejectionReason(), target.rejectionReason());
+        assertEquals(source.getDeclineReason(), target.declineReason());
+        assertEquals(source.getPartnerNote(), target.partnerNote());
+        assertEquals(source.getCorrespondingLanguage(), target.correspondingLanguage());
     }
 
     @Test
     void toTrustOnboardingSubmissionDto_whenSubmittedAtIsNull_thenMapsNull() {
         // Arrange
-        var apiDto = new TrustOnboardingSubmission();
+        var apiDto = defaultSubmission();
         apiDto.setSubmittedAt(null);
 
         // Act
-        TrustOnboardingSubmissionDto dto = TrustOnboardingSubmissionMapper.toTrustOnboardingSubmissionDto(apiDto, null);
+        var dto = toTrustOnboardingSubmissionDto(apiDto, null);
 
         // Assert
         assertNull(dto.submittedAt());

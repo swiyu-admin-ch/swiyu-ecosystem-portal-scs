@@ -5,9 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import ch.admin.bj.swiyu.app.api.BusinessPartnerDto;
 import ch.admin.bj.swiyu.app.api.BusinessPartnerListItemDto;
+import ch.admin.bj.swiyu.app.api.VerificationProgressStatusDto;
 import ch.admin.bj.swiyu.client.business.internal.model.BusinessPartner;
 import ch.admin.bj.swiyu.client.business.internal.model.BusinessPartnerListItem;
 import ch.admin.bj.swiyu.client.business.internal.model.BusinessPartnerType;
+import ch.admin.bj.swiyu.client.business.internal.model.IdentityVerificationProgress;
+import ch.admin.bj.swiyu.client.business.internal.model.IdentityVerificationProgressStatus;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.Test;
@@ -130,5 +133,24 @@ class BusinessPartnerMapperTest {
 
         assertEquals(maxDate, dto.verificationProgressMaxDate());
         assertEquals(30L, dto.daysRemainingForVerification());
+    }
+
+    @Test
+    void toVerificationProgressDto_whenProgressNull_thenReturnsNull() {
+        assertNull(BusinessPartnerMapper.toVerificationProgressDto(null));
+    }
+
+    @Test
+    void toVerificationProgressDto_mapsStatusAndMaxDate() {
+        var maxDate = Instant.now().plus(30, ChronoUnit.DAYS);
+        var progress = new IdentityVerificationProgress(
+            IdentityVerificationProgressStatus.RE_VERIFICATION_REQUIRED,
+            maxDate
+        );
+
+        var dto = BusinessPartnerMapper.toVerificationProgressDto(progress);
+
+        assertEquals(VerificationProgressStatusDto.RE_VERIFICATION_REQUIRED, dto.status());
+        assertEquals(maxDate, dto.maxDateForStatus());
     }
 }

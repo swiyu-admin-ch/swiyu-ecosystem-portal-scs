@@ -5,7 +5,7 @@ import {TranslateService} from '@ngx-translate/core';
   name: 'fullLang'
 })
 export class FullLangPipe implements PipeTransform {
-  private readonly lang = inject(TranslateService);
+  private readonly translate = inject(TranslateService);
   constructor() {
     this.translateSetup();
   }
@@ -21,10 +21,10 @@ export class FullLangPipe implements PipeTransform {
   }
 
   private translateSetup(): void {
-    this.lang.instant('eportal_global_lang_de');
-    this.lang.instant('eportal_global_lang_fr');
-    this.lang.instant('eportal_global_lang_it');
-    this.lang.instant('eportal_global_lang_rm');
-    this.lang.instant('eportal_global_lang_en');
+    this.translate.get('eportal_global_lang_de');
+    this.translate.get('eportal_global_lang_fr');
+    this.translate.get('eportal_global_lang_it');
+    this.translate.get('eportal_global_lang_rm');
+    this.translate.get('eportal_global_lang_en');
   }
 }

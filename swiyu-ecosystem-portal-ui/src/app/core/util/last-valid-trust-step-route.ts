@@ -1,5 +1,10 @@
 import {map, Observable, of} from 'rxjs';
-import {ProofOfPossession, TrustOnboardingDocumentsApi, TrustOnboardingSubmission} from '../../api/generated';
+import {
+  ProofOfPossession,
+  TrustOnboardingDocumentsApi,
+  TrustOnboardingSubmission,
+  TrustOnboardingSubmissionType
+} from '../../api/generated';
 import {AppRoutes} from '../../app.routes';
 import {
   fetchTrustOnboardingDocuments,
@@ -18,24 +23,24 @@ export function getLastValidTrustStepRoute(submission: TrustOnboardingSubmission
     status === TrustOnboardingSubmission.StatusEnum.Succeeded ||
     status === TrustOnboardingSubmission.StatusEnum.Rejected
   ) {
-    return AppRoutes.trustOnboardingApproval(partnerId, submissionId);
+    return AppRoutes.trustOnboardingWizardStepApproval(partnerId, submissionId);
   }
 
   // A request for additional information resets the wizard to the first step (EID-6376).
   if (status === TrustOnboardingSubmission.StatusEnum.InformationRequested) {
-    return AppRoutes.trustOnboardingProfile(partnerId, submissionId);
+    return AppRoutes.trustOnboardingWizardStepProfile(partnerId, submissionId);
   }
 
   if (hasSelectedDids(submission)) {
     if (proofOfPossessionList.some(pop => pop.status !== ProofOfPossession.StatusEnum.NotSupplied)) {
-      return AppRoutes.trustOnboardingTechnicalProof(partnerId, submissionId);
+      return AppRoutes.trustOnboardingWizardStepTechnicalProof(partnerId, submissionId);
     } else {
       // no technical proof has been supplied yet
-      return AppRoutes.trustOnboardingDids(partnerId, submissionId);
+      return AppRoutes.trustOnboardingWizardStepDids(partnerId, submissionId);
     }
   }
 
-  return AppRoutes.trustOnboardingProfile(partnerId, submissionId);
+  return AppRoutes.trustOnboardingWizardStepProfile(partnerId, submissionId);
 }
 
 // Used by the trust-step route guards, where the document-upload state can be checked
@@ -44,31 +49,41 @@ export function getLastValidTrustStepRoute$(
   submission: TrustOnboardingSubmission,
   documentsApi: TrustOnboardingDocumentsApi
 ): Observable<string[]> {
-  const {status, partnerId, id: submissionId} = submission;
+  if (submission.type === TrustOnboardingSubmissionType.Registration) {
+    return lastValidStepForRegistration$(submission, documentsApi);
+  }
+  // all others always start at beginning
+  return of(AppRoutes.trustOnboardingWizardStepProfile(submission.partnerId, submission.id));
+}
 
+function lastValidStepForRegistration$(
+  submission: TrustOnboardingSubmission,
+  documentsApi: TrustOnboardingDocumentsApi
+): Observable<string[]> {
+  const {status, partnerId, id: submissionId} = submission;
   if (
     status === TrustOnboardingSubmission.StatusEnum.Submitted ||
     status === TrustOnboardingSubmission.StatusEnum.Resubmitted ||
     status === TrustOnboardingSubmission.StatusEnum.Succeeded ||
     status === TrustOnboardingSubmission.StatusEnum.Rejected
   ) {
-    return of(AppRoutes.trustOnboardingApproval(partnerId, submissionId));
+    return of(AppRoutes.trustOnboardingWizardStepApproval(partnerId, submissionId));
   }
 
   // A request for additional information resets the wizard to the first step (EID-6376).
   if (status === TrustOnboardingSubmission.StatusEnum.InformationRequested) {
-    return of(AppRoutes.trustOnboardingProfile(partnerId, submissionId));
+    return of(AppRoutes.trustOnboardingWizardStepProfile(partnerId, submissionId));
   }
 
   if (!hasSelectedDids(submission)) {
-    return of(AppRoutes.trustOnboardingProfile(partnerId, submissionId));
+    return of(AppRoutes.trustOnboardingWizardStepProfile(partnerId, submissionId));
   }
 
   return fetchTrustOnboardingDocuments(documentsApi, submissionId).pipe(
     map(documents =>
       hasCompletedFormalProof(submission, documents)
-        ? AppRoutes.trustOnboardingTechnicalProof(partnerId, submissionId)
-        : AppRoutes.trustOnboardingFormalProof(partnerId, submissionId)
+        ? AppRoutes.trustOnboardingWizardStepTechnicalProof(partnerId, submissionId)
+        : AppRoutes.trustOnboardingWizardStepFormalProof(partnerId, submissionId)
     )
   );
 }

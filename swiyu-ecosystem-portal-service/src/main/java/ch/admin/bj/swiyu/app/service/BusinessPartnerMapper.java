@@ -35,6 +35,38 @@ public class BusinessPartnerMapper {
         );
     }
 
+    public static VerificationProgressDto toVerificationProgressDto(IdentityVerificationProgress progress) {
+        if (progress == null) {
+            return null;
+        }
+        return new VerificationProgressDto(
+            toVerificationProgressStatusDto(progress.getStatus()),
+            progress.getMaxDateForStatus()
+        );
+    }
+
+    private static VerificationProgressStatusDto toVerificationProgressStatusDto(
+        IdentityVerificationProgressStatus source
+    ) {
+        if (source == null) {
+            return null;
+        }
+        return switch (source) {
+            case VERIFICATION_NOT_STARTED -> VerificationProgressStatusDto.VERIFICATION_NOT_STARTED;
+            case VERIFICATION_STARTED -> VerificationProgressStatusDto.VERIFICATION_STARTED;
+            case VERIFICATION_IN_PROGRESS -> VerificationProgressStatusDto.VERIFICATION_IN_PROGRESS;
+            case VERIFICATION_INFORMATION_REQUESTED_REQUIRED -> VerificationProgressStatusDto.VERIFICATION_INFORMATION_REQUESTED_REQUIRED;
+            case VERIFICATION_INFORMATION_REQUESTED_STARTED -> VerificationProgressStatusDto.VERIFICATION_INFORMATION_REQUESTED_STARTED;
+            case VERIFICATION_REJECTED -> VerificationProgressStatusDto.VERIFICATION_REJECTED;
+            case VERIFICATION_SUCCEEDED -> VerificationProgressStatusDto.VERIFICATION_SUCCEEDED;
+            case RE_VERIFICATION_REQUIRED -> VerificationProgressStatusDto.RE_VERIFICATION_REQUIRED;
+            case RE_VERIFICATION_STARTED -> VerificationProgressStatusDto.RE_VERIFICATION_STARTED;
+            case RE_VERIFICATION_IN_PROGRESS -> VerificationProgressStatusDto.RE_VERIFICATION_IN_PROGRESS;
+            case RE_VERIFICATION_REJECTED -> VerificationProgressStatusDto.RE_VERIFICATION_REJECTED;
+            case RE_VERIFICATION_SUCCEEDED -> VerificationProgressStatusDto.RE_VERIFICATION_SUCCEEDED;
+        };
+    }
+
     private static BusinessPartnerTrustStatusDto toBusinessPartnerTrustStatusDto(BusinessPartnerTrustStatus source) {
         return switch (source) {
             case NOT_VERIFIED -> BusinessPartnerTrustStatusDto.NOT_VERIFIED;

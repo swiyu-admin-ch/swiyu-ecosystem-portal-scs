@@ -4,6 +4,7 @@ import ch.admin.bj.swiyu.app.api.BusinessPartnerDto;
 import ch.admin.bj.swiyu.app.api.BusinessPartnerListItemDto;
 import ch.admin.bj.swiyu.app.api.BusinessPartnerUpdateRequestDto;
 import ch.admin.bj.swiyu.app.api.PartnerCreationRequestDto;
+import ch.admin.bj.swiyu.app.api.VerificationProgressDto;
 import ch.admin.bj.swiyu.app.domain.BusinessPartnerValidator;
 import ch.admin.bj.swiyu.client.business.internal.api.BusinessPartnerV2Api;
 import java.time.Instant;
@@ -61,6 +62,11 @@ public class BusinessPartnerService {
             businessPartner,
             verificationProgressMaxDate(businessPartnerId)
         );
+    }
+
+    public VerificationProgressDto getVerificationProgress(UUID businessPartnerId) {
+        var progress = businessPartnerV2Api.getVerificationProgress(businessPartnerId);
+        return BusinessPartnerMapper.toVerificationProgressDto(progress);
     }
 
     private Instant verificationProgressMaxDate(UUID businessPartnerId) {

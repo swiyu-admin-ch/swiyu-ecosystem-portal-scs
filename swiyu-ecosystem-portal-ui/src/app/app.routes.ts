@@ -11,12 +11,12 @@ import {ProtectedVerificationWizardComponent} from './pages/business-partner-det
 import {BusinessPartnerProfileComponent} from './pages/business-partner-profile/business-partner-profile.component';
 import {canActivateTrustBaseUrl, canActivateTrustStep} from './pages/onboarding/trust/guards/trust-step.guard';
 import {TrustIntroductionComponent} from './pages/onboarding/trust/introduction/trust-introduction.component';
+import {RenewalIntroductionComponent} from './pages/onboarding/trust/renewal-introduction/renewal-introduction.component';
 import {OnboardingStepDidsComponent} from './pages/onboarding/trust/steps/onboarding-step-dids-component/onboarding-step-dids.component';
 import {OnboardingStepDocumentsComponent} from './pages/onboarding/trust/steps/onboarding-step-documents-component/onboarding-step-documents.component';
 import {OnboardingStepFinalComponent} from './pages/onboarding/trust/steps/onboarding-step-final-component/onboarding-step-final.component';
 import {OnboardingStepOrganisationDetailsComponent} from './pages/onboarding/trust/steps/onboarding-step-organisation-details-component/onboarding-step-organisation-details.component';
 import {OnboardingStepTechnicalVerificationComponent} from './pages/onboarding/trust/steps/onboarding-step-technical-verification-component/onboarding-step-technical-verification.component';
-import {TrustOnboardingFlow} from './pages/onboarding/trust/wizard/trust-onboarding-flow.config';
 import {TrustOnboardingWizardComponent} from './pages/onboarding/trust/wizard/trust-onboarding-wizard.component';
 import {AdditionalDidsExplainerComponent} from './pages/organizations/additional-dids-explainer/additional-dids-explainer.component';
 import {DidDetailsComponent} from './pages/organizations/did-details/did-details.component';
@@ -64,27 +64,32 @@ export class AppRoutes {
     return ['/', 'onboarding', 'trust', partnerId, 'introduction'];
   }
 
+  /** Specific introduction page when submission is of type RENEWAL */
+  static trustOnboardingIntroductionRenewal(partnerId: string) {
+    return ['/', 'onboarding', 'trust', partnerId, 'introduction-renewal'];
+  }
+
   static trustOnboardingWizard(partnerId: string, submissionId: string) {
     return ['/', 'onboarding', 'trust', partnerId, submissionId];
   }
 
-  static trustOnboardingProfile(partnerId: string, submissionId: string) {
+  static trustOnboardingWizardStepProfile(partnerId: string, submissionId: string) {
     return ['/', 'onboarding', 'trust', partnerId, submissionId, 'profile'];
   }
 
-  static trustOnboardingDids(partnerId: string, submissionId: string) {
+  static trustOnboardingWizardStepDids(partnerId: string, submissionId: string) {
     return ['/', 'onboarding', 'trust', partnerId, submissionId, 'dids'];
   }
 
-  static trustOnboardingFormalProof(partnerId: string, submissionId: string) {
+  static trustOnboardingWizardStepFormalProof(partnerId: string, submissionId: string) {
     return ['/', 'onboarding', 'trust', partnerId, submissionId, 'formal-proof'];
   }
 
-  static trustOnboardingTechnicalProof(partnerId: string, submissionId: string) {
+  static trustOnboardingWizardStepTechnicalProof(partnerId: string, submissionId: string) {
     return ['/', 'onboarding', 'trust', partnerId, submissionId, 'technical-proof'];
   }
 
-  static trustOnboardingApproval(partnerId: string, submissionId: string) {
+  static trustOnboardingWizardStepApproval(partnerId: string, submissionId: string) {
     return ['/', 'onboarding', 'trust', partnerId, submissionId, 'approval'];
   }
 
@@ -121,6 +126,49 @@ export class AppRoutes {
   }
 }
 
+/** Wizard child routes, shared by every trust onboarding flow (registration, renewal, profile change). */
+const TRUST_ONBOARDING_WIZARD_CHILDREN: Routes = [
+  {
+    path: '',
+    canActivate: [canActivateTrustBaseUrl],
+    component: OnboardingStepOrganisationDetailsComponent
+  },
+  {
+    /** @see trustOnboardingProfile() **/
+    path: 'profile',
+    component: OnboardingStepOrganisationDetailsComponent,
+    data: {title: 'app_site_onboarding_trust_organisation-information_title'}
+  },
+  {
+    /** @see trustOnboardingDids() **/
+    path: 'dids',
+    component: OnboardingStepDidsComponent,
+    canActivate: [canActivateTrustStep],
+    data: {title: 'eportal_onboardingTR_selectDID_pageTitle'}
+  },
+  {
+    /** @see trustOnboardingFormalProof() **/
+    path: 'formal-proof',
+    component: OnboardingStepDocumentsComponent,
+    canActivate: [canActivateTrustStep],
+    data: {title: 'eportal_onboardingTR_formalProof_pageTitle'}
+  },
+  {
+    /** @see trustOnboardingTechnicalProof() **/
+    path: 'technical-proof',
+    component: OnboardingStepTechnicalVerificationComponent,
+    canActivate: [canActivateTrustStep],
+    data: {title: 'eportal_onboardingTR_technicalProof_pageTitle'}
+  },
+  {
+    /** @see trustOnboardingApproval() **/
+    path: 'approval',
+    component: OnboardingStepFinalComponent,
+    canActivate: [canActivateTrustStep],
+    data: {title: 'eportal_onboardingTR_automaticVerification_submitted_pageTitle'}
+  }
+];
+
 export const routes: Routes = [
   {
     path: 'onboarding',
@@ -135,52 +183,17 @@ export const routes: Routes = [
             data: {title: 'eportal_onboardingTR_overview_pageTitle'}
           },
           {
+            /** @see renewalOnboardingIntroduction() **/
+            path: ':businessPartnerId/introduction-renewal',
+            component: RenewalIntroductionComponent,
+            data: {title: 'eportal_renewal_pageTitle'}
+          },
+          {
             /** @see trustOnboardingWizard() **/
             path: ':partnerId/:submissionId',
             component: TrustOnboardingWizardComponent,
             canDeactivate: [ObUnsavedChangesGuard],
-            data: {flow: TrustOnboardingFlow.Registration},
-            children: [
-              {
-                path: '',
-                canActivate: [canActivateTrustBaseUrl],
-                component: OnboardingStepOrganisationDetailsComponent
-              },
-              {
-                /** @see trustOnboardingProfile() **/
-                path: 'profile',
-                component: OnboardingStepOrganisationDetailsComponent,
-                data: {title: 'app_site_onboarding_trust_organisation-information_title'}
-              },
-              {
-                /** @see trustOnboardingDids() **/
-                path: 'dids',
-                component: OnboardingStepDidsComponent,
-                canActivate: [canActivateTrustStep],
-                data: {title: 'eportal_onboardingTR_selectDID_pageTitle'}
-              },
-              {
-                /** @see trustOnboardingFormalProof() **/
-                path: 'formal-proof',
-                component: OnboardingStepDocumentsComponent,
-                canActivate: [canActivateTrustStep],
-                data: {title: 'eportal_onboardingTR_formalProof_pageTitle'}
-              },
-              {
-                /** @see trustOnboardingTechnicalProof() **/
-                path: 'technical-proof',
-                component: OnboardingStepTechnicalVerificationComponent,
-                canActivate: [canActivateTrustStep],
-                data: {title: 'eportal_onboardingTR_technicalProof_pageTitle'}
-              },
-              {
-                /** @see trustOnboardingApproval() **/
-                path: 'approval',
-                component: OnboardingStepFinalComponent,
-                canActivate: [canActivateTrustStep],
-                data: {title: 'eportal_onboardingTR_automaticVerification_submitted_pageTitle'}
-              }
-            ]
+            children: TRUST_ONBOARDING_WIZARD_CHILDREN
           }
         ]
       },

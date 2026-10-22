@@ -17,12 +17,21 @@
   border-color: $ob-gray;
 }
 
+mat-card {
+  height: 100%;
+}
+
+mat-card-content {
+  display: flex;
+  flex: 1 1 auto;
+}
+
 .card-content {
   display: flex;
   align-items: start;
   gap: $sw-spc-sm;
   place-content: center;
-  align-self: stretch;
+  flex: 1 1 auto;
   flex-direction: row;
   color: $ob-default;
 }
@@ -41,10 +50,6 @@
   .card-content {
     color: $ob-gray;
   }
-}
-
-mat-card {
-  height: 100%;
 }
 
 .h6 {

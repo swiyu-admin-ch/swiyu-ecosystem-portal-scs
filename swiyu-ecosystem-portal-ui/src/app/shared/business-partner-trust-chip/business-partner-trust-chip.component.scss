@@ -1,6 +1,7 @@
 @use "@oblique/oblique/styles/scss/core/palette" as obp;
 
-.NOT_VERIFIED {
+.NOT_VERIFIED,
+.VERIFICATION_NOT_STARTED {
   &.mat-mdc-chip.mat-mdc-standard-chip {
     background-color: obp.$ob-secondary-100;
     color: obp.$ob-secondary-900;
@@ -19,7 +20,9 @@
   }
 }
 
-.VERIFIED {
+.VERIFIED,
+.VERIFICATION_SUCCEEDED,
+.RE_VERIFICATION_SUCCEEDED {
   &.mat-mdc-chip.mat-mdc-standard-chip {
     background-color: obp.$ob-green-100;
     color: obp.$ob-green-900;
@@ -28,7 +31,9 @@
   }
 }
 
-.INFORMATION_REQUESTED {
+.INFORMATION_REQUESTED,
+.VERIFICATION_INFORMATION_REQUESTED_REQUIRED,
+.VERIFICATION_INFORMATION_REQUESTED_STARTED {
   &.mat-mdc-chip.mat-mdc-standard-chip {
     background-color: obp.$ob-orange-100;
     color: obp.$ob-orange-900;
@@ -38,11 +43,22 @@
 }
 
 .VERIFICATION_STARTED,
-.RE_VERIFICATION_STARTED {
+.RE_VERIFICATION_STARTED,
+.RE_VERIFICATION_REQUIRED {
   &.mat-mdc-chip.mat-mdc-standard-chip {
     background-color: obp.$ob-orange-100;
     color: obp.$ob-orange-900;
 
     --mat-chip-label-text-color: #{obp.$ob-orange-900};
+  }
+}
+
+.VERIFICATION_REJECTED,
+.RE_VERIFICATION_REJECTED {
+  &.mat-mdc-chip.mat-mdc-standard-chip {
+    background-color: obp.$ob-red-100;
+    color: obp.$ob-red-900;
+
+    --mat-chip-label-text-color: #{obp.$ob-red-900};
   }
 }

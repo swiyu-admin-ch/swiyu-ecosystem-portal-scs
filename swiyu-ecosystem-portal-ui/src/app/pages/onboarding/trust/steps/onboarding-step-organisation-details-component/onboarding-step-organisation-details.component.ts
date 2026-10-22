@@ -191,30 +191,36 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
         requestedPartnerType: value.partnerType ?? undefined
       });
     });
+    // Effect 1: hydrate the form from a persisted submission. This data has the highest priority.
     effect(() => {
-      const data = this.wizardService.submission();
-      if (data) {
-        this.updateSignatoryForms(data.signingRule ?? null);
-        this.updateEntityNameFields(data.entityName);
+      const submission = this.wizardService.submission();
+      if (submission) {
+        if (submission.signingRule) {
+          this.updateSignatoryForms(submission.signingRule);
+        } else {
+          this.updateSignatoryForms(null);
+        }
+
+        this.updateEntityNameFields(submission.entityName);
         this.form.patchValue(
           {
-            hasUid: data?.isRegisteredInCommercialRegister,
+            hasUid: submission?.isRegisteredInCommercialRegister,
             entityAddress: {
-              street: data.entityAddress?.street,
-              country: data.entityAddress?.country ?? 'CH',
-              city: data.entityAddress?.city,
-              postalCode: data.entityAddress?.postalCode
+              street: submission.entityAddress?.street,
+              country: submission.entityAddress?.country ?? 'CH',
+              city: submission.entityAddress?.city,
+              postalCode: submission.entityAddress?.postalCode
             },
             contactPerson: {
-              firstName: data.contactPerson?.firstName,
-              lastName: data.contactPerson?.lastName,
-              phone: data.contactPerson?.phone,
-              email: data.contactPerson?.email,
-              correspondingLanguage: data.contactPerson?.correspondingLanguage
+              firstName: submission.contactPerson?.firstName,
+              lastName: submission.contactPerson?.lastName,
+              phone: submission.contactPerson?.phone,
+              email: submission.contactPerson?.email,
+              correspondingLanguage: submission.contactPerson?.correspondingLanguage
             },
-            signingRule: data?.signingRule,
-            signatories: data?.signatories,
-            uid: data.registryIds['UID'],
+            signingRule: submission?.signingRule,
+            signatories: submission?.signatories,
+            uid: submission.registryIds['UID'],
             readTermsAndConditions: false,
             readPrivacyPolicy: false
           },
@@ -222,19 +228,51 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
         );
         // When facing new trust onboarding submission apply default behaviour with two signatories
         // Default signing rule is joint-signature by two people and no signing rule for individuals
-        if (!data.signingRule && data.businessPartnerType != PartnerTypeEnum.Individual) {
+        if (!submission.signingRule && submission.businessPartnerType != PartnerTypeEnum.Individual) {
           this.form.controls.signingRule.setValue(TrustOnboardingSubmission.SigningRuleEnum.JointSignatureTwo);
           this.updateSignatoryForms(TrustOnboardingSubmission.SigningRuleEnum.JointSignatureTwo);
         }
       }
     });
+    // Effect 2: preselect the requested partner type when the wizard resolves it.
     effect(() => {
       const partnerType = this.wizardService.requestedBusinessPartnerType();
       if (partnerType) {
         this.form.patchValue({partnerType: partnerType});
       }
     });
-    // Apply the active flow's field configuration to the backing controls.
+    // Effect 3: merge in base partner data when no submission overrides exist yet.
+    effect(() => {
+      const partner = this.wizardService.businessPartner();
+      const submission = this.wizardService.submission();
+      if (!partner) {
+        return;
+      }
+
+      let entityName = partner.entityName;
+      if (submission?.entityName) {
+        entityName = submission.entityName;
+      }
+
+      let entityAddress = partner.address;
+      if (submission?.entityAddress) {
+        entityAddress = submission.entityAddress;
+      }
+
+      let uid = partner.uid;
+      if (submission?.registryIds?.['UID']) {
+        uid = submission.registryIds['UID'];
+      }
+
+      if (entityName) {
+        this.updateEntityNameFields(entityName);
+      }
+
+      this.form.patchValue({entityAddress, uid});
+    });
+
+    // Effect 4: enforce the active flow's visible/editable state after any prefill effect.
+    // This must run last because the prefill effects can recreate controls (for example arrays).
     effect(() => {
       applyFieldState(this.form.controls.partnerType, this.wizardService.fieldState('partnerType'));
       applyFieldState(this.form.controls.hasUid, this.wizardService.fieldState('commercialRegister'));
@@ -248,24 +286,6 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
       applyFieldState(this.form.controls.readPrivacyPolicy, this.wizardService.fieldState('privacyPolicy'));
       // The UID additionally depends on the partner type and the commercial register answer.
       this.applyUidRules(this.form.controls.partnerType.value, this.form.controls.hasUid.value);
-    });
-    effect(() => {
-      const partner = this.wizardService.businessPartner();
-      const submission = this.wizardService.submission();
-      if (!partner) {
-        return;
-      }
-
-      if (submission?.entityName) {
-        this.updateEntityNameFields(submission.entityName);
-      } else {
-        this.updateEntityNameFields(partner.entityName);
-      }
-
-      this.form.patchValue({
-        entityAddress: submission?.entityAddress ?? partner.address,
-        uid: submission?.registryIds?.['UID'] ?? partner.uid
-      });
     });
   }
 
@@ -340,7 +360,14 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
   }
 
   canAddEntityNameEntry(): boolean {
+    if (!this.wizardService.isFieldEditable('entityName')) {
+      return false; // readonly mode
+    }
     return this.form.controls.entityNameEntries.length < LOCALIZED_MAP_LOCALES.length;
+  }
+
+  canRemoveEntityNameEntry(): boolean {
+    return this.wizardService.isFieldEditable('entityName');
   }
 
   addEntityNameEntry(): void {
@@ -362,10 +389,10 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
     const {defaultValue, translations} = fromLocalizedMap(data);
 
     this.form.controls.entityNameDefault.setValue(defaultValue);
-    this.setEntityNameTranslations(translations);
+    this.initEntityNameEntryControls(translations);
   }
 
-  private setEntityNameTranslations(translations: {name: string; language: string}[]): void {
+  private initEntityNameEntryControls(translations: {name: string; language: string}[]): void {
     this.form.controls.entityNameEntries.clear();
     translations.forEach(translation => {
       const group = this.createEntityNameTranslationForm();

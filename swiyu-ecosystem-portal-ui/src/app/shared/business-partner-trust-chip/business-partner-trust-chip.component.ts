@@ -3,7 +3,7 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {TranslatePipe} from '@ngx-translate/core';
-import {BusinessPartner, BusinessPartnerListItem, BusinessPartnerTrustStatus} from '../../api/generated';
+import {VerificationProgress, VerificationProgressStatus} from '../../api/generated';
 
 @Component({
   selector: 'app-business-partner-trust-chip',
@@ -12,7 +12,19 @@ import {BusinessPartner, BusinessPartnerListItem, BusinessPartnerTrustStatus} fr
   styleUrl: './business-partner-trust-chip.component.scss'
 })
 export class BusinessPartnerTrustChipComponent {
-  readonly businessPartner = input.required<BusinessPartnerListItem | BusinessPartner | undefined>();
-  readonly daysRemainingForVerification = computed(() => this.businessPartner()?.daysRemainingForVerification ?? null);
-  protected readonly BusinessPartnerTrustStatus = BusinessPartnerTrustStatus;
+  readonly progress = input<VerificationProgress | undefined>();
+  protected readonly VerificationProgressStatus = VerificationProgressStatus;
+  readonly isLoading = computed(() => this.progress() === undefined);
+  readonly daysRemainingForVerification = computed(() => this.daysUntil(this.progress()?.maxDateForStatus));
+
+  private daysUntil(deadline?: string): number | null {
+    if (!deadline) {
+      return null;
+    }
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const deadlineDate = new Date(deadline);
+    const target = new Date(deadlineDate.getFullYear(), deadlineDate.getMonth(), deadlineDate.getDate());
+    return Math.round((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  }
 }

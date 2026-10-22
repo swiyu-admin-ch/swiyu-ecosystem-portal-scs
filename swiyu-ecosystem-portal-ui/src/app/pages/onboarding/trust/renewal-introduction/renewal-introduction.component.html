@@ -1,0 +1,141 @@
+<div class="introduction">
+  <div class="introduction-top">
+    <h1>{{ "eportal_renewal_pageTitle" | translate }}</h1>
+    <p class="introduction-info">{{ "eportal_renewal_infoText" | translate }}</p>
+    <div class="renewal-data-current">
+      <h2>{{ "eportal_renewal_dataCurrentTitle" | translate }}</h2>
+      <div data-cy="data-summary">
+        <div class="renewal-fields">
+          <div class="list-style-item">
+            <mat-form-field data-cy="organizationName">
+              <mat-label id="organizationNameLabel">
+                {{ "app_site_onboarding_trust_organisation-information_organisation-name" | translate }}
+              </mat-label>
+              <input
+                id="organizationName"
+                [attr.aria-labelledby]="'organizationNameLabel'"
+                [value]="partner()?.entityName?.['default'] ?? ''"
+                [placeholder]="'app_site_onboarding_trust_organisation-information_organisation-name' | translate"
+                matInput
+                readonly
+              />
+            </mat-form-field>
+          </div>
+          <div class="list-style-item">
+            <mat-form-field data-cy="swissUid">
+              <mat-label id="swissUidLabel">
+                {{ "app_site_onboarding_trust_organisation-information_swiss-uid" | translate }}
+              </mat-label>
+              <input
+                id="swissUid"
+                [attr.aria-labelledby]="'swissUidLabel'"
+                [value]="partner()?.uid ?? ''"
+                [placeholder]="'app_site_onboarding_trust_organisation-information_swiss-uid' | translate"
+                matInput
+                readonly
+              />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="sw-radio-card-container" obSelectableGroup>
+          <app-radio-card
+            [dataCy]="'renewalOption1'"
+            [value]="RenewalOption.Renewal"
+            (cardSelect)="onCardSelect(RenewalOption.Renewal)"
+            [checked]="selectedRenewalOption() === RenewalOption.Renewal"
+          >
+            <mat-icon cardIcon svgIcon="checkmark" />
+            <h6>{{ "eportal_renewal_card_uptodate_title" | translate }}</h6>
+            <p cardSubtitle>{{ "eportal_renewal_card_uptodate_copy" | translate }}</p>
+            <span cardPrice class="card-price">{{ "eportal_renewal_card_price_noCost" | translate }}</span>
+          </app-radio-card>
+          <app-radio-card
+            [dataCy]="'renewalOption2'"
+            [value]="RenewalOption.ProfileChangeMandatory"
+            (cardSelect)="onCardSelect(RenewalOption.ProfileChangeMandatory)"
+            [checked]="selectedRenewalOption() === RenewalOption.ProfileChangeMandatory"
+          >
+            <mat-icon cardIcon svgIcon="pencil" />
+            <h6>{{ "eportal_renewal_card_updating_title" | translate }}</h6>
+            <p cardSubtitle>{{ "eportal_renewal_card_updating_copy" | translate }}</p>
+            <span cardPrice class="card-price">{{ "eportal_renewal_card_price_costly" | translate }}</span>
+          </app-radio-card>
+        </div>
+      </div>
+      @if (visibleProcessSection() === RenewalOption.Renewal) {
+        <app-process [title]="'eportal_renewal_overview_title' | translate" [dataCy]="'up-to-data-process-detail'">
+          <app-process-step
+            [step]="1"
+            [title]="'eportal_renewal_overview_cardTitle_updateData' | translate"
+            [subtitle]="'eportal_renewal_overview_cardText_updateData' | translate"
+          />
+          <app-process-step
+            [step]="2"
+            [title]="'eportal_renewal_overview_cardTitle_submitProof' | translate"
+            [subtitle]="'eportal_renewal_overview_cardText_submitProof' | translate"
+          />
+          <app-process-step
+            [step]="3"
+            [title]="'eportal_renewal_overview_cardTitle_autoVerification' | translate"
+            [subtitle]="'eportal_renewal_overview_cardText_autoVerification' | translate"
+          />
+        </app-process>
+      }
+      @if (visibleProcessSection() === RenewalOption.ProfileChangeMandatory) {
+        <app-process [title]="'eportal_renewal_overview_title' | translate" [dataCy]="'renewal-process-detail'">
+          <app-process-step
+            [step]="1"
+            [title]="'eportal_renewal_overview_cardTitle_updateData' | translate"
+            [subtitle]="'eportal_renewal_overview_cardText_updateData' | translate"
+          />
+          <app-process-step
+            [step]="2"
+            [title]="'eportal_renewal_overview_cardTitle_provideDocuments' | translate"
+            [subtitle]="'eportal_renewal_overview_cardText_provideDocuments' | translate"
+          />
+          <app-process-step
+            [step]="3"
+            [title]="'eportal_renewal_overview_cardTitle_submitProof' | translate"
+            [subtitle]="'eportal_renewal_overview_cardText_submitProof' | translate"
+          />
+          <app-process-step
+            [step]="4"
+            [title]="'eportal_renewal_overview_cardTitle_payment' | translate"
+            [subtitle]="'eportal_renewal_overview_cardText_payment' | translate"
+          />
+          <app-process-step
+            [step]="5"
+            [title]="'eportal_renewal_overview_cardTitle_waitReview' | translate"
+            [subtitle]="'eportal_renewal_overview_cardText_waitReview' | translate"
+          />
+        </app-process>
+      }
+      @if (renewalError()) {
+        <div class="sw-form-error" role="alert">
+          <mat-icon svgIcon="exclamation_circle" color="warn" />
+          <span class="caption">{{ "eportal_renewal_card_error" | translate }}</span>
+        </div>
+      }
+      <div class="introduction-actions">
+        <button
+          (click)="startRenewalOrProfileChangeMandatory()"
+          data-cy="btnStartRenewalSubmission"
+          mat-button
+          obButton="primary"
+        >
+          {{
+            (visibleProcessSection() ? "eportal_renewal_btn_startNow" : "eportal_global_btnPrim_continue") | translate
+          }}
+        </button>
+        <a
+          [routerLink]="AppRoutes.businessPartnerOverviewV2()"
+          data-cy="btnBackToOverview"
+          mat-button
+          obButton="secondary"
+          >{{ "eportal_global_btnPrim_startLater" | translate }}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

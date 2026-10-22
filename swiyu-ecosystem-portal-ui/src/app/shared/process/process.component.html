@@ -1,4 +1,4 @@
-<section class="explainer-container" [attr.aria-labelledby]="titleId">
+<section class="explainer-container" [attr.aria-labelledby]="titleId" [attr.data-cy]="dataCy()">
   <div class="title-container">
     <h3 [id]="titleId">{{ title() }}</h3>
     <ng-content select="[processHeader]"></ng-content>

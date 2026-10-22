@@ -5,7 +5,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {MatIconTestingModule} from '@angular/material/icon/testing';
 import {TranslateModule} from '@ngx-translate/core';
 import {ObliqueTestingModule} from '@oblique/oblique';
-import {of, throwError} from 'rxjs';
+import {of, Subject, throwError} from 'rxjs';
 import {
   BusinessPartner,
   PagedModelTrustOnboardingSubmissionDocumentListItem,
@@ -55,6 +55,7 @@ describe('OnboardingStepDocumentsComponent', () => {
     isFieldEditable: jest.Mock;
     isNotificationVisible: jest.Mock;
     fieldState: jest.Mock;
+    submissionUpdated$: Subject<void>;
     [key: string]: unknown;
   };
 
@@ -74,6 +75,8 @@ describe('OnboardingStepDocumentsComponent', () => {
       isFieldEditable: jest.fn().mockReturnValue(true),
       isNotificationVisible: jest.fn().mockReturnValue(true),
       fieldState: jest.fn().mockReturnValue({visible: true, editable: true}),
+      // The step reloads its documents whenever another step announces a submission update.
+      submissionUpdated$: new Subject<void>(),
       submissionRequest: {},
       saveAndNext: jest.fn(),
       navigateToPreviousStep: jest.fn(),
@@ -114,7 +117,7 @@ describe('OnboardingStepDocumentsComponent', () => {
 
       fixture.detectChanges();
 
-      expect(component.showAdditionalDocuments()).toBe(false);
+      expect(component.isAdditionalDocumentsSectionVisible()).toBe(false);
       expect(component.form.controls.otherDocuments.hasError('required')).toBe(false);
     });
 
@@ -350,6 +353,29 @@ describe('OnboardingStepDocumentsComponent', () => {
     }));
   });
 
+  describe('submission updates', () => {
+    it('should reload the documents when another step announces a submission update', fakeAsync(() => {
+      (documentsApi.listAllDocumentsForTrustOnboarding as jest.Mock).mockReturnValue(of({content: []}));
+      fixture.detectChanges();
+      tick();
+      (documentsApi.listAllDocumentsForTrustOnboarding as jest.Mock).mockClear();
+      (documentsApi.listAllDocumentsForTrustOnboarding as jest.Mock).mockReturnValue(of(MOCK_DOCUMENTS));
+
+      wizardServiceMock.submissionUpdated$.next();
+      tick();
+
+      expect(documentsApi.listAllDocumentsForTrustOnboarding).toHaveBeenCalledTimes(1);
+      expect(component.form.controls.uploadedFiles.value).toEqual([
+        {id: 'doc-id-1', name: 'doc1.pdf', canBeDeleted: true},
+        {id: 'doc-id-2', name: 'doc2.pdf', canBeDeleted: true}
+      ]);
+
+      // The backend can still change the documents shortly after the update, hence the delayed reload.
+      tick(1000);
+      expect(documentsApi.listAllDocumentsForTrustOnboarding).toHaveBeenCalledTimes(2);
+    }));
+  });
+
   describe('form validation', () => {
     it('should be invalid if uploadedFiles is empty', () => {
       component.form.controls.uploadedFiles.setValue([]);
@@ -426,7 +452,7 @@ describe('OnboardingStepDocumentsComponent', () => {
       fixture.detectChanges();
       tick();
 
-      expect(component.showAdditionalDocuments()).toBe(true);
+      expect(component.isAdditionalDocumentsSectionVisible()).toBe(true);
       // declaration of intent present but no additional document yet
       expect(component.form.invalid).toBe(true);
 
@@ -444,7 +470,7 @@ describe('OnboardingStepDocumentsComponent', () => {
       fixture.detectChanges();
       tick();
 
-      expect(component.showAdditionalDocuments()).toBe(false);
+      expect(component.isAdditionalDocumentsSectionVisible()).toBe(false);
       expect(component.form.valid).toBe(true);
     }));
 
@@ -459,7 +485,7 @@ describe('OnboardingStepDocumentsComponent', () => {
       fixture.detectChanges();
       tick();
 
-      expect(component.showAdditionalDocuments()).toBe(false);
+      expect(component.isAdditionalDocumentsSectionVisible()).toBe(false);
       expect(component.form.valid).toBe(true);
     }));
 
@@ -476,7 +502,7 @@ describe('OnboardingStepDocumentsComponent', () => {
       fixture.detectChanges();
       tick();
 
-      expect(component.showAdditionalDocuments()).toBe(true);
+      expect(component.isAdditionalDocumentsSectionVisible()).toBe(true);
       // declaration of intent present but no additional document yet
       expect(component.form.invalid).toBe(true);
 

@@ -7,10 +7,11 @@ import {TranslateModule} from '@ngx-translate/core';
 import {ObButtonModule} from '@oblique/oblique';
 import {
   BusinessPartner,
-  BusinessPartnerTrustStatus,
   IdentifierResponse,
   IdentifierStatus,
-  TrustOnboardingSubmission
+  TrustOnboardingSubmission,
+  VerificationProgress,
+  VerificationProgressStatus
 } from '../../../api/generated';
 import {AppRoutes} from '../../../app.routes';
 import {AppConfigService} from '../../../core/appconfig/app-config.service';
@@ -29,54 +30,61 @@ export class BusinessPartnerDetailActionsComponent {
   businessPartner = input<BusinessPartner | undefined>();
   identifiers = input<IdentifierResponse[]>([]);
   trustOnboardingSubmission = input<TrustOnboardingSubmission | undefined>();
+  verificationProgress = input<VerificationProgress | undefined>();
   businessPartnerId = input.required<string>();
   remainingDidSlots = input<number>(0);
 
   showCreateIdentifier = computed(() => this.remainingDidSlots() > 0);
 
   showSensitiveDataAccess = computed(
-    () =>
-      this.appConfigService.featureToggles.EIDARTFE_1822_PROTECTED_VERIFICATION &&
-      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.Verified
+    () => this.appConfigService.featureToggles.EIDARTFE_1822_PROTECTED_VERIFICATION && this.isVerified()
   );
 
   showEnterIdentifiers = computed(
-    () =>
-      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.Verified &&
-      this.identifiers().some(id => id.status === IdentifierStatus.NotInitialized)
+    () => this.isVerified() && this.identifiers().some(id => id.status === IdentifierStatus.NotInitialized)
   );
 
   showSupplementRequest = computed(
     () =>
-      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.InformationRequested ||
+      this.verificationProgress()?.status === VerificationProgressStatus.VerificationInformationRequestedRequired ||
+      this.verificationProgress()?.status === VerificationProgressStatus.VerificationInformationRequestedStarted ||
       this.trustOnboardingSubmission()?.status === TrustOnboardingSubmission.StatusEnum.InformationRequested
   );
 
-  showRenewVerification = computed(
-    () => this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.ReVerificationStarted
-    // here the future status IdentityVerificationProgressStatusDto.ReVerificationRequired from the new CBS endpoint
-    // /{businessPartnerId}/verification-progress needs to be checked to start the re-verification process
-    // EID-6624
+  showStartRenewVerification = computed(
+    () =>
+      this.verificationProgress()?.status === VerificationProgressStatus.ReVerificationRequired ||
+      this.verificationProgress()?.status === VerificationProgressStatus.ReVerificationRejected
+  );
+
+  showContinueRenewVerification = computed(
+    () => this.verificationProgress()?.status === VerificationProgressStatus.ReVerificationStarted
   );
 
   showVerifyProfile = computed(
     () =>
-      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.NotVerified ||
-      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.VerificationStarted ||
-      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.VerificationInProgress ||
-      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.ReVerificationInProgress
+      this.verificationProgress()?.status === VerificationProgressStatus.VerificationNotStarted ||
+      this.verificationProgress()?.status === VerificationProgressStatus.VerificationStarted ||
+      this.verificationProgress()?.status === VerificationProgressStatus.VerificationInProgress ||
+      this.verificationProgress()?.status === VerificationProgressStatus.ReVerificationInProgress
   );
 
   showContinueVerification = computed(() => {
-    return this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.VerificationStarted;
+    return this.verificationProgress()?.status === VerificationProgressStatus.VerificationStarted;
   });
 
   showVerificationInProgress = computed(() => {
     return (
-      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.VerificationInProgress ||
-      this.businessPartner()?.trustVerificationStatus === BusinessPartnerTrustStatus.ReVerificationInProgress
+      this.verificationProgress()?.status === VerificationProgressStatus.VerificationInProgress ||
+      this.verificationProgress()?.status === VerificationProgressStatus.ReVerificationInProgress
     );
   });
+
+  private readonly isVerified = computed(
+    () =>
+      this.verificationProgress()?.status === VerificationProgressStatus.VerificationSucceeded ||
+      this.verificationProgress()?.status === VerificationProgressStatus.ReVerificationSucceeded
+  );
 
   trustOnboardingStepActionRoute = computed(() => {
     const submission = this.trustOnboardingSubmission();
@@ -84,6 +92,15 @@ export class BusinessPartnerDetailActionsComponent {
       return AppRoutes.trustOnboardingIntroduction(this.businessPartnerId());
     }
     return getLastValidTrustStepRoute(submission);
+  });
+
+  trustOnboardingContinueRenewalActionRoute = computed(() => {
+    const submission = this.trustOnboardingSubmission();
+    if (!submission) {
+      // should not happen, just a fallback
+      return AppRoutes.trustOnboardingIntroductionRenewal(this.businessPartnerId());
+    }
+    return AppRoutes.trustOnboardingWizard(this.businessPartnerId(), submission?.id);
   });
 
   protected readonly AppRoutes = AppRoutes;

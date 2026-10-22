@@ -4,6 +4,7 @@ import ch.admin.bj.swiyu.app.common.validation.ValidLocalizedMap;
 import ch.admin.bj.swiyu.client.business.internal.model.BusinessPartnerType;
 import ch.admin.bj.swiyu.client.business.internal.model.Signatory;
 import ch.admin.bj.swiyu.client.business.internal.model.SigningRule;
+import ch.admin.bj.swiyu.client.business.internal.model.TrustOnboardingSubmissionRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Map;
@@ -21,5 +22,6 @@ public record TrustOnboardingSubmissionRequestDto(
     Map<String, String> registryIds,
     Boolean isRegisteredInCommercialRegister,
     List<String> dids,
-    BusinessPartnerType requestedPartnerType
+    BusinessPartnerType requestedPartnerType,
+    TrustOnboardingSubmissionRequest.SubmissionTypeEnum submissionType
 ) {}

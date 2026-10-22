@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, inject, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
@@ -10,8 +10,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {Router, RouterModule} from '@angular/router';
 import {TranslateModule} from '@ngx-translate/core';
 import {ObButtonModule} from '@oblique/oblique';
-import {merge, startWith, switchMap, tap} from 'rxjs';
-import {BusinessPartnerApi, BusinessPartnerListItem} from '../../api/generated';
+import {catchError, forkJoin, merge, Observable, of, startWith, switchMap, tap} from 'rxjs';
+import {BusinessPartnerApi, BusinessPartnerListItem, VerificationProgress} from '../../api/generated';
 import {AppRoutes} from '../../app.routes';
 import {AppConfigService} from '../../core/appconfig/app-config.service';
 import {BusinessPartnerTrustChipComponent} from '../../shared/business-partner-trust-chip/business-partner-trust-chip.component';
@@ -51,6 +51,7 @@ export class AdministrationOverviewComponent implements AfterViewInit {
   dataSource = new MatTableDataSource<BusinessPartnerListItem>([]);
   protected totalElements = 0;
   protected readonly AppRoutes = AppRoutes;
+  protected readonly progressByPartner = signal<Record<string, VerificationProgress | undefined>>({});
   private readonly businessPartnerApi = inject(BusinessPartnerApi);
 
   ngAfterViewInit(): void {
@@ -104,6 +105,33 @@ export class AdministrationOverviewComponent implements AfterViewInit {
       tap(result => {
         this.dataSource.data = result.content || [];
         this.totalElements = result.page?.totalElements ?? 0;
+      }),
+      switchMap(result => this.fetchVerificationProgress(result.content || []))
+    );
+  }
+
+  // The verification progress is fetched asynchronously per row so that the table
+  // fills up quickly while the (potentially slow) status calls complete in the background.
+  private fetchVerificationProgress(
+    partners: BusinessPartnerListItem[]
+  ): Observable<(VerificationProgress | undefined)[]> {
+    if (partners.length === 0) {
+      this.progressByPartner.set({});
+      return of([]);
+    }
+    return forkJoin(
+      partners.map(partner =>
+        this.businessPartnerApi
+          .getVerificationProgress({businessPartnerId: partner.id})
+          .pipe(catchError(() => of(undefined)))
+      )
+    ).pipe(
+      tap(progressList => {
+        const map: Record<string, VerificationProgress | undefined> = {};
+        partners.forEach((partner, index) => {
+          map[partner.id] = progressList[index];
+        });
+        this.progressByPartner.set(map);
       })
     );
   }

@@ -5,12 +5,13 @@ import {
   BusinessPartnerApi,
   TrustOnboardingApi,
   TrustOnboardingSubmission,
-  TrustOnboardingSubmissionRequest
+  TrustOnboardingSubmissionRequest,
+  TrustOnboardingSubmissionType
 } from '../../../../api/generated';
 import {AppRoutes} from '../../../../app.routes';
 import {AppConfigService} from '../../../../core/appconfig/app-config.service';
 import {AbstractOnboardingStepComponent} from '../steps/abstract-onboarding-step-component';
-import {TrustOnboardingFlow, TrustStepId} from './trust-onboarding-flow.config';
+import {TrustStepId} from './trust-onboarding-flow.config';
 import {TrustOnboardingWizardService} from './trust-onboarding-wizard.service';
 
 describe('TrustOnboardingWizardService', () => {
@@ -27,12 +28,22 @@ describe('TrustOnboardingWizardService', () => {
     entityEmail: 'contact@test.com'
   };
 
-  const updatedSubmission = {
+  const submissionOfTypeRegistration = {
     id: 'sub-123',
     status: 'UNSUBMITTED',
     partnerId: 'partner-001',
     registryIds: {},
-    proofOfPossessionList: []
+    proofOfPossessionList: [],
+    type: TrustOnboardingSubmissionType.Registration
+  } as unknown as TrustOnboardingSubmission;
+
+  const submissionOfTypeRenewal = {
+    id: 'sub-123',
+    status: 'UNSUBMITTED',
+    partnerId: 'partner-001',
+    registryIds: {},
+    proofOfPossessionList: [],
+    type: TrustOnboardingSubmissionType.Renewal
   } as unknown as TrustOnboardingSubmission;
 
   const makeStep = (valid: boolean): AbstractOnboardingStepComponent =>
@@ -85,21 +96,29 @@ describe('TrustOnboardingWizardService', () => {
 
   const flushMicrotasks = (): Promise<void> => new Promise(resolve => setTimeout(resolve, 0));
 
+  const initWithSubmission = (submission: TrustOnboardingSubmission = submissionOfTypeRegistration): void => {
+    getSubmissionMock.mockReturnValue(of(submission));
+    service.init('partner-001', 'sub-123');
+  };
+
   describe('flow configuration', () => {
-    it('defaults to the registration flow', () => {
-      expect(service.flow()).toBe(TrustOnboardingFlow.Registration);
-      expect(service.config().flow).toBe(TrustOnboardingFlow.Registration);
+    it('does not expose a flow before the submission is loaded', () => {
+      expect(service.config()).toBeUndefined();
+      expect(service.visibleSteps()).toEqual([]);
+      expect(service.isStepVisible('dids')).toBe(false);
+      expect(service.fieldState('uid')).toEqual({visible: false, editable: false});
+      expect(service.isNotificationVisible('profileAutoApprovalWarning')).toBe(false);
     });
 
     it('takes over the flow passed to init', () => {
-      getSubmissionMock.mockReturnValue(of(updatedSubmission));
+      initWithSubmission(submissionOfTypeRenewal);
 
-      service.init('partner-001', 'sub-123', TrustOnboardingFlow.Renewal);
-
-      expect(service.flow()).toBe(TrustOnboardingFlow.Renewal);
+      expect(service.config()?.flow).toBe(TrustOnboardingSubmissionType.Renewal);
     });
 
     it('exposes the visible steps of the active flow', () => {
+      initWithSubmission();
+
       expect(service.visibleSteps().map(step => step.id)).toEqual([
         'profile',
         'dids',
@@ -110,16 +129,22 @@ describe('TrustOnboardingWizardService', () => {
     });
 
     it('labels the approval step for manual approval by default', () => {
+      initWithSubmission();
+
       expect(service.visibleSteps()[4].labelKey).toBe('app_site_onboarding_trust_final_step');
     });
 
     it('labels the approval step for automatic approval when the functionality is enabled', () => {
       appConfigServiceMock.isFunctionalityAutomaticApprovalEnabled = true;
 
+      initWithSubmission();
+
       expect(service.visibleSteps()[4].labelKey).toBe('eportal_site_onboarding_trust_final_automatic_step');
     });
 
     it('reports step, field and notification configuration', () => {
+      initWithSubmission();
+
       expect(service.isStepVisible('dids')).toBe(true);
       expect(service.fieldState('uid')).toEqual({visible: true, editable: true});
       expect(service.isFieldVisible('uid')).toBe(true);
@@ -140,7 +165,7 @@ describe('TrustOnboardingWizardService', () => {
       stubVisibleSteps(['profile', 'formal-proof', 'approval']);
       service.currentStepIndex.set(0);
       service.setActiveStep(makeStep(true));
-      updateSubmissionMock.mockReturnValue(of(updatedSubmission));
+      updateSubmissionMock.mockReturnValue(of(submissionOfTypeRegistration));
 
       service.saveAndNext();
       await flushMicrotasks();
@@ -178,7 +203,7 @@ describe('TrustOnboardingWizardService', () => {
   describe('onSaveAndContinueLater', () => {
     it('saves submission and navigates to overview when form is valid', () => {
       service.setActiveStep(makeStep(true));
-      updateSubmissionMock.mockReturnValue(of(updatedSubmission));
+      updateSubmissionMock.mockReturnValue(of(submissionOfTypeRegistration));
 
       service.onSaveAndContinueLater();
 
@@ -186,7 +211,7 @@ describe('TrustOnboardingWizardService', () => {
         id: 'sub-123',
         trustOnboardingSubmissionRequest: submissionRequest
       });
-      expect(service.submission()).toEqual(updatedSubmission);
+      expect(service.submission()).toEqual(submissionOfTypeRegistration);
       expect(routerNavigateMock).toHaveBeenCalledWith(AppRoutes.businessPartnerOverviewV2());
     });
 

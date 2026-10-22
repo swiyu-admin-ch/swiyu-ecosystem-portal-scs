@@ -4,11 +4,19 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSidenavModule} from '@angular/material/sidenav';
-import {RouterModule} from '@angular/router';
+import {Router, RouterModule} from '@angular/router';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {ObButtonModule, ObNotificationService, ObSpinnerComponent} from '@oblique/oblique';
 import {finalize} from 'rxjs';
-import {BusinessPartner, BusinessPartnerApi, BusinessPartnerIdentityStatus, Language} from '../../api/generated';
+import {
+  BusinessPartner,
+  BusinessPartnerApi,
+  BusinessPartnerIdentityStatus,
+  Language,
+  TrustOnboardingApi,
+  TrustOnboardingSubmission,
+  TrustOnboardingSubmissionRequest
+} from '../../api/generated';
 import {AppRoutes} from '../../app.routes';
 import {DetailSectionComponent} from '../../shared/detail-section/detail-section.component';
 import {FormField} from '../../shared/detail-section/form-field.model';
@@ -152,7 +160,9 @@ export class BusinessPartnerProfileComponent {
   ];
 
   protected readonly AppRoutes = AppRoutes;
+  private readonly router = inject(Router);
   private readonly businessPartnerApi = inject(BusinessPartnerApi);
+  private readonly trustOnboardingApi = inject(TrustOnboardingApi);
   private readonly fb = inject(FormBuilder);
   private readonly translateService = inject(TranslateService);
   private readonly localizer = inject(LocalizeService);
@@ -328,9 +338,24 @@ export class BusinessPartnerProfileComponent {
     this.exitEdit(section);
   }
 
-  /** Stub for EID-6621: profile-change flow for ACTIVE partners */
-  onStartUpdate() {
-    // The full re-verification flow will be implemented in EID-6621
+  startProfileChangeVolunatary() {
+    if (!this.businessPartnerId()) {
+      throw new Error("Can't start profile update since Partner ID is missing");
+    }
+    this.trustOnboardingApi
+      .createTrustOnboardingSubmission({
+        trustOnboardingSubmissionRequest: {
+          partnerId: this.businessPartnerId(),
+          submissionType: TrustOnboardingSubmissionRequest.SubmissionTypeEnum.ProfileChangeVoluntary
+        }
+      })
+      .subscribe({
+        next: (submission: TrustOnboardingSubmission) => {
+          void this.router.navigate(
+            AppRoutes.trustOnboardingWizardStepProfile(this.businessPartnerId(), submission.id)
+          );
+        }
+      });
   }
 
   isEditing(section: string): boolean {

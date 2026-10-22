@@ -65,9 +65,13 @@
     </a>
   }
 
-  <!-- renew verification — shown when re-verification is required -->
-  @if (showRenewVerification()) {
-    <a class="ob-link-card" tabindex="0">
+  <!-- start renew verification — shown when re-verification is required -->
+  @if (showStartRenewVerification()) {
+    <a
+      [routerLink]="AppRoutes.trustOnboardingIntroductionRenewal(businessPartnerId())"
+      class="ob-link-card"
+      tabindex="0"
+    >
       <mat-card>
         <mat-card-header>
           <mat-card-title>
@@ -80,6 +84,28 @@
         <mat-card-actions>
           <button mat-button obButton="primary">
             {{ "eportal_adminOverview_action_renewVerification_btn" | translate }}
+            <mat-icon iconPositionEnd svgIcon="chevron_right" />
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </a>
+  }
+
+  <!-- continue an already started renew verification — shown when re-verification is required -->
+  @if (showContinueRenewVerification()) {
+    <a [routerLink]="trustOnboardingContinueRenewalActionRoute()" class="ob-link-card" tabindex="0">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <h5>{{ "eportal_adminOverview_action_renewVerification_title" | translate }}</h5>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="profile-action-content">{{ "eportal_adminOverview_action_renewVerification_text" | translate }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button obButton="primary">
+            {{ "eportal_adminOverview_card_profileupdate_btn" | translate }}
             <mat-icon iconPositionEnd svgIcon="chevron_right" />
           </button>
         </mat-card-actions>

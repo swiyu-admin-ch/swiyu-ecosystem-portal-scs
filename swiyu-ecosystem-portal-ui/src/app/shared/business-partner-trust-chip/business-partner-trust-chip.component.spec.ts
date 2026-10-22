@@ -2,7 +2,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {MatIconTestingModule} from '@angular/material/icon/testing';
 import {provideTranslateService} from '@ngx-translate/core';
-import {BusinessPartnerTrustStatus} from '../../api/generated';
+import {VerificationProgressStatus} from '../../api/generated';
 import {BusinessPartnerTrustChipComponent} from './business-partner-trust-chip.component';
 
 describe('StatusChipComponent', () => {
@@ -17,10 +17,6 @@ describe('StatusChipComponent', () => {
 
     fixture = TestBed.createComponent(BusinessPartnerTrustChipComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('businessPartner', {
-      maxDateForTrustVerificationStatus: 1,
-      trustVerificationStatus: BusinessPartnerTrustStatus.Verified
-    });
     fixture.detectChanges();
   });
 
@@ -28,44 +24,36 @@ describe('StatusChipComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should expose daysRemainingForVerification from the business partner', () => {
-    fixture.componentRef.setInput('businessPartner', {
-      maxDateForTrustVerificationStatus: 1,
-      trustVerificationStatus: BusinessPartnerTrustStatus.InformationRequested,
-      daysRemainingForVerification: 29
-    });
+  it('should be loading while no progress is provided', () => {
+    fixture.componentRef.setInput('progress', undefined);
     fixture.detectChanges();
-    expect(component.daysRemainingForVerification()).toBe(29);
+    expect(component.isLoading()).toBe(true);
+    expect(fixture.nativeElement.textContent).toContain('verification_progress_loading');
   });
 
-  it('should expose null daysRemainingForVerification when not provided', () => {
-    fixture.componentRef.setInput('businessPartner', {
-      maxDateForTrustVerificationStatus: 1,
-      trustVerificationStatus: BusinessPartnerTrustStatus.InformationRequested
+  it('should not be loading once progress is provided', () => {
+    fixture.componentRef.setInput('progress', {status: VerificationProgressStatus.VerificationSucceeded});
+    fixture.detectChanges();
+    expect(component.isLoading()).toBe(false);
+    expect(fixture.nativeElement.textContent).toContain('VerificationSucceeded');
+  });
+
+  it('should expose daysRemainingForVerification from maxDateForStatus', () => {
+    const inTenDays = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString();
+    fixture.componentRef.setInput('progress', {
+      status: VerificationProgressStatus.VerificationStarted,
+      maxDateForStatus: inTenDays
+    });
+    fixture.detectChanges();
+    expect(component.daysRemainingForVerification()).toBe(10);
+  });
+
+  it('should expose null daysRemainingForVerification when no deadline is provided', () => {
+    fixture.componentRef.setInput('progress', {
+      status: VerificationProgressStatus.VerificationStarted
     });
     fixture.detectChanges();
     expect(component.daysRemainingForVerification()).toBeNull();
-  });
-
-  it('should render the noDays fallback (not NaN) for VerificationStarted without a deadline', () => {
-    fixture.componentRef.setInput('businessPartner', {
-      maxDateForTrustVerificationStatus: 1,
-      trustVerificationStatus: BusinessPartnerTrustStatus.VerificationStarted
-    });
-    fixture.detectChanges();
-    const text = fixture.nativeElement.textContent;
-    expect(text).not.toContain('NaN');
-    expect(text).toContain('VerificationStarted_noDays');
-  });
-
-  it('should render the noDays fallback (not NaN) for InformationRequested without a deadline', () => {
-    fixture.componentRef.setInput('businessPartner', {
-      maxDateForTrustVerificationStatus: 1,
-      trustVerificationStatus: BusinessPartnerTrustStatus.InformationRequested
-    });
-    fixture.detectChanges();
-    const text = fixture.nativeElement.textContent;
-    expect(text).not.toContain('NaN');
-    expect(text).toContain('InformationRequested_noDays');
+    expect(fixture.nativeElement.textContent).not.toContain('NaN');
   });
 });

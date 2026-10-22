@@ -38,5 +38,8 @@ export * from './trust-onboarding-submission-document';
 export * from './trust-onboarding-submission-document-list-item';
 export * from './trust-onboarding-submission-list-item';
 export * from './trust-onboarding-submission-request';
+export * from './trust-onboarding-submission-type';
 export * from './trust-onboarding-submit-request';
 export * from './user-profile';
+export * from './verification-progress';
+export * from './verification-progress-status';

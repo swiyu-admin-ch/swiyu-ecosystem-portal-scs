@@ -1,4 +1,4 @@
-import {AbstractControl} from '@angular/forms';
+import {AbstractControl, FormArray} from '@angular/forms';
 import {TrustFieldConfig} from './trust-onboarding-flow.config';
 
 /**
@@ -8,6 +8,10 @@ import {TrustFieldConfig} from './trust-onboarding-flow.config';
  * form's validity, so a flow that hides a required field does not end up with an unsubmittable form.
  */
 export function applyFieldState(control: AbstractControl, state: TrustFieldConfig): void {
+  if (control instanceof FormArray) {
+    control.controls.forEach(child => applyFieldState(child, state));
+  }
+
   if (state.visible && state.editable) {
     control.enable({emitEvent: false});
   } else {

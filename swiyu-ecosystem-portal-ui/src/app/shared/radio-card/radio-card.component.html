@@ -18,6 +18,8 @@
         <p class="h6">
           <ng-content></ng-content>
         </p>
+        <ng-content select="[cardSubtitle]"> </ng-content>
+        <ng-content select="[cardPrice]"> </ng-content>
       </div>
     </div>
   </mat-card-content>

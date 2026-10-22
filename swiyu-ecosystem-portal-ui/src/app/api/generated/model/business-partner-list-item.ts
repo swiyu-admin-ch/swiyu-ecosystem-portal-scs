@@ -15,7 +15,7 @@ export interface BusinessPartnerListItem {
    */
   id: string;
   /**
-   * Localized entity name map with required default key and BCP-47 locale keys
+   * Localized entity name, keyed by \"default\" and BCP 47 locale tags
    */
   entityName: {[key: string]: string};
   /**

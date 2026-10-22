@@ -1,7 +1,7 @@
-import {Component, effect, inject, OnInit} from '@angular/core';
-import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Component, effect, inject, OnInit, signal} from '@angular/core';
+import {AbstractControl, FormBuilder, FormControl, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
-import {MatCheckbox, MatCheckboxChange} from '@angular/material/checkbox';
+import {MatCheckbox} from '@angular/material/checkbox';
 import {MatIcon} from '@angular/material/icon';
 import {
   MatCell,
@@ -59,32 +59,37 @@ export class OnboardingStepDidsComponent extends AbstractOnboardingStepComponent
   private readonly identifierApi = inject(IdentifierApi);
   protected readonly wizardService = inject(TrustOnboardingWizardService);
 
-  availableDids: IdentifierResponse[] = [];
-  readonly title = 'DIDs';
-  readonly id = 'dids';
-
+  availableDids = signal<IdentifierResponse[]>([]);
   displayedColumns: string[] = ['checked', 'did', 'description', 'status', 'actions'];
 
   readonly form = this.fb.group({
-    dids: this.fb.control<string[]>([], [Validators.required, Validators.minLength(1)])
+    didCheckboxes: this.fb.array<FormControl<boolean>>([], this.requireAtLeastOneSelected)
   });
 
   constructor() {
     super();
-    this.form.valueChanges.subscribe(value => {
-      this.wizardService.updateDidSelection(value?.dids ?? []);
+    this.form.controls.didCheckboxes.valueChanges.subscribe(() => {
+      this.wizardService.updateDidSelection(this.calculateSelectedDids());
     });
 
     effect(() => {
-      const dids = this.wizardService.submission()?.proofOfPossessionList.map(pop => pop.did ?? '');
-      if (dids) {
-        this.form.controls.dids.setValue(dids);
-      }
-    });
+      const available = this.availableDids();
+      const fieldState = this.wizardService.fieldState('didSelection');
+      const selected = new Set(
+        this.wizardService
+          .submission()
+          ?.proofOfPossessionList.map(pop => pop.did ?? '')
+          .filter(Boolean) ?? []
+      );
 
-    // Apply the active flow's field configuration to the backing control.
-    effect(() => {
-      applyFieldState(this.form.controls.dids, this.wizardService.fieldState('didSelection'));
+      this.form.controls.didCheckboxes.clear({emitEvent: false});
+      available.forEach(item => {
+        const did = item.did ?? '';
+        this.form.controls.didCheckboxes.push(this.fb.nonNullable.control(selected.has(did)), {emitEvent: false});
+      });
+      this.form.controls.didCheckboxes.updateValueAndValidity({emitEvent: false});
+      applyFieldState(this.form, fieldState);
+      applyFieldState(this.form.controls.didCheckboxes, fieldState);
     });
   }
 
@@ -99,38 +104,45 @@ export class OnboardingStepDidsComponent extends AbstractOnboardingStepComponent
       .subscribe({
         next: (result: PagedModelIdentifierResponse) => {
           if (result.content) {
-            this.availableDids = result.content.filter(value => {
-              return value.did !== undefined;
-            });
+            this.availableDids.set(result.content.filter(value => value.did !== undefined));
           }
         }
       });
   }
 
   override async validate(): Promise<boolean> {
-    const isValid = this.form.valid;
-
-    if (!isValid) {
+    const valid = this.isValid();
+    if (!valid) {
       this.form.markAllAsTouched();
     }
-
-    return isValid;
+    return valid;
   }
 
   override isValid(): boolean {
-    return this.form.valid;
+    return this.form.disabled ? this.hasAtLeastOneSelectedDid() : this.form.valid;
   }
 
-  toggleDid(event: MatCheckboxChange): void {
-    const checkbox = event.source;
-    const did = checkbox.value;
-    const currentDids = this.form.controls.dids.value || [];
-    if (checkbox.checked) {
-      const newDids = [...currentDids, did];
-      this.form.controls.dids.setValue(newDids);
-    } else {
-      this.form.controls.dids.setValue(currentDids.filter(d => d !== did));
-    }
+  /**
+   * The cell context of `matCellDef` does not expose the row index, therefore the checkbox control is
+   * resolved through the position of the identifier within the available DIDs.
+   */
+  protected checkboxControlFor(identifier: IdentifierResponse): FormControl<boolean> {
+    return this.form.controls.didCheckboxes.at(this.availableDids().indexOf(identifier));
+  }
+
+  private calculateSelectedDids(): string[] {
+    return this.availableDids()
+      .map((item, index) => (this.form.controls.didCheckboxes.at(index)?.value ? (item.did ?? '') : null))
+      .filter((did): did is string => !!did);
+  }
+
+  private hasAtLeastOneSelectedDid(): boolean {
+    return this.calculateSelectedDids().length > 0;
+  }
+
+  private requireAtLeastOneSelected(control: AbstractControl): {required: true} | null {
+    const values = control.value as boolean[] | undefined;
+    return Array.isArray(values) && values.some(Boolean) ? null : {required: true};
   }
 
   protected readonly AppRoutes = AppRoutes;
