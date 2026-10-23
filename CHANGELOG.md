@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.1.3
+
+### Changed
+
+- Upgrade the jEAP Spring Boot parent from 41.14.0 to 41.23.0
+- Update `@openapitools/openapi-generator-cli` to 2.42.0 and `concurrently` to 10.0.6: the newer `concurrently` manages `shell-quote` 1.12.0, which fixes Snyk critical severity finding SNYK-JS-SHELLQUOTE-20250993 (command injection), previously remediated by the removed `shell-quote` override
+- Remove the obsolete npm overrides for `shell-quote`, `piscina`, `qs`, `picomatch`, `launch-editor`, `jsdom`, `node-gyp`, `micromatch`, `anymatch` and `webpack-dev-server`: their Snyk findings are no longer reported after the dependency updates
+
+## 2.1.2
+
+### Changed
+
+- protected verification overview renders now a `data-cy` attribute for each submission row. so it is easier to
+  integrate in e2e test
+
+## 2.1.1
+
+### Fixed
+
+- Update launch-editor to 2.14.2 and vite to 7.3.7 via npm overrides to fix the Snyk high severity findings
+  SNYK-JS-LAUNCHEDITOR-21282025 and SNYK-JS-VITE-21282024 (arbitrary command injection). Both are build-time-only
+  transitive dependencies pulled in by `@angular-devkit/build-angular` (via `webpack-dev-server` and `@angular/build`)
+  and are not shipped to production
+
 ## 2.1.0
 
 ### Added

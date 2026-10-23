@@ -58,7 +58,7 @@
       </ng-container>
 
       <tr *matHeaderRowDef="displayColumns" mat-header-row></tr>
-      <tr *matRowDef="let row; columns: displayColumns" mat-row></tr>
+      <tr *matRowDef="let submission; columns: displayColumns" mat-row [attr.data-cy]="submission.id"></tr>
       <tr *matNoDataRow class="mat-row">
         <td class="mat-cell" colspan="9999">{{ "eportal_protectedVerificationOverview_table_empty" | translate }}</td>
       </tr>
