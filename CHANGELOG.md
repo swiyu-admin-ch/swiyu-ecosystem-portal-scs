@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.1.5
+
+### Added
+- The Business Partner detail page now displays an additional notification after a DID is initialized. This behavior is triggered by the notification query parameter in the link included in the success notification email.
+
 ## 2.1.4
 
 ### Fixed

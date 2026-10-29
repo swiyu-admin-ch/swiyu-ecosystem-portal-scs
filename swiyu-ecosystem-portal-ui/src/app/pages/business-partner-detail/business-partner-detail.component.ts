@@ -1,5 +1,15 @@
 import {HttpContext} from '@angular/common/http';
-import {ChangeDetectionStrategy, Component, computed, effect, inject, input, signal, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  OnInit,
+  signal,
+  ViewChild
+} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
@@ -8,7 +18,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {Router, RouterModule} from '@angular/router';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {TranslateModule} from '@ngx-translate/core';
 import {ObButtonModule} from '@oblique/oblique';
 import {catchError, concatMap, forkJoin, map, merge, of, startWith, switchMap, tap, throwError} from 'rxjs';
@@ -31,6 +41,10 @@ import {IdentifierBaseOnboardingStatusComponent} from '../../shared/identifier-b
 import {InfoIconComponent} from '../../shared/info-icon/info-icon.component';
 import {StatefulAlertComponent} from '../../shared/stateful-alert/stateful-alert.component';
 import {BusinessPartnerDetailActionsComponent} from './business-partner-detail-actions/business-partner-detail-actions.component';
+
+enum NotificationType {
+  DidAdded = 'did-added'
+}
 
 @Component({
   selector: 'app-business-partner-detail',
@@ -57,9 +71,13 @@ import {BusinessPartnerDetailActionsComponent} from './business-partner-detail-a
     BusinessPartnerDetailActionsComponent
   ]
 })
-export class BusinessPartnerDetailComponent {
+export class BusinessPartnerDetailComponent implements OnInit {
   businessPartnerId = input.required<string>();
+  notification = input<NotificationType>();
+  didAddedNotificationVisible = signal<boolean>(false);
+
   readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   @ViewChild(StatefulAlertComponent)
   alertNoDIDs!: StatefulAlertComponent;
 
@@ -146,8 +164,30 @@ export class BusinessPartnerDetailComponent {
     });
   }
 
-  get noDids() {
+  ngOnInit() {
+    if (this.notification() === NotificationType.DidAdded) {
+      this.didAddedNotificationVisible.set(true);
+      this.cleanUpRoute();
+    }
+  }
+
+  get hasDids() {
     return this.totalDIDs() === 0;
+  }
+
+  /**
+   * Removes the `notification` query parameter from the current URL
+   * while preserving all other query parameters.
+   * Replaces the current history entry with navigate instead of adding a new one,
+   * so the cleanup does not create an extra browser history entry.
+   */
+  private cleanUpRoute(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {notification: null},
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
   }
 
   private reloadDataOnTableChanges() {

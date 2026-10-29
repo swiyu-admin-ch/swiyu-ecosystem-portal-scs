@@ -125,6 +125,7 @@
   "eportal_TRadjustment_taskNotification_detailsChanged_download": "Grundlegende Angaben wurden geändert. Bitte Dokument neu herunterladen und signieren.",
   "eportal_TRadjustment_taskNotification_detailsChanged_upload": "Grundlegende Angaben wurden geändert. Bitte neue Willensäusserung hochladen.",
   "eportal_accessibility_step_prefix": "Schritt {{current}} von {{total}}: ",
+  "eportal_adminOverview_alert_didAdded": "Ein neuer DID wurde erfolgreich hinzugefügt.",
   "eportal_adminOverview_action_enterIdentifiers_text": "Einige DIDs können noch nicht mit der swiyu Wallet interagieren.",
   "eportal_adminOverview_action_enterIdentifiers_title": "Identifikatoren eintragen",
   "eportal_adminOverview_action_partnerProfile_text": "Verwalten Sie Ihre Identität, Adresse und Kontaktangaben.",

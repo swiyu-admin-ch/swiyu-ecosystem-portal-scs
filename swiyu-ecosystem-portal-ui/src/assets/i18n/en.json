@@ -125,6 +125,7 @@
   "eportal_TRadjustment_taskNotification_detailsChanged_download": "Fundamentals details have been changed. Please download the document again and sign it.",
   "eportal_TRadjustment_taskNotification_detailsChanged_upload": "Fundamentals details have been changed. Please download the document again and sign it.",
   "eportal_accessibility_step_prefix": "Step {{current}} of {{total}}: ",
+  "eportal_adminOverview_alert_didAdded": "A new DID has been successfully added.",
   "eportal_adminOverview_action_enterIdentifiers_text": "Some DIDs cannot yet interact with the swiyu Wallet.",
   "eportal_adminOverview_action_enterIdentifiers_title": "Enter identifiers",
   "eportal_adminOverview_action_partnerProfile_text": "Manage your identity, address and contact details.",

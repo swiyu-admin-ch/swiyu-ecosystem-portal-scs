@@ -64,6 +64,18 @@
         </ng-container>
       </app-stateful-alert>
     </div>
+    <div class="ob-flex did-alerts">
+      <app-stateful-alert
+        [visible]="didAddedNotificationVisible()"
+        storageKey="didAddedNotificationVisible"
+        storage="session"
+        type="success"
+      >
+        <ng-container notification-content>
+          {{ "eportal_adminOverview_alert_didAdded" | translate }}
+        </ng-container>
+      </app-stateful-alert>
+    </div>
   }
 
   <div class="table-wrapper">
@@ -131,13 +143,13 @@
     <div class="table-footer">
       <div class="table-actions">
         <a
-          [obButton]="noDids ? 'primary' : 'secondary'"
+          [obButton]="hasDids ? 'primary' : 'secondary'"
           [routerLink]="AppRoutes.identifierSetup(businessPartnerId())"
           data-cy="btnSetupNewDid"
           mat-button
           tabindex="0"
         >
-          <mat-icon [class.icon-primary-color]="noDids" svgIcon="devhandover_self" />
+          <mat-icon [class.icon-primary-color]="hasDids" svgIcon="devhandover_self" />
           {{ "eportal_global_btnSec_setupDID" | translate }}
         </a>
         @if (remainingDidSlots() <= 0) {

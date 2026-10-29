@@ -125,6 +125,7 @@
   "eportal_TRadjustment_taskNotification_detailsChanged_download": "Sono state modificate le informazioni di base. La preghiamo di scaricare nuovamente il documento e di firmarlo.",
   "eportal_TRadjustment_taskNotification_detailsChanged_upload": "Sono state modificate le informazioni di base. La preghiamo di caricare una nuova dichiarazione di volontà.",
   "eportal_accessibility_step_prefix": "Passo {{current}} di {{total}}: ",
+  "eportal_adminOverview_alert_didAdded": "Un nuovo DID è stato aggiunto con successo.",
   "eportal_adminOverview_action_enterIdentifiers_text": "Alcuni DID non possono ancora interagire con il portafoglio swiyu.",
   "eportal_adminOverview_action_enterIdentifiers_title": "Inserire identificatori",
   "eportal_adminOverview_action_partnerProfile_text": "Gestite la vostra identità, indirizzo e dati di contatto.",
