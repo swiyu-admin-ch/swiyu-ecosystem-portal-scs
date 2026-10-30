@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.1.7
+
+### Added
+- The business partner profile shows a dialog if changes were not saved when leaving or changing the form.
+
+## 2.1.6
+
+### Changed
+
+- Upgrade the jEAP Spring Boot parent from 41.23.0 to 41.28.0 and remove the obsolete Tomcat override: the parent now manages Tomcat 11.0.27
+
+### Fixed
+
+- Override Jackson to 2.22.4 / 3.2.4 to fix the critical deserialization findings SNYK-JAVA-COMFASTERXMLJACKSONCORE-21761837 and SNYK-JAVA-TOOLSJACKSONCORE-21761838
+- Ignore Snyk high severity finding SNYK-JS-PICOMATCH-21248802 (ReDoS, CVE-2026-112366) for 14 days; no fixed picomatch release exists yet, the vulnerable code is still present in the latest 4.0.7
+
 ## 2.1.5
 
 ### Added

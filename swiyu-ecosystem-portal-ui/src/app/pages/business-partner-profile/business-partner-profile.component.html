@@ -1,9 +1,9 @@
 <div>
   <nav class="section-navigation">
-    <a [routerLink]="AppRoutes.businessPartnerDetail(businessPartnerId())" mat-button obButton="tertiary" tabindex="0">
+    <button (click)="onBackToProfile()" mat-button obButton="tertiary" type="button">
       <mat-icon svgIcon="chevron_left" />
       {{ "eportal_global_btn_backToProfilePage" | translate }}
-    </a>
+    </button>
   </nav>
 
   @if (isLoading()) {
@@ -65,14 +65,9 @@
 
         <!-- Action Button -->
         <div class="actions">
-          <a
-            [routerLink]="AppRoutes.businessPartnerDetail(businessPartnerId())"
-            mat-button
-            obButton="primary"
-            tabindex="0"
-          >
+          <button (click)="onBackToProfile()" mat-button obButton="primary" type="button">
             {{ "eportal_global_btn_backToProfilePage" | translate }}
-          </a>
+          </button>
         </div>
       </mat-drawer-content>
     </mat-drawer-container>

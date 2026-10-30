@@ -262,7 +262,6 @@ export const routes: Routes = [
       {
         /** @see businessPartnerDetail() **/
         path: ':businessPartnerId',
-        canDeactivate: [ObUnsavedChangesGuard],
         children: [
           {
             path: '',

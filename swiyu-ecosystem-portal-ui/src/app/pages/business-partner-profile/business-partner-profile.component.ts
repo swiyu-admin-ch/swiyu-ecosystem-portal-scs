@@ -2,6 +2,7 @@ import {CommonModule, DatePipe} from '@angular/common';
 import {Component, computed, effect, inject, input, signal} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
+import {MatDialog} from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {Router, RouterModule} from '@angular/router';
@@ -22,6 +23,7 @@ import {DetailSectionComponent} from '../../shared/detail-section/detail-section
 import {FormField} from '../../shared/detail-section/form-field.model';
 import {LocalizeService} from '../../shared/i18n/localize.service';
 import {SWISS_LANGUAGES} from '../../shared/i18n/swiss-languages.util';
+import {UnsavedChangesDialogComponent} from '../../shared/unsaved-changes-dialog/unsaved-changes-dialog.component';
 import {CustomValidators} from '../../shared/validators/custom-validators';
 
 @Component({
@@ -160,13 +162,14 @@ export class BusinessPartnerProfileComponent {
   ];
 
   protected readonly AppRoutes = AppRoutes;
-  private readonly router = inject(Router);
   private readonly businessPartnerApi = inject(BusinessPartnerApi);
   private readonly trustOnboardingApi = inject(TrustOnboardingApi);
   private readonly fb = inject(FormBuilder);
   private readonly translateService = inject(TranslateService);
   private readonly localizer = inject(LocalizeService);
   private readonly notificationService = inject(ObNotificationService);
+  private readonly dialog = inject(MatDialog);
+  private readonly router = inject(Router);
 
   // Snapshots for cancel/discard — keyed by section name
   private readonly snapshots: Record<string, Record<string, unknown>> = {};
@@ -280,6 +283,41 @@ export class BusinessPartnerProfileComponent {
   }
 
   onEdit(section: string) {
+    if (this.isEditing(section)) {
+      return;
+    }
+
+    const notFinishedCurrentSection = [...this.editingSections()].find(editingSection => editingSection !== section);
+
+    if (!notFinishedCurrentSection) {
+      this.enterEdit(section);
+      return;
+    }
+
+    this.switchSection(notFinishedCurrentSection, section);
+  }
+
+  private switchSection(currentSection: string, nextSection: string) {
+    const currentForm = this.formForSection(currentSection);
+
+    const switchToNext = () => {
+      if (currentForm.dirty) {
+        this.restoreSection(currentSection, currentForm);
+      } else {
+        this.exitEdit(currentSection);
+      }
+
+      this.enterEdit(nextSection);
+    };
+
+    if (currentForm.dirty) {
+      this.openDialog(switchToNext);
+    } else {
+      switchToNext();
+    }
+  }
+
+  private enterEdit(section: string): void {
     const form = this.formForSection(section);
     // Snapshot current raw values so cancel can restore them
     this.snapshots[section] = form.getRawValue();
@@ -358,6 +396,38 @@ export class BusinessPartnerProfileComponent {
       });
   }
 
+  onBackToProfile(): void {
+    const navigateBack = () => {
+      void this.router.navigate([this.AppRoutes.businessPartnerDetail(this.businessPartnerId())]);
+    };
+
+    if (this.hasUnsavedChanges()) {
+      this.openDialog(navigateBack);
+      return;
+    }
+
+    navigateBack();
+  }
+
+  private hasUnsavedChanges(): boolean {
+    return this.profileDetailsForm.dirty || this.addressForm.dirty || this.contactForm.dirty;
+  }
+
+  private restoreSection(section: string, form: FormGroup): void {
+    const snapshot = this.snapshots[section];
+    if (snapshot) {
+      form.reset(snapshot);
+    }
+    form.markAsPristine();
+    form.markAsUntouched();
+    this.exitEdit(section);
+  }
+
+  /** Stub for EID-6621: profile-change flow for ACTIVE partners */
+  onStartUpdate() {
+    // The full re-verification flow will be implemented in EID-6621
+  }
+
   isEditing(section: string): boolean {
     return this.editingSections().has(section);
   }
@@ -373,6 +443,19 @@ export class BusinessPartnerProfileComponent {
       this.profileDetailsForm.controls['name'].enable();
       this.profileDetailsForm.controls['uid'].enable();
     }
+  }
+
+  private openDialog(onLeave: () => void) {
+    this.dialog
+      .open(UnsavedChangesDialogComponent, {
+        disableClose: true
+      })
+      .afterClosed()
+      .subscribe(shouldLeave => {
+        if (shouldLeave) {
+          onLeave();
+        }
+      });
   }
 
   private buildPayload(section: string, raw: Record<string, unknown>) {
