@@ -398,7 +398,7 @@ export class BusinessPartnerProfileComponent {
 
   onBackToProfile(): void {
     const navigateBack = () => {
-      void this.router.navigate([this.AppRoutes.businessPartnerDetail(this.businessPartnerId())]);
+      void this.router.navigate(this.AppRoutes.businessPartnerDetail(this.businessPartnerId()));
     };
 
     if (this.hasUnsavedChanges()) {
