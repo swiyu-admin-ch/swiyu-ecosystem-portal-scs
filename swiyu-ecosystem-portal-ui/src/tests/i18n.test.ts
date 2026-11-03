@@ -56,7 +56,7 @@ describe('i18n Translation Files (src/assets/i18n/)', () => {
       jsonData = JSON.parse(fileContent);
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : String(e);
-      throw new Error(`Failed to parse JSON in ${filePath}: ${errorMessage}`);
+      throw new Error(`Failed to parse JSON in ${filePath}: ${errorMessage}`, {cause: e});
     }
 
     // @ts-expect-error handling json is weird...

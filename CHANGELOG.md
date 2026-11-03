@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.1.9
+
+### Changed
+
+- Upgrade the jEAP Spring Boot parent from 41.28.0 to 41.29.1 and remove the obsolete Jackson overrides: the parent now manages Jackson 2.22.4 / 3.2.4
+
+### Fixed
+
+- Fix the open high and critical findings in the UI development dependencies: upgrade the Angular build tooling to `@angular/build` / `@angular/cli` 21.2.29, `eslint` 10.14.0 and `prettier-eslint` 17, and pin `handlebars` 4.7.10, `webpack-dev-server` 5.2.7, `basic-ftp` 6.2.2 and `follow-redirects` 1.16.2 (SNYK-JS-HANDLEBARS-20557395, SNYK-JS-HANDLEBARS-20574183, SNYK-JS-WEBPACKDEVSERVER-21431002, SNYK-JS-BASICFTP-20419408, SNYK-JS-FOLLOWREDIRECTS-21762031, SNYK-JS-MINIMATCH-15309438/-15353387/-15353389)
+- Ignore SNYK-JS-URIJS-19963963 and SNYK-JS-HTTPCACHESEMANTICS-19964064/-19964068 for 14 days: no fixed release exists (uri-js 4.4.1 is the latest; http-cache-semantics is only replaced by the Angular CLI 22 major upgrade)
+- Declare `@eslint/js` 10.0.1 explicitly in the UI (eslint 10 no longer brings it) and attach the original error as `cause` in the i18n test, which the updated recommended rule set requires
+
 ## 2.1.8
 
 ### Added
