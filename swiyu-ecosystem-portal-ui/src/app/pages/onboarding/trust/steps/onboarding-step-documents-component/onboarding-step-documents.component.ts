@@ -10,6 +10,7 @@ import {MatOption, MatSelect} from '@angular/material/select';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {ObAlertComponent, ObButtonDirective, ObMatErrorDirective, ObUnsavedChangesDirective} from '@oblique/oblique';
 import {EMPTY, filter, map, Subject, switchMap, timer} from 'rxjs';
+import {getFormErrors} from 'src/app/shared/error-summary/error-summary-configuration.helper';
 import {
   BusinessPartner,
   GetDeclarationOfIntentForTrustOnboardingRequestParams,
@@ -169,6 +170,17 @@ export class OnboardingStepDocumentsComponent extends AbstractOnboardingStepComp
     const valid = this.isValid();
     if (!valid) {
       this.form.markAllAsTouched();
+      this.onStepError?.(
+        getFormErrors(
+          this.form,
+          (part: string): string => part,
+          ['uploadedFiles'],
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          (_part: string) => 'eportal_global_uploadArea_error_electronicSignature'
+        )
+      );
+    } else {
+      this.onStepError?.([]);
     }
     return valid;
   }

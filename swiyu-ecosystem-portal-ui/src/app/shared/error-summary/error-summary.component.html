@@ -1,0 +1,25 @@
+<div [attr.aria-labelledby]="titleId" aria-atomic="true" tabindex="-1" #errorSummary class="cdk-visually-hidden">
+  @if (errors.length) {
+    <h2 [id]="titleId">{{ titleKey | translate }}</h2>
+    <ul>
+      @for (error of errors; track error) {
+        <li>
+          <a [attr.href]="'#' + error.path" (click)="handleClick(error, $event)">
+            @if (error.pathFragments.length > 0) {
+              @for (part of error.pathFragments; track part) {
+                <span>{{ part | translate }}</span>
+                @if (part !== error.pathFragments.at(-1)) {
+                  <span> > </span>
+                }
+              }
+            }
+            @if (error.pathFragments.length > 0) {
+              <span>: </span>
+            }
+            {{ error.errorTranslationKey | translate }}
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</div>

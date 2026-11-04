@@ -57,7 +57,7 @@
                   }
                 </mat-select>
                 <mat-error>
-                  {{ "eportal_global_inputLabel_error_correspLanguage" | translate }}
+                  {{ "eportal_global_correspondingLanguage_error_required" | translate }}
                 </mat-error>
               </mat-form-field>
             </div>
@@ -95,6 +95,7 @@
               (retryUpload)="retryUpload()"
               (removeUpload)="removeUpload()"
               (deleteDocument)="deleteDocument($event)"
+              id="uploadedFiles"
             />
 
             @if (form.controls.uploadedFiles.errors && form.controls.uploadedFiles.touched) {
@@ -135,6 +136,7 @@
               (retryUpload)="retryOtherUpload()"
               (removeUpload)="removeOtherUpload()"
               (deleteDocument)="deleteDocument($event)"
+              id="otherDocuments"
             />
             @if (form.controls.otherDocuments.hasError("required") && form.controls.otherDocuments.touched) {
               <div class="sw-form-error" data-cy="additionalDocumentsError">

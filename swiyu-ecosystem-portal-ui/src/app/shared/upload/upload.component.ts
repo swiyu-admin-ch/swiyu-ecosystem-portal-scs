@@ -38,6 +38,7 @@ export interface UploadItem {
 })
 export class UploadComponent {
   readonly uploadedFiles = input<UploadedFile[]>([]);
+  readonly id = input<string | undefined>(undefined);
   readonly uploadItem = input<UploadItem | undefined>(undefined);
   readonly disabled = input(false);
 

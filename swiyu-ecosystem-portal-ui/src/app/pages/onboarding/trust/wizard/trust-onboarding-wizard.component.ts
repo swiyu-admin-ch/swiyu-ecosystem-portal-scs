@@ -1,10 +1,22 @@
-import {AfterViewInit, Component, DestroyRef, effect, ElementRef, inject, input, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  effect,
+  ElementRef,
+  inject,
+  input,
+  signal,
+  ViewChild
+} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatIconModule} from '@angular/material/icon';
 import {MatStepper, MatStepperModule} from '@angular/material/stepper';
 import {ActivatedRoute, NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {filter} from 'rxjs';
+import {FormErrors} from 'src/app/shared/error-summary/error-summary-configuration.helper';
+import {ErrorSummaryComponent} from 'src/app/shared/error-summary/error-summary.component';
 import {AbstractOnboardingStepComponent} from '../steps/abstract-onboarding-step-component';
 import {TrustOnboardingWizardService} from './trust-onboarding-wizard.service';
 
@@ -13,12 +25,13 @@ import {TrustOnboardingWizardService} from './trust-onboarding-wizard.service';
   templateUrl: './trust-onboarding-wizard.component.html',
   styleUrls: ['./trust-onboarding-wizard.component.scss'],
   providers: [TrustOnboardingWizardService],
-  imports: [MatIconModule, MatStepperModule, TranslateModule, RouterOutlet]
+  imports: [MatIconModule, MatStepperModule, TranslateModule, RouterOutlet, ErrorSummaryComponent]
 })
 export class TrustOnboardingWizardComponent implements AfterViewInit {
   private readonly translateService = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
   private stepperInstance: MatStepper | undefined;
+  @ViewChild(ErrorSummaryComponent) errorSummary!: ErrorSummaryComponent;
   @ViewChild('stepper')
   set stepper(stepper: MatStepper | undefined) {
     this.stepperInstance = stepper;
@@ -40,6 +53,13 @@ export class TrustOnboardingWizardComponent implements AfterViewInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly elementRef = inject(ElementRef);
+  public readonly ignoredSummaryLabels = [
+    'confirmedCorrectness',
+    'readTermsAndConditions',
+    'readPrivacyPolicy',
+    'entityAddress',
+    'entityNameEntries'
+  ];
   private readonly initWizardEffect = effect(() => {
     const partnerId = this.partnerId();
     const submissionId = this.submissionId();
@@ -49,6 +69,7 @@ export class TrustOnboardingWizardComponent implements AfterViewInit {
     }
   });
   private activeStepComponent: AbstractOnboardingStepComponent | null = null;
+  public readonly errors = signal<FormErrors[]>([]);
 
   ngAfterViewInit() {
     // Initial reload sync happens in the `stepper` ViewChild setter when the gated stepper is created.
@@ -68,11 +89,22 @@ export class TrustOnboardingWizardComponent implements AfterViewInit {
     if (component instanceof AbstractOnboardingStepComponent) {
       this.service.setActiveStep(component);
       this.activeStepComponent = component;
+      component.onStepError = this.handleStepError;
     } else {
       this.service.setActiveStep(null);
       this.activeStepComponent = null;
     }
+    this.errors.set([]);
   }
+
+  handleStepError = (errors: FormErrors[]): void => {
+    if (errors.length > 0) {
+      this.errors.set(errors);
+      this.errorSummary.focus();
+    } else {
+      this.errors.set([]);
+    }
+  };
 
   // Reads the active child route segment, maps it to the currently visible steps of the loaded flow
   // and applies the resulting selection to the stepper and wizard state.

@@ -362,8 +362,6 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
         id: 'test-partner-id',
         entityName: {default: 'Partner Organisation', 'de-CH': 'Partner Organisation'},
         type: BusinessPartner.TypeEnum.Business,
-        contactEmailAddress: 'partner@test.ch',
-        contactPhone: '+41 11 111 11 11',
         uid: 'CHE-111.222.333',
         address: {
           street: 'Partner Street 1',
@@ -390,8 +388,6 @@ describe('OnboardingStepOrganisationDetailsComponent', () => {
         id: 'test-partner-id',
         entityName: {default: 'Partner Organisation', 'de-CH': 'Partner Organisation'},
         type: BusinessPartner.TypeEnum.Business,
-        contactEmailAddress: 'partner@test.ch',
-        contactPhone: '+41 11 111 11 11',
         uid: 'CHE-111.222.333',
         address: {
           street: 'Partner Street 1',

@@ -10,6 +10,10 @@
   [class.disabled-card]="disabled()"
   class="radio-card"
   [attr.data-cy]="dataCy()"
+  [id]="id()"
+  role="radio"
+  class="sw-selection-card"
+  [attr.tabindex]="disabled() ? -1 : 0"
 >
   <mat-card-content>
     <div class="card-content">

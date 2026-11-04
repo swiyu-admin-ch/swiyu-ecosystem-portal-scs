@@ -27,6 +27,7 @@
     <mat-step [label]="'eportal_onboarding_stepper_development' | translate" />
   </mat-horizontal-stepper>
   <div class="step-content-container">
+    <app-error-summary [errors]="errors()" />
     <router-outlet (activate)="onStepActivated($event)" />
   </div>
 </div>

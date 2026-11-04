@@ -14,6 +14,7 @@ import {AppRoutes} from '../../../../app.routes';
 import {AppConfigService} from '../../../../core/appconfig/app-config.service';
 import {ProcessStepComponent} from '../../../../shared/process/process-step/process-step.component';
 import {ProcessComponent} from '../../../../shared/process/process.component';
+import {StatefulAlertComponent} from '../../../../shared/stateful-alert/stateful-alert.component';
 
 @Component({
   selector: 'app-trust-introduction',
@@ -24,7 +25,8 @@ import {ProcessComponent} from '../../../../shared/process/process.component';
     RouterLink,
     MatButton,
     ProcessComponent,
-    ProcessStepComponent
+    ProcessStepComponent,
+    StatefulAlertComponent
   ],
   templateUrl: './trust-introduction.component.html',
   styleUrl: './trust-introduction.component.scss'

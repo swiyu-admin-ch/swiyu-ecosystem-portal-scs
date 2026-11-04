@@ -46,8 +46,11 @@ describe('PartnerRegistrationStepProfileCreationComponent', () => {
   it('emits nested contact and address payload when the form is valid', () => {
     const wizardService = TestBed.inject(PartnerRegistrationWizardService);
 
-    component.form.patchValue({
-      partnerType: PartnerCreationRequest.BusinessPartnerTypeEnum.Business,
+    component.partnerSelectionForm.patchValue({
+      partnerType: PartnerCreationRequest.BusinessPartnerTypeEnum.Business
+    });
+
+    component.partnerRegistrationForm.patchValue({
       name: 'Example Org',
       address: {street: 'Test Street 1', postalCode: '3000', city: 'Bern', country: 'CH'},
       contact: {

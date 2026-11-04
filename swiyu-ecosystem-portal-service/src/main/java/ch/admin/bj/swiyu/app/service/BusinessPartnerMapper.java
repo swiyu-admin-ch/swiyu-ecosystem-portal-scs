@@ -88,7 +88,6 @@ public class BusinessPartnerMapper {
         };
     }
 
-    @SuppressWarnings({ "java:S1874" })
     public static BusinessPartnerDto toBusinessPartnerDto(BusinessPartner businessPartner) {
         return toBusinessPartnerDto(businessPartner, null);
     }
@@ -102,7 +101,6 @@ public class BusinessPartnerMapper {
         return new BusinessPartnerDto(
             businessPartner.getId(),
             businessPartner.getEntityName(),
-            businessPartner.getContactEmailAddress(),
             toBusinessPartnerTypeDto(businessPartner.getType()),
             Boolean.TRUE.equals(businessPartner.getPayedForTrustVerification()),
             businessPartner.getPayedForDIDSlots(),
@@ -111,7 +109,6 @@ public class BusinessPartnerMapper {
             businessPartner.getUid(),
             toAddressDto(businessPartner.getAddress()),
             toContactDto(businessPartner.getContact()),
-            businessPartner.getContactPhone(),
             toBusinessPartnerTrustStatusDto(businessPartner.getTrustVerificationStatus()),
             businessPartner.getMaxDateForTrustVerificationStatus(),
             daysUntil(businessPartner.getMaxDateForTrustVerificationStatus()),

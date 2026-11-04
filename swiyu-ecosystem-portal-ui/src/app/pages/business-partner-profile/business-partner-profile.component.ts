@@ -97,8 +97,8 @@ export class BusinessPartnerProfileComponent {
       label: 'eportal_swiyuProfile_label_postalCode',
       validators: [Validators.required, CustomValidators.swissZipCode()],
       errors: {
-        required: 'eportal_onboarding_profile_inputLabel_postalCode_error',
-        swissZipCode: 'eportal_onboarding_profile_inputLabel_postalCode_error_zipFormat'
+        required: 'eportal_global_postalCode_error_required',
+        swissZipCode: 'eportal_global_postalCode_error_swissZipCode'
       }
     },
     {
@@ -106,8 +106,8 @@ export class BusinessPartnerProfileComponent {
       label: 'eportal_swiyuProfile_label_city',
       validators: [Validators.required, CustomValidators.notBlank()],
       errors: {
-        required: 'eportal_onboarding_profile_error_inputLabel_city',
-        blank: 'eportal_onboarding_profile_error_inputLabel_city'
+        required: 'eportal_global_city_error_required',
+        blank: 'eportal_global_city_error_required'
       }
     },
     {key: 'country', label: 'eportal_swiyuProfile_label_country', type: 'readonly'}
@@ -119,8 +119,8 @@ export class BusinessPartnerProfileComponent {
       label: 'eportal_swiyuProfile_label_firstName',
       validators: [Validators.required, CustomValidators.notBlank()],
       errors: {
-        required: 'eportal_global_inputLabel_error_name',
-        blank: 'eportal_global_inputLabel_error_name'
+        required: 'eportal_global_firstName_error_required',
+        blank: 'eportal_global_firstName_error_required'
       }
     },
     {
@@ -128,8 +128,8 @@ export class BusinessPartnerProfileComponent {
       label: 'eportal_swiyuProfile_label_lastName',
       validators: [Validators.required, CustomValidators.notBlank()],
       errors: {
-        required: 'eportal_global_inputLabel_error_surname',
-        blank: 'eportal_global_inputLabel_error_surname'
+        required: 'eportal_global_lastName_error_required',
+        blank: 'eportal_global_lastName_error_required'
       }
     },
     {
@@ -137,9 +137,9 @@ export class BusinessPartnerProfileComponent {
       label: 'eportal_swiyuProfile_label_phone',
       validators: [Validators.required, CustomValidators.internationalPhoneNumber()],
       errors: {
-        required: 'eportal_global_inputLabel_error_phone',
-        internationalPhoneNumber: 'eportal_global_inputLabel_error_phone_format_international',
-        swissPhoneNumber: 'eportal_global_inputLabel_error_phone_format'
+        required: 'eportal_global_phone_error_required',
+        internationalPhoneNumber: 'eportal_global_phone_error_internationalPhoneNumber',
+        swissPhoneNumber: 'eportal_global_phone_error_swissPhoneNumber'
       }
     },
     {
@@ -147,13 +147,13 @@ export class BusinessPartnerProfileComponent {
       label: 'eportal_swiyuProfile_label_email',
       validators: [Validators.required, Validators.email],
       errors: {
-        required: 'eportal_global_inputLabel_error_email',
+        required: 'eportal_global_email_error_required',
         email: 'eportal_global_inputLabel_error_emailFormat'
       }
     },
     {
       key: 'correspondingLanguage',
-      label: 'eportal_swiyuProfile_label_correspondingLanguage',
+      label: 'eportal_global_correspondingLanguage',
       selectOptions: SWISS_LANGUAGES.map(lang => ({
         value: lang,
         labelKey: `eportal_global_lang_${lang.toLowerCase()}`
@@ -509,7 +509,7 @@ export class BusinessPartnerProfileComponent {
     this.translateService.get('eportal_swiyuProfile_label_lastName');
     this.translateService.get('eportal_swiyuProfile_label_email');
     this.translateService.get('eportal_swiyuProfile_label_phone');
-    this.translateService.get('eportal_swiyuProfile_label_correspondingLanguage');
+    this.translateService.get('eportal_global_correspondingLanguage');
     this.translateService.get('eportal_swiyuProfile_section_profileDetails');
     this.translateService.get('eportal_swiyuProfile_section_address');
     this.translateService.get('eportal_swiyuProfile_subTitle_contact');

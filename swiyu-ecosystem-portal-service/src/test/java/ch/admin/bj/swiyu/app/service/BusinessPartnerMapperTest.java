@@ -5,12 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import ch.admin.bj.swiyu.app.api.BusinessPartnerDto;
 import ch.admin.bj.swiyu.app.api.BusinessPartnerListItemDto;
+import ch.admin.bj.swiyu.app.api.LanguageDto;
 import ch.admin.bj.swiyu.app.api.VerificationProgressStatusDto;
 import ch.admin.bj.swiyu.client.business.internal.model.BusinessPartner;
 import ch.admin.bj.swiyu.client.business.internal.model.BusinessPartnerListItem;
 import ch.admin.bj.swiyu.client.business.internal.model.BusinessPartnerType;
+import ch.admin.bj.swiyu.client.business.internal.model.Contact;
 import ch.admin.bj.swiyu.client.business.internal.model.IdentityVerificationProgress;
 import ch.admin.bj.swiyu.client.business.internal.model.IdentityVerificationProgressStatus;
+import ch.admin.bj.swiyu.client.business.internal.model.Language;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.Test;
@@ -82,6 +85,35 @@ class BusinessPartnerMapperTest {
 
         assertEquals(maxDate, dto.verificationProgressMaxDate());
         assertEquals(30L, dto.daysRemainingForVerification());
+    }
+
+    @Test
+    void toBusinessPartnerDto_whenContactIsSet_thenContactIsMappedFromNestedContact() {
+        var bp = minimalBusinessPartner();
+        var contact = new Contact();
+        contact.setFirstName("Anna");
+        contact.setLastName("Muster");
+        contact.setEmail("anna.muster@example.com");
+        contact.setPhone("+41 79 123 45 67");
+        contact.setCorrespondingLanguage(Language.DE);
+        bp.setContact(contact);
+
+        BusinessPartnerDto dto = BusinessPartnerMapper.toBusinessPartnerDto(bp);
+
+        assertEquals("Anna", dto.contact().firstName());
+        assertEquals("Muster", dto.contact().lastName());
+        assertEquals("anna.muster@example.com", dto.contact().email());
+        assertEquals("+41 79 123 45 67", dto.contact().phone());
+        assertEquals(LanguageDto.DE, dto.contact().correspondingLanguage());
+    }
+
+    @Test
+    void toBusinessPartnerDto_whenContactIsNull_thenContactIsNull() {
+        var bp = minimalBusinessPartner();
+
+        BusinessPartnerDto dto = BusinessPartnerMapper.toBusinessPartnerDto(bp);
+
+        assertNull(dto.contact());
     }
 
     @Test

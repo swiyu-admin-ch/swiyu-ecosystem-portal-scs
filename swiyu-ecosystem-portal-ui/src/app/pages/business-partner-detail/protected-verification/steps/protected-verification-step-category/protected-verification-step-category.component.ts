@@ -7,6 +7,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {TranslateModule} from '@ngx-translate/core';
 import {ObButtonModule, ObErrorMessagesModule} from '@oblique/oblique';
+import {getFormErrors} from 'src/app/shared/error-summary/error-summary-configuration.helper';
 import {ProtectedVerificationSubmission} from '../../../../../api/generated';
 import {InfoIconComponent} from '../../../../../shared/info-icon/info-icon.component';
 import {AbstractOnboardingStepComponent} from '../../../../onboarding/trust/steps/abstract-onboarding-step-component';
@@ -66,6 +67,8 @@ export class ProtectedVerificationStepCategoryComponent extends AbstractOnboardi
   override async validate(): Promise<boolean> {
     this.form.markAllAsTouched();
     if (!this.form.valid) {
+      const errors = getFormErrors(this.form, this.getTranslatedPath);
+      this.onStepError(errors);
       return false;
     }
     this.wizardService.updateFormValue({
@@ -86,5 +89,27 @@ export class ProtectedVerificationStepCategoryComponent extends AbstractOnboardi
 
   cancel(): void {
     this.wizardService.navigateToOverview();
+  }
+
+  private getTranslatedPath(part: string): string {
+    if (part.includes('signatories')) {
+      return `eportal_onboardingTR_addDetails_${part}`;
+    }
+
+    switch (part) {
+      case 'dids':
+        return `eportal_onboardingTR_selectDID_sectionTitle`;
+      case 'uploadedFiles':
+        return `eportal_onboardingTR_formalProof_sectionTitle_electronicSignature`;
+      case 'contactPerson':
+      case 'entityAddress':
+      case 'entityNameDefault':
+        return `app_site_onboarding_trust_${part}`;
+      case 'name':
+        return `eportal_onboarding_name`;
+
+      default:
+        return `eportal_global_${part}`;
+    }
   }
 }

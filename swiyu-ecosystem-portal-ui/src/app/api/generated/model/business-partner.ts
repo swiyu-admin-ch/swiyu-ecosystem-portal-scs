@@ -21,7 +21,6 @@ export interface BusinessPartner {
    * Localized entity name, keyed by \"default\" and BCP 47 locale tags
    */
   entityName: {[key: string]: string};
-  contactEmailAddress: string;
   /**
    * Type of the partner
    */
@@ -48,7 +47,6 @@ export interface BusinessPartner {
    * Contact person details
    */
   contact?: Contact;
-  contactPhone: string;
   /**
    * Aggregated state of the trust process for this business partner
    */

@@ -38,6 +38,7 @@
             [disabled]="partnerTypeBusinessDisabled()"
             [hasError]="form.controls.partnerType.hasError('required') && form.controls.partnerType.touched"
             [value]="PartnerTypeSelection.Business"
+            id="partnerType"
           >
             <mat-icon cardIcon svgIcon="building" />
             <h6>{{ "eportal_onboarding_profile_card_business" | translate }}</h6>
@@ -70,7 +71,7 @@
           <div class="sw-form-error">
             <mat-icon [svgIcon]="'exclamation_circle'" color="warn" />
             <span class="caption">
-              {{ "eportal_onboarding_error_selectProfile" | translate }}
+              {{ "eportal_global_partnerType_error_required" | translate }}
             </span>
           </div>
         }
@@ -78,7 +79,7 @@
     }
     <div class="sw-form-sub-container">
       <div class="sw-form-header">
-        <h3>{{ "app_site_onboarding_trust_organisation-information_organisation-details" | translate }}</h3>
+        <h3>{{ "app_site_onboarding_trust_contactPerson" | translate }}</h3>
         <app-info-icon>
           <h3>{{ "eportal_onboarding_profile_organisation_infoTitle" | translate }}</h3>
           <p>{{ "eportal_onboarding_profile_organisation_infoText" | translate }}</p>
@@ -92,7 +93,7 @@
           form.controls.partnerType.value === PartnerTypeSelection.Business
         ) {
           <div class="ob-full">
-            <mat-radio-group [formControl]="form.controls.hasUid" data-cy="isCommercialGroup">
+            <mat-radio-group [formControl]="form.controls.hasUid" data-cy="isCommercialGroup" id="hasUid">
               <mat-radio-button [value]="true" data-cy="isCommercialRadioBtn"
                 >{{
                   "app_site_onboarding_trust_organisation-information_commercial-register-entry-available" | translate
@@ -117,10 +118,11 @@
                 data-cy="companyUid"
                 matInput
                 type="text"
+                id="uid"
               />
               <mat-error class="ob-full">
                 @if (form.controls.uid.hasError("required")) {
-                  {{ "eportal_onboarding_profile_inputLabel_uid_error_required" | translate }}
+                  {{ "eportal_global_uid_error_required" | translate }}
                 } @else if (form.controls.uid.hasError("swissUid")) {
                   {{ "eportal_onboarding_profile_inputLabel_uid_error_uidFormat" | translate }}
                 }
@@ -140,18 +142,19 @@
         <div class="ob-full entity-name">
           <mat-form-field class="span-2">
             <mat-label>
-              {{ "app_site_onboarding_trust_organisation-information_organisation-name" | translate }}
+              {{ "app_site_onboarding_trust_entityNameDefault" | translate }}
             </mat-label>
             <input
               [formControl]="form.controls.entityNameDefault"
-              [placeholder]="'app_site_onboarding_trust_organisation-information_organisation-name' | translate"
+              [placeholder]="'app_site_onboarding_trust_entityNameDefault' | translate"
               data-cy="organizationName"
               matInput
+              id="entityNameDefault"
             />
-            <mat-hint>{{ "eportal_onboarding_profile_inputLabel_name_hint" | translate }}</mat-hint>
+            <mat-hint>{{ "eportal_onboarding_name_hint" | translate }}</mat-hint>
             @if (form.controls.entityNameDefault.hasError("required")) {
               <mat-error class="ob-full">
-                {{ "eportal_onboarding_profile_inputLabel_name_error" | translate }}
+                {{ "eportal_onboarding_name_error_required" | translate }}
               </mat-error>
             }
           </mat-form-field>
@@ -165,23 +168,29 @@
             <div [formGroup]="entry" class="display-contents">
               <mat-form-field>
                 <mat-label>
-                  {{ "app_site_onboarding_trust_organisation-information_organisation-name" | translate }}
+                  {{ "app_site_onboarding_trust_entityNameDefault" | translate }}
                 </mat-label>
                 <input
                   [attr.data-cy]="'organizationName' + (i + 1)"
                   [formControl]="entry.controls.name"
-                  [placeholder]="'app_site_onboarding_trust_organisation-information_organisation-name' | translate"
+                  [placeholder]="'app_site_onboarding_trust_entityNameDefault' | translate"
                   matInput
+                  [id]="`entityNameEntries[${i}].name`"
                 />
                 @if (entry.controls.name.hasError("required")) {
                   <mat-error class="ob-full">
-                    {{ "eportal_onboarding_profile_inputLabel_name_error" | translate }}
+                    {{ "eportal_onboarding_name_error_required" | translate }}
                   </mat-error>
                 }
               </mat-form-field>
               <mat-form-field>
                 <mat-label>{{ "eportal_onboarding_profile_inputLabel_language" | translate }}</mat-label>
-                <mat-select [attr.data-cy]="'organizationLanguage' + (i + 1)" [formControl]="entry.controls.language">
+                <mat-select
+                  [attr.data-cy]="'organizationLanguage' + (i + 1)"
+                  [formControl]="entry.controls.language"
+                  matInput
+                  [id]="`entityNameEntries[${i}].language`"
+                >
                   @for (lang of entityNameLanguages; track lang) {
                     <mat-option [value]="lang">
                       {{ lang | fullLang | translate }}
@@ -242,6 +251,7 @@
               [placeholder]="'app_site_onboarding_trust_organisation-information_street-and-house-number' | translate"
               data-cy="street"
               matInput
+              id="entityAddress.street"
             />
           </mat-form-field>
           <mat-form-field class="ob-span-4">
@@ -251,12 +261,13 @@
               [placeholder]="'app_site_onboarding_trust_organisation-information_postal-code' | translate"
               data-cy="zipCode"
               matInput
+              id="entityAddress.postalCode"
             />
             <mat-error class="ob-full">
               @if (form.controls.entityAddress.controls.postalCode.hasError("required")) {
-                {{ "eportal_onboarding_profile_inputLabel_postalCode_error" | translate }}
+                {{ "eportal_global_postalCode_error_required" | translate }}
               } @else if (form.controls.entityAddress.controls.postalCode.hasError("swissZipCode")) {
-                {{ "eportal_onboarding_profile_inputLabel_postalCode_error_zipFormat" | translate }}
+                {{ "eportal_global_postalCode_error_swissZipCode" | translate }}
               }
             </mat-error>
           </mat-form-field>
@@ -267,6 +278,7 @@
               [placeholder]="'app_site_onboarding_trust_organisation-information_city' | translate"
               data-cy="city"
               matInput
+              id="entityAddress.city"
             />
             <mat-error class="ob-full">
               {{ "eportal_onboarding_profile_inputLabel_city_error" | translate }}
@@ -303,9 +315,10 @@
               [placeholder]="'app_site_onboarding_trust_organisation-information_first-name' | translate"
               data-cy="contactFirstName"
               matInput
+              id="contactPerson.firstName"
             />
             <mat-error class="ob-full">
-              {{ "eportal_global_inputLabel_error_name" | translate }}
+              {{ "eportal_global_firstName_error_required" | translate }}
             </mat-error>
           </mat-form-field>
           <mat-form-field class="ob-span-6">
@@ -315,9 +328,10 @@
               [placeholder]="'app_site_onboarding_trust_organisation-information_last-name' | translate"
               data-cy="contactLastName"
               matInput
+              id="contactPerson.lastName"
             />
             <mat-error class="ob-full">
-              {{ "eportal_global_inputLabel_error_surname" | translate }}
+              {{ "eportal_global_lastName_error_required" | translate }}
             </mat-error>
           </mat-form-field>
           <mat-form-field class="ob-span-6">
@@ -327,16 +341,17 @@
               [placeholder]="'app_site_onboarding_trust_organisation-information_phone' | translate"
               data-cy="contactPhone"
               matInput
+              id="contactPerson.phone"
             />
-            <mat-hint>{{ "eportal_global_hint_phone" | translate }}</mat-hint>
+            <mat-hint>{{ "eportal_global_phone_hint" | translate }}</mat-hint>
 
             <mat-error>
               @if (form.controls.contactPerson.controls.phone.hasError("required")) {
-                {{ "eportal_global_inputLabel_error_phone" | translate }}
+                {{ "eportal_global_phone_error_required" | translate }}
               } @else if (form.controls.contactPerson.controls.phone.hasError("swissPhoneNumber")) {
-                {{ "eportal_global_inputLabel_error_phone_format" | translate }}
+                {{ "eportal_global_phone_error_swissPhoneNumber" | translate }}
               } @else if (form.controls.contactPerson.controls.phone.hasError("internationalPhoneNumber")) {
-                {{ "eportal_global_inputLabel_error_phone_format_international" | translate }}
+                {{ "eportal_global_phone_error_internationalPhoneNumber" | translate }}
               }
             </mat-error>
           </mat-form-field>
@@ -347,9 +362,10 @@
               [placeholder]="'app_site_onboarding_trust_organisation-information_email' | translate"
               data-cy="contactEmail"
               matInput
+              id="contactPerson.email"
             />
             <mat-error class="ob-full">
-              {{ "eportal_global_inputLabel_error_email" | translate }}
+              {{ "eportal_global_email_error_required" | translate }}
             </mat-error>
           </mat-form-field>
           <mat-form-field class="ob-span-6">
@@ -359,6 +375,7 @@
             <mat-select
               [formControl]="form.controls.contactPerson.controls.correspondingLanguage"
               data-cy="contactLanguageSelect"
+              id="contactPerson.correspondingLanguage"
             >
               @for (lang of languages; track lang) {
                 <mat-option [value]="lang">
@@ -367,7 +384,7 @@
               }
             </mat-select>
             <mat-error>
-              {{ "eportal_global_inputLabel_error_correspLanguage" | translate }}
+              {{ "eportal_global_correspondingLanguage_error_required" | translate }}
             </mat-error>
           </mat-form-field>
         </div>
@@ -401,13 +418,13 @@
             <div class="sw-form-header space-between">
               @switch (i) {
                 @case (0) {
-                  <h3>{{ "eportal_onboardingTR_addDetails_sectionTitle_signFirst" | translate }}</h3>
+                  <h3>{{ "eportal_onboardingTR_addDetails_signatories[0]" | translate }}</h3>
                 }
                 @case (1) {
-                  <h3>{{ "eportal_onboardingTR_addDetails_sectionTitle_signSecond" | translate }}</h3>
+                  <h3>{{ "eportal_onboardingTR_addDetails_signatories[1]" | translate }}</h3>
                 }
                 @case (2) {
-                  <h3>{{ "eportal_onboardingTR_addDetails_sectionTitle_signThird" | translate }}</h3>
+                  <h3>{{ "eportal_onboardingTR_addDetails_signatories[2]" | translate }}</h3>
                 }
               }
 
@@ -427,41 +444,44 @@
 
             <div class="ob-grid sw-grid-form-container">
               <mat-form-field class="ob-span-6">
-                <mat-label>{{ "eportal_global_inputLabel_name" | translate }}</mat-label>
+                <mat-label>{{ "eportal_global_firstName" | translate }}</mat-label>
                 <input
                   [attr.data-cy]="`signatory${i}FirstName`"
                   [formControl]="signatory.controls.firstName"
-                  [placeholder]="'eportal_global_inputLabel_name' | translate"
+                  [placeholder]="'eportal_global_firstName' | translate"
                   matInput
+                  [id]="`signatories[${i}].firstName`"
                 />
-                <mat-error>{{ "eportal_global_inputLabel_error_name" | translate }}</mat-error>
+                <mat-error>{{ "eportal_global_firstName_error_required" | translate }}</mat-error>
               </mat-form-field>
               <mat-form-field class="ob-span-6">
-                <mat-label>{{ "eportal_global_inputLabel_surname" | translate }}</mat-label>
+                <mat-label>{{ "eportal_global_lastName" | translate }}</mat-label>
                 <input
                   [attr.data-cy]="`signatory${i}LastName`"
                   [formControl]="signatory.controls.lastName"
-                  [placeholder]="'eportal_global_inputLabel_surname' | translate"
+                  [placeholder]="'eportal_global_lastName' | translate"
                   matInput
+                  [id]="`signatories[${i}].lastName`"
                 />
-                <mat-error>{{ "eportal_global_inputLabel_error_surname" | translate }}</mat-error>
+                <mat-error>{{ "eportal_global_lastName_error_required" | translate }}</mat-error>
               </mat-form-field>
               <mat-form-field class="ob-span-6">
-                <mat-label>{{ "eportal_onboarding_profile_inputLabel_phone" | translate }}</mat-label>
+                <mat-label>{{ "eportal_global_phone" | translate }}</mat-label>
                 <input
                   [attr.data-cy]="`signatory${i}Phone`"
                   [formControl]="signatory.controls.phone"
-                  [placeholder]="'eportal_onboarding_profile_inputLabel_phone' | translate"
+                  [placeholder]="'eportal_global_phone' | translate"
                   matInput
+                  [id]="`signatories[${i}].phone`"
                 />
-                <mat-hint>{{ "eportal_global_hint_phone" | translate }}</mat-hint>
+                <mat-hint>{{ "eportal_global_phone_hint" | translate }}</mat-hint>
                 <mat-error>
                   @if (signatory.controls.phone.hasError("required")) {
-                    {{ "eportal_global_inputLabel_error_phone" | translate }}
+                    {{ "eportal_global_phone_error_required" | translate }}
                   } @else if (signatory.controls.phone.hasError("swissPhoneNumber")) {
-                    {{ "eportal_global_inputLabel_error_phone_format" | translate }}
+                    {{ "eportal_global_phone_error_swissPhoneNumber" | translate }}
                   } @else if (signatory.controls.phone.hasError("internationalPhoneNumber")) {
-                    {{ "eportal_global_inputLabel_error_phone_format_international" | translate }}
+                    {{ "eportal_global_phone_error_internationalPhoneNumber" | translate }}
                   }
                 </mat-error>
               </mat-form-field>
@@ -472,10 +492,11 @@
                   [formControl]="signatory.controls.email"
                   [placeholder]="'eportal_onboarding_profile_inputLabel_email' | translate"
                   matInput
+                  [id]="`signatories[${i}].email`"
                 />
 
                 @if (signatory.controls.email.hasError("required")) {
-                  <mat-error>{{ "eportal_global_inputLabel_error_email" | translate }}</mat-error>
+                  <mat-error>{{ "eportal_global_email_error_required" | translate }}</mat-error>
                 }
                 @if (signatory.controls.email.hasError("email")) {
                   <mat-error>{{ "eportal_global_inputLabel_error_emailFormat" | translate }}</mat-error>
@@ -498,6 +519,7 @@
             appCheckboxA11y
             appCheckboxDescribedBy="org-terms-error"
             data-cy="termsAndConditions"
+            id="readTermsAndConditions"
           >
             <span [innerHTML]="'eportal_onboardingTR_addDetails_termsAndConditions' | translate"></span>
           </mat-checkbox>
@@ -506,7 +528,7 @@
           ) {
             <div class="sw-form-error" id="org-terms-error">
               <mat-icon aria-hidden="true" color="warn" svgIcon="exclamation_circle" />
-              <span>{{ "eportal_onboardingTR_addDetails_error_termsAndConditions" | translate }}</span>
+              <span>{{ "eportal_global_readTermsAndConditions_error_required" | translate }}</span>
             </div>
           }
         </div>
@@ -521,13 +543,14 @@
             appCheckboxA11y
             appCheckboxDescribedBy="org-privacy-error"
             data-cy="dataProtection"
+            id="readPrivacyPolicy"
           >
             <span [innerHTML]="'eportal_onboardingTR_addDetails_privacyPolicy' | translate"></span>
           </mat-checkbox>
           @if (form.controls.readPrivacyPolicy.hasError("required") && form.controls.readPrivacyPolicy.touched) {
             <div class="sw-form-error" id="org-privacy-error">
               <mat-icon aria-hidden="true" color="warn" svgIcon="exclamation_circle" />
-              <span>{{ "eportal_onboardingTR_addDetails_error_privacyPolicy" | translate }}</span>
+              <span>{{ "eportal_global_readDataProtection_error_required" | translate }}</span>
             </div>
           }
         </div>

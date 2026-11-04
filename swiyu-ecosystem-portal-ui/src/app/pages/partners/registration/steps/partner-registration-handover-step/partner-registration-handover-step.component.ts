@@ -6,6 +6,7 @@ import {MatIcon} from '@angular/material/icon';
 import {RouterLink} from '@angular/router';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {ObAlertComponent, ObButtonDirective, ObSelectableGroupDirective} from '@oblique/oblique';
+import {getFormErrors} from 'src/app/shared/error-summary/error-summary-configuration.helper';
 import {AppRoutes} from '../../../../../app.routes';
 import {AppConfigService} from '../../../../../core/appconfig/app-config.service';
 import {ClipboardComponent} from '../../../../../shared/clipboard/clipboard.component';
@@ -78,6 +79,9 @@ export class PartnerRegistrationHandoverStepComponent extends AbstractOnboarding
   override validate(): Promise<boolean> {
     if (this.setupForm.invalid) {
       this.setupForm.markAllAsTouched();
+      this.onStepError(getFormErrors(this.setupForm, this.getTranslationKey));
+    } else {
+      this.onStepError?.([]);
     }
 
     if (this.setupForm.valid && !this.variantStepCompleted()) {
@@ -100,5 +104,9 @@ export class PartnerRegistrationHandoverStepComponent extends AbstractOnboarding
   private translateSetup() {
     this.translateService.get('eportal_onboarding_development_emailTemplate_subject');
     this.translateService.get('eportal_onboarding_development_emailTemplate_body');
+  }
+
+  private getTranslationKey(path: string): string {
+    return `eportal_global_${path}`;
   }
 }

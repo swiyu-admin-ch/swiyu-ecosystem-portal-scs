@@ -40,6 +40,7 @@ describe('ProtectedVerificationStepCategoryComponent', () => {
 
     fixture = TestBed.createComponent(ProtectedVerificationStepCategoryComponent);
     component = fixture.componentInstance;
+    component.onStepError = jest.fn();
     wizardService = TestBed.inject(ProtectedVerificationWizardService);
     wizardService.init('partner-001');
     fixture.detectChanges();

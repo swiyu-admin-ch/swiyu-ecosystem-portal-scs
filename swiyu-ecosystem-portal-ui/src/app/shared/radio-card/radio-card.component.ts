@@ -10,6 +10,7 @@ import {MatCard, MatCardContent} from '@angular/material/card';
 export class RadioCardComponent {
   dataCy = input.required();
   value = input.required();
+  id = input<string>('');
   checked = input<boolean>(false);
   hasError = input<boolean>(false);
   disabled = input<boolean>(false);

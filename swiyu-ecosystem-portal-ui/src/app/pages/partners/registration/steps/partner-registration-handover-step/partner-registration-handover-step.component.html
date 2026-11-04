@@ -12,7 +12,7 @@
       <span>{{ "eportal_onboarding_development_introText" | translate }}</span>
     </div>
     <div class="sw-wizard-lvl-3">
-      <h3>{{ "eportal_onboarding_development_sectionTitle_continue" | translate }}</h3>
+      <h3>{{ "eportal_global_setupVariant" | translate }}</h3>
 
       <form [formGroup]="setupForm" class="sw-setup-form">
         <div formControlName="setupVariant" role="radiogroup" obSelectableGroup class="sw-radio-card-container">
@@ -22,6 +22,7 @@
             [hasError]="setupForm.controls.setupVariant.hasError('required') && setupForm.controls.setupVariant.touched"
             [checked]="setupForm.get('setupVariant')?.value === SetupVariant.EXPERT"
             [dataCy]="'cardExpert'"
+            id="setupVariant"
           >
             <mat-icon cardIcon svgIcon="devhandover_expert" />
             <h6>{{ "eportal_onboarding_development_card_setup_expert" | translate }}</h6>
@@ -43,7 +44,7 @@
       @if (setupForm.controls.setupVariant.hasError("required") && setupForm.controls.setupVariant.touched) {
         <div class="sw-form-error">
           <mat-icon [svgIcon]="'exclamation_circle'" color="warn" />
-          <span class="caption">{{ "eportal_onboarding_development_error_continue" | translate }}</span>
+          <span class="caption">{{ "eportal_global_setupVariant_error_required" | translate }}</span>
         </div>
       }
     </div>

@@ -7,6 +7,7 @@ import {RouterLink} from '@angular/router';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {ObAlertComponent, ObButtonDirective, ObSelectableGroupDirective} from '@oblique/oblique';
 import {firstValueFrom} from 'rxjs';
+import {getFormErrors} from 'src/app/shared/error-summary/error-summary-configuration.helper';
 import {TrustOnboardingApi} from '../../../../../api/generated';
 import {AppRoutes} from '../../../../../app.routes';
 import {AppConfigService} from '../../../../../core/appconfig/app-config.service';
@@ -91,6 +92,9 @@ export class OnboardingStepTechnicalVerificationComponent extends AbstractOnboar
 
     if (this.setupForm.invalid) {
       this.setupForm.markAllAsTouched();
+      this.onStepError(getFormErrors(this.setupForm, this.getTranslationKey));
+    } else {
+      this.onStepError([]);
     }
 
     if (this.setupForm.valid && !this.variantStepCompleted() && this.anyVerificationMissing) {
@@ -163,4 +167,8 @@ export class OnboardingStepTechnicalVerificationComponent extends AbstractOnboar
   }
 
   protected readonly AppRoutes = AppRoutes;
+
+  private getTranslationKey(path: string): string {
+    return `eportal_global_${path}`;
+  }
 }

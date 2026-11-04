@@ -50,8 +50,6 @@ describe('BusinessPartnerDetailComponent', () => {
         'de-CH': 'Deutsch',
         'fr-CH': 'Fran�ais'
       },
-      contactEmailAddress: 'test@example.com',
-      contactPhone: '+41 12 345 67 89',
       type: BusinessPartner.TypeEnum.Business
     };
 
@@ -74,8 +72,6 @@ describe('BusinessPartnerDetailComponent', () => {
         'de-CH': 'Deutsch',
         'fr-CH': 'Français'
       },
-      contactEmailAddress: 'test@example.com',
-      contactPhone: '+41 12 345 67 89',
       type: BusinessPartner.TypeEnum.Business
     };
 

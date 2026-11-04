@@ -19,6 +19,7 @@ import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
 import {TranslateModule} from '@ngx-translate/core';
 import {ObButtonDirective, ObUnsavedChangesDirective} from '@oblique/oblique';
+import {getFormErrors} from 'src/app/shared/error-summary/error-summary-configuration.helper';
 import {IdentifierApi, IdentifierResponse, PagedModelIdentifierResponse} from '../../../../../api/generated';
 import {AppRoutes} from '../../../../../app.routes';
 import {IdentifierBaseOnboardingStatusComponent} from '../../../../../shared/identifier-base-onboarding-status/identifier-base-onboarding-status.component';
@@ -114,6 +115,18 @@ export class OnboardingStepDidsComponent extends AbstractOnboardingStepComponent
     const valid = this.isValid();
     if (!valid) {
       this.form.markAllAsTouched();
+      this.onStepError(
+        getFormErrors(
+          this.form,
+          this.getTranslatedPath,
+          ['labelChoose'],
+          this.getTranslatedPath,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          (_path: string) => 'mat-mdc-checkbox-0-input'
+        )
+      );
+    } else {
+      this.onStepError([]);
     }
     return valid;
   }
@@ -146,4 +159,9 @@ export class OnboardingStepDidsComponent extends AbstractOnboardingStepComponent
   }
 
   protected readonly AppRoutes = AppRoutes;
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private readonly getTranslatedPath = (_part: string): string => {
+    return 'eportal_global_adminDID_error_labelChoose';
+  };
 }

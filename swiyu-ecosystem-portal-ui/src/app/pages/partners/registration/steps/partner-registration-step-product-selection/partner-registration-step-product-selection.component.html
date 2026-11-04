@@ -10,76 +10,80 @@
     </h1>
     <span>{{ "eportal_onboarding_product_introText" | translate }}</span>
   </div>
+
   <div class="sw-wizard-lvl-3">
-    <h3>{{ "eportal_onboarding_product_sectionTitle_environment" | translate }}</h3>
-    <div class="sw-selection-card-group" role="radiogroup" obSelectableGroup>
-      <mat-card
-        role="radio"
-        [class.ob-selectable]="true"
-        class="sw-selection-card"
-        [attr.aria-label]="'eportal_onboarding_product_infrastructure_cardTitle' | translate"
-        [attr.aria-checked]="selection() === EnvironmentSelection.PRIMARY"
-        [attr.tabindex]="isPrimaryEnvironmentEnabled() ? 0 : -1"
-        [class.error-card]="environmentSelectionError()"
-        [class.ob-selected]="selection() === EnvironmentSelection.PRIMARY"
-        [class.sw-selection-card--selected]="selection() === EnvironmentSelection.PRIMARY"
-        [class.sw-selection-card--disabled]="!isPrimaryEnvironmentEnabled()"
-        (click)="isPrimaryEnvironmentEnabled() && selectEnvironment(EnvironmentSelection.PRIMARY)"
-        (keydown)="onEnvironmentCardKeydown($event, EnvironmentSelection.PRIMARY)"
-        data-cy="btnPrimaryEnvironment"
-      >
-        <img
-          class="env-selection-image"
-          mat-card-image
-          ngSrc="assets/images/environment_primary.svg"
-          alt=""
-          width="896"
-          height="896"
-        />
-        <mat-card-title>{{ "eportal_onboarding_product_infrastructure_cardTitle" | translate }}</mat-card-title>
-        <mat-card-content class="content">
-          <span>{{ "eportal_onboarding_product_infrastructure_cardDescription" | translate }}</span>
-        </mat-card-content>
-      </mat-card>
-      <mat-card
-        role="radio"
-        [class.ob-selectable]="true"
-        class="sw-selection-card"
-        [attr.aria-label]="'eportal_onboarding_product_playground_cardTitle' | translate"
-        [attr.aria-checked]="selection() === EnvironmentSelection.INTEGRATION"
-        [tabindex]="0"
-        [class.error-card]="environmentSelectionError()"
-        [class.ob-selected]="selection() === EnvironmentSelection.INTEGRATION"
-        [class.sw-selection-card--selected]="selection() === EnvironmentSelection.INTEGRATION"
-        (click)="selectEnvironment(EnvironmentSelection.INTEGRATION)"
-        (keydown)="onEnvironmentCardKeydown($event, EnvironmentSelection.INTEGRATION)"
-        data-cy="btnIntegrationEnvironment"
-      >
-        <img
-          class="env-selection-image"
-          mat-card-image
-          ngSrc="assets/images/environment_test.svg"
-          alt=""
-          width="896"
-          height="896"
-        />
-        <mat-card-title>{{ "eportal_onboarding_product_playground_cardTitle" | translate }}</mat-card-title>
-        <mat-card-content class="content">
-          <span>{{ "eportal_onboarding_product_playground_cardDescription" | translate }}</span>
-        </mat-card-content>
-      </mat-card>
-    </div>
+    <form [formGroup]="environmentForm">
+      <h3>{{ "eportal_onboarding_environment" | translate }}</h3>
+      <div class="sw-selection-card-group" role="radiogroup" obSelectableGroup>
+        <mat-card
+          role="radio"
+          [class.ob-selectable]="true"
+          class="sw-selection-card"
+          [attr.aria-label]="'eportal_onboarding_product_infrastructure_cardTitle' | translate"
+          [attr.aria-checked]="selection() === EnvironmentSelection.PRIMARY"
+          [attr.tabindex]="isPrimaryEnvironmentEnabled() ? 0 : -1"
+          [class.error-card]="environmentSelectionError()"
+          [class.ob-selected]="selection() === EnvironmentSelection.PRIMARY"
+          [class.sw-selection-card--selected]="selection() === EnvironmentSelection.PRIMARY"
+          [class.sw-selection-card--disabled]="!isPrimaryEnvironmentEnabled()"
+          (click)="isPrimaryEnvironmentEnabled() && selectEnvironment(EnvironmentSelection.PRIMARY)"
+          (keydown)="onEnvironmentCardKeydown($event, EnvironmentSelection.PRIMARY)"
+          data-cy="btnPrimaryEnvironment"
+          id="environment"
+        >
+          <img
+            class="env-selection-image"
+            mat-card-image
+            ngSrc="assets/images/environment_primary.svg"
+            alt=""
+            width="896"
+            height="896"
+          />
+          <mat-card-title>{{ "eportal_onboarding_product_infrastructure_cardTitle" | translate }}</mat-card-title>
+          <mat-card-content class="content">
+            <span>{{ "eportal_onboarding_product_infrastructure_cardDescription" | translate }}</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card
+          role="radio"
+          [class.ob-selectable]="true"
+          class="sw-selection-card"
+          [attr.aria-label]="'eportal_onboarding_product_playground_cardTitle' | translate"
+          [attr.aria-checked]="selection() === EnvironmentSelection.INTEGRATION"
+          [tabindex]="0"
+          [class.error-card]="environmentSelectionError()"
+          [class.ob-selected]="selection() === EnvironmentSelection.INTEGRATION"
+          [class.sw-selection-card--selected]="selection() === EnvironmentSelection.INTEGRATION"
+          (click)="selectEnvironment(EnvironmentSelection.INTEGRATION)"
+          (keydown)="onEnvironmentCardKeydown($event, EnvironmentSelection.INTEGRATION)"
+          data-cy="btnIntegrationEnvironment"
+        >
+          <img
+            class="env-selection-image"
+            mat-card-image
+            ngSrc="assets/images/environment_test.svg"
+            alt=""
+            width="896"
+            height="896"
+          />
+          <mat-card-title>{{ "eportal_onboarding_product_playground_cardTitle" | translate }}</mat-card-title>
+          <mat-card-content class="content">
+            <span>{{ "eportal_onboarding_product_playground_cardDescription" | translate }}</span>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </form>
     @if (environmentSelectionError()) {
       <div class="sw-form-error">
         <mat-icon [svgIcon]="'exclamation_circle'" color="warn" />
-        <span class="caption">{{ "eportal_onboarding_error_environment" | translate }}</span>
+        <span class="caption">{{ "eportal_onboarding_environment_error_required" | translate }}</span>
       </div>
     }
   </div>
   @if (showProducts()) {
     <form [formGroup]="trustLevelForm" class="sw-wizard-lvl-3" obSelectableGroup>
       <h3 [class.sw-error-title]="trustLevelForm.invalid && trustLevelForm.touched">
-        {{ "eportal_onboarding_product_sectionTitle_trustLevel" | translate }}
+        {{ "eportal_onboarding_trustLevel" | translate }}
       </h3>
       @if (isPreview()) {
         <div class="sw-selection-card-group" role="radiogroup">
@@ -164,6 +168,7 @@
             (click)="trustLevelForm.get('trustLevel')?.setValue(TrustLevel.TRUST)"
             (keydown)="onTrustLevelCardKeydown($event, TrustLevel.TRUST)"
             data-cy="btnTrustedPartner"
+            id="trustLevel"
           >
             <img
               mat-card-image
@@ -277,7 +282,7 @@
       @if (trustLevelForm.controls.trustLevel.hasError("required") && trustLevelForm.controls.trustLevel.touched) {
         <div class="sw-form-error">
           <mat-icon class="card-product-icon" [svgIcon]="'exclamation_circle'" color="warn" />
-          <span class="caption">{{ "eportal_onboarding_error_trustLevel" | translate }}</span>
+          <span class="caption">{{ "eportal_onboarding_trustLevel_error_required" | translate }}</span>
         </div>
       }
     </form>

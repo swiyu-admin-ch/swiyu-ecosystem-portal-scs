@@ -1,5 +1,10 @@
 <div class="introduction">
   <div class="introduction-top">
+    <app-stateful-alert storageKey="initialPartnerRegistrationExpirationWarning" type="warning">
+      <ng-container notification-content>
+        {{ "app_site_onboarding_trust_expiration_notice" | translate }}
+      </ng-container>
+    </app-stateful-alert>
     <h1>{{ "eportal_onboardingTR_overview_pageTitle" | translate }}</h1>
     <div class="introduction-partner-info">
       <span class="caption">{{ "eportal_global_label_selectedProfile" | translate }}</span>

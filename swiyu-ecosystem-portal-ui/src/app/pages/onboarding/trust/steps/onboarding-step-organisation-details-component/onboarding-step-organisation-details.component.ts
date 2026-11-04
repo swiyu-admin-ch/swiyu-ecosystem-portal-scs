@@ -23,6 +23,7 @@ import {
   ObUnsavedChangesDirective
 } from '@oblique/oblique';
 import {combineLatest, map, startWith} from 'rxjs';
+import {getFormErrors} from 'src/app/shared/error-summary/error-summary-configuration.helper';
 import {
   BusinessPartner,
   PartnerCreationRequest,
@@ -127,6 +128,7 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
   protected readonly DUPLICATE_LANGUAGE_ERROR = DUPLICATE_LANGUAGE_ERROR;
   private readonly fb = inject(NonNullableFormBuilder);
   readonly form = this.fb.group({
+    uid: this.fb.control<string>(''),
     partnerType: this.fb.control<PartnerTypeEnum | null>(null, Validators.required),
     hasUid: this.fb.control<boolean>(false),
     entityNameDefault: this.fb.control('', [Validators.required, CustomValidators.notBlank()]),
@@ -148,7 +150,6 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
     }),
     signingRule: this.fb.control<SigningRuleEnum | null>(SigningRuleEnum.JointSignatureTwo),
     signatories: this.fb.array<SignatoryFormGroup>([]),
-    uid: this.fb.control<string>(''),
     readTermsAndConditions: this.fb.control<boolean>(false, Validators.requiredTrue),
     readPrivacyPolicy: this.fb.control<boolean>(false, Validators.requiredTrue)
   });
@@ -294,6 +295,11 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
 
     if (!isValid) {
       this.form.markAllAsTouched();
+      this.onStepError(
+        getFormErrors(this.form, this.getTranslationKey, ['readTermsAndConditions', 'readPrivacyPolicy'])
+      );
+    } else {
+      this.onStepError([]);
     }
 
     return isValid;
@@ -476,4 +482,26 @@ export class OnboardingStepOrganisationDetailsComponent extends AbstractOnboardi
     this.translateService.get('eportal_onboarding_profile_inputLabel_language_error_duplicate');
     this.translateService.get('eportal_onboarding_profile_btn_removeNameTranslation_aria');
   }
+
+  private readonly getTranslationKey = (part: string): string => {
+    if (part.includes('signatories')) {
+      return `eportal_onboardingTR_addDetails_${part}`;
+    }
+
+    switch (part) {
+      case 'dids':
+        return `eportal_onboardingTR_selectDID_sectionTitle`;
+      case 'uploadedFiles':
+        return `eportal_onboardingTR_formalProof_sectionTitle_electronicSignature`;
+      case 'contactPerson':
+      case 'entityAddress':
+      case 'entityNameDefault':
+        return `app_site_onboarding_trust_${part}`;
+      case 'name':
+        return `eportal_onboarding_name`;
+
+      default:
+        return `eportal_global_${part}`;
+    }
+  };
 }

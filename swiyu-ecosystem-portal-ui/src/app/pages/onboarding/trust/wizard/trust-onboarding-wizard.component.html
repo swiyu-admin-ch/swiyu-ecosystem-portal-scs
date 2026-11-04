@@ -13,6 +13,8 @@
       }
     </mat-horizontal-stepper>
     <div class="step-content-container">
+      <app-error-summary [errors]="errors()" />
+
       <router-outlet (activate)="onStepActivated($event)" />
     </div>
   }

@@ -1,6 +1,12 @@
 <div class="sw-upload-container">
-  @if (uploadedFiles().length === 0 && !uploadItem() && !disabled()) {
-    <ob-drop-zone [accept]="['.pdf']" [maxFileSize]="10" [multiple]="false" (uploadEvent)="onFilesChosen($event)" />
+  @if (uploadedFiles().length === 0 && !uploadItem()) {
+    <ob-drop-zone
+      [accept]="['.pdf']"
+      [maxFileSize]="10"
+      [multiple]="false"
+      (uploadEvent)="onFilesChosen($event)"
+      [id]="id()"
+    />
   } @else {
     <div class="sw-file-info">
       <div>{{ "eportal_global_uploadArea_title" | translate }}</div>

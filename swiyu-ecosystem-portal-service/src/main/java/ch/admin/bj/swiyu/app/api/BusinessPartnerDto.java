@@ -15,7 +15,6 @@ public record BusinessPartnerDto(
     @NotNull
     @ValidLocalizedMap
     Map<String, String> entityName,
-    @NotBlank String contactEmailAddress,
     @Schema(description = "Type of the partner") @NotNull BusinessPartnerTypeDto type,
     @Schema(description = "User paid for trust onboarding") boolean payedForTrustVerification,
     @Schema(description = "Number of DID slots the user paid for already") int payedForDIDSlots,
@@ -24,7 +23,6 @@ public record BusinessPartnerDto(
     @Schema(description = "Enterprise identification number of the partner") String uid,
     @Schema(description = "Address of the partner") AddressDto address,
     @Schema(description = "Contact person details") ContactDto contact,
-    @NotBlank String contactPhone,
     @Schema(description = "Aggregated state of the trust process for this business partner")
     BusinessPartnerTrustStatusDto trustVerificationStatus,
     @Schema(description = "Time limit, if necessary, of the current aggregated state of the trust process")

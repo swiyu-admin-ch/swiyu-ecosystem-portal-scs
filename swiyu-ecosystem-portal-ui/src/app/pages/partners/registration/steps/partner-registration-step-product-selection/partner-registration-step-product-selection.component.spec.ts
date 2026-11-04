@@ -85,6 +85,7 @@ describe('PartnerRegistrationStepProductSelectionComponent', () => {
   const createComponent = () => {
     fixture = TestBed.createComponent(PartnerRegistrationStepProductSelectionComponent);
     component = fixture.componentInstance;
+    component.onStepError = jest.fn();
   };
 
   // ── Onboarding route ──────────────────────────────────────────────────────────

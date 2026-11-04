@@ -8,6 +8,7 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslatePipe} from '@ngx-translate/core';
 import {ObButtonModule, ObSelectableGroupDirective} from '@oblique/oblique';
+import {getFormErrors} from 'src/app/shared/error-summary/error-summary-configuration.helper';
 import {EnvironmentsConfig} from '../../../../../api/generated';
 import {AppRoutes} from '../../../../../app.routes';
 import {AppConfigService} from '../../../../../core/appconfig/app-config.service';
@@ -69,6 +70,9 @@ export class PartnerRegistrationStepProductSelectionComponent
   private readonly isOnIntegrationEnvironment = signal(false);
   private readonly fb = inject(FormBuilder);
 
+  readonly environmentForm = this.fb.group({
+    environment: this.fb.control<EnvironmentSelection | null>(null, Validators.required)
+  });
   readonly trustLevelForm = this.fb.group({
     trustLevel: this.fb.control<TrustLevel | null>(null, Validators.required)
   });
@@ -107,6 +111,8 @@ export class PartnerRegistrationStepProductSelectionComponent
     const isValid = this.trustLevelForm.valid;
     if (!isValid) {
       this.trustLevelForm.markAllAsTouched();
+      const errors = getFormErrors(this.trustLevelForm, this.getPathTranslationKey);
+      this.onStepError(errors);
     }
     return isValid;
   }
@@ -121,6 +127,7 @@ export class PartnerRegistrationStepProductSelectionComponent
       if (env === EnvironmentSelection.PRIMARY && !this.isPrimaryEnvironmentEnabled()) {
         return;
       }
+      this.environmentForm.get('environment')?.setValue(env);
       this.selectEnvironment(env);
     }
   }
@@ -133,6 +140,7 @@ export class PartnerRegistrationStepProductSelectionComponent
   }
 
   selectEnvironment(env: EnvironmentSelection): void {
+    this.environmentForm.get('environment')?.setValue(env);
     this.selection.set(env);
     this.environmentSelectionError.set(false);
 
@@ -142,8 +150,11 @@ export class PartnerRegistrationStepProductSelectionComponent
   }
 
   proceedToProducts(): void {
-    if (!this.selection()) {
+    this.environmentForm.markAllAsTouched();
+
+    if (!this.environmentForm.valid) {
       this.environmentSelectionError.set(true);
+      this.onStepError(getFormErrors(this.environmentForm, this.getPathTranslationKey));
       return;
     }
 
@@ -151,6 +162,7 @@ export class PartnerRegistrationStepProductSelectionComponent
       return;
     }
 
+    this.onStepError([]);
     this.showProducts.set(true);
   }
 
@@ -190,4 +202,17 @@ export class PartnerRegistrationStepProductSelectionComponent
     const environmentUrl = parseEnvironmentUrl(baseUrl, this.document.location.protocol);
     return environmentUrl ? `${environmentUrl.origin}${this.onboardingRoute}` : null;
   }
+
+  private readonly getPathTranslationKey = (part: string): string => {
+    switch (part) {
+      case 'environment':
+      case 'trustLevel':
+      case 'name':
+      case 'address':
+      case 'contact':
+        return `eportal_onboarding_${part}`;
+      default:
+        return `eportal_global_${part}`;
+    }
+  };
 }

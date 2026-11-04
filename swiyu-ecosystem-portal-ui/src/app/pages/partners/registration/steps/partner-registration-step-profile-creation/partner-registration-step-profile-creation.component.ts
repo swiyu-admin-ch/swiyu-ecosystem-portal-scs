@@ -17,6 +17,7 @@ import {
   ObSelectableGroupDirective,
   ObUnsavedChangesDirective
 } from '@oblique/oblique';
+import {getFormErrors} from 'src/app/shared/error-summary/error-summary-configuration.helper';
 import {PartnerCreationRequest, TrustOnboardingSubmission} from '../../../../../api/generated';
 import {AppConfigService} from '../../../../../core/appconfig/app-config.service';
 import {UserProfileService} from '../../../../../core/user/user-profile.service';
@@ -121,13 +122,19 @@ export class PartnerRegistrationStepProfileCreationComponent extends AbstractOnb
   private readonly destroyRef = inject(DestroyRef);
   showAllowlistProcess(): boolean {
     return (
-      this.form.controls.partnerType.value === PartnerTypeEnum.GovernmentalInstitution &&
+      this.partnerSelectionForm.controls.partnerType.value === PartnerTypeEnum.GovernmentalInstitution &&
       !this.isGovernmentalAllowlistUser()
     );
   }
 
-  readonly form = this.fb.group({
-    partnerType: this.fb.control<PartnerTypeEnum | undefined>(undefined, Validators.required),
+  /*
+   * Small for that encapsulates the parter selection from the partner registration as it is handled in a seperate step with seperate validation
+   */
+  readonly partnerSelectionForm = this.fb.group({
+    partnerType: this.fb.control<PartnerTypeEnum | undefined>(undefined, Validators.required)
+  });
+
+  readonly partnerRegistrationForm = this.fb.group({
     uid: this.fb.control<string | undefined>(undefined, CustomValidators.swissUid()),
     name: this.fb.control<string>('', [Validators.required, CustomValidators.notBlank()]),
     address: this.fb.group({
@@ -151,12 +158,12 @@ export class PartnerRegistrationStepProfileCreationComponent extends AbstractOnb
   constructor() {
     super();
     this.translateSetup();
-    this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      if (this.form.valid) {
-        const value = this.form.getRawValue();
+    this.partnerRegistrationForm.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      if (this.partnerRegistrationForm.valid) {
+        const value = this.partnerRegistrationForm.getRawValue();
         this.wizardService.updatePartnerDetails({
           organizationName: value.name!,
-          businessPartnerType: value.partnerType!,
+          businessPartnerType: this.partnerSelectionForm.controls.partnerType.value!,
           uid: value.uid ?? undefined,
           address: {
             street: value.address.street ?? undefined,
@@ -176,35 +183,47 @@ export class PartnerRegistrationStepProfileCreationComponent extends AbstractOnb
       }
     });
 
-    this.form.controls.partnerType.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(partnerType => {
-      const uid = this.form.controls.uid;
-      if (partnerType == PartnerTypeEnum.GovernmentalInstitution) {
-        uid.setValidators([Validators.required, CustomValidators.swissUid()]);
-      } else {
-        uid.setValidators([CustomValidators.swissUid()]);
-      }
-      uid.updateValueAndValidity();
-    });
+    this.partnerSelectionForm.controls.partnerType.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(partnerType => {
+        const uid = this.partnerRegistrationForm.controls.uid;
+        if (partnerType == PartnerTypeEnum.GovernmentalInstitution) {
+          uid.setValidators([Validators.required, CustomValidators.swissUid()]);
+        } else {
+          uid.setValidators([CustomValidators.swissUid()]);
+        }
+        uid.updateValueAndValidity();
+      });
   }
 
   override async validate(): Promise<boolean> {
-    const isValid = this.form.valid;
+    const isValid = this.partnerRegistrationForm.valid;
 
     if (this.firstStepCompleted()) {
       if (!isValid) {
-        this.form.markAllAsTouched();
+        this.partnerRegistrationForm.markAllAsTouched();
+        const ignored = ['confirmedCorrectness', 'readTermsAndConditions', 'readDataProtection'];
+        console.log('errors', getFormErrors(this.partnerRegistrationForm, this.getPathTranslationKey, ignored));
+        this.onStepError?.(getFormErrors(this.partnerRegistrationForm, this.getPathTranslationKey, ignored));
+      } else {
+        this.onStepError?.([]);
       }
 
       return isValid;
     } else {
-      this.form.controls.partnerType.markAsTouched();
-      this.firstStepCompleted.set(this.form.controls.partnerType.valid);
+      this.partnerSelectionForm.controls.partnerType.markAsTouched();
+
+      const errors = getFormErrors(this.partnerSelectionForm, this.getPartnerTranslationKey);
+      console.log('errors', errors);
+      const isPartnerStepValid = this.partnerSelectionForm.controls.partnerType.valid;
+      this.onStepError?.(errors);
+      this.firstStepCompleted.set(isPartnerStepValid);
       return false;
     }
   }
 
   override isValid(): boolean {
-    return this.form.valid;
+    return this.partnerRegistrationForm.valid;
   }
 
   private translateSetup() {
@@ -213,4 +232,22 @@ export class PartnerRegistrationStepProfileCreationComponent extends AbstractOnb
     this.translateService.get('eportal_onboarding_profile_infoText_organisation');
     this.translateService.get('eportal_onboarding_profile_infoText_organisation_preview');
   }
+
+  getPartnerTranslationKey = (part: string): string => {
+    return `eportal_global_${part}`;
+  };
+
+  private readonly getPathTranslationKey = (part: string): string => {
+    switch (part) {
+      // ignore
+      case 'environment':
+      case 'trustLevel':
+      case 'name':
+      case 'address':
+      case 'contact':
+        return `eportal_onboarding_${part}`;
+      default:
+        return `eportal_global_${part}`;
+    }
+  };
 }

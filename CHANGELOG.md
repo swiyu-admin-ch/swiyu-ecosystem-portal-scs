@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.2.2
+
+### Fixed
+
+- Fix sonar finding Duplicate id "partnerType"
+
+## 2.2.1
+
+### Changed
+
+- Upgrade the jEAP Spring Boot parent from 41.29.1 to 41.30.0
+
+### Fixed
+
+- Pin `@angular-devkit/build-angular` 21.2.29 with an npm override: it is only installed as a peer dependency of `@angular-builders/jest` and stayed on 21.2.25, which brought its own `undici` 7.29.1 and `vite` 7.3.6 (SNYK-JS-UNDICI-21181005/-21181009/-21181011/-21181013/-21181015/-21181017/-21181019/-21185768, SNYK-JS-VITE-21282024)
+- Override `open` 11 inside `webpack-dev-server`: it still declared `open` 10, which is vulnerable (SNYK-JS-OPEN-22112123)
+- Refresh the UI lock file so that `webpack-dev-server` > `express` 4 resolves `body-parser` 1.20.9 instead of 1.20.8 (SNYK-JS-BODYPARSER-21431495)
+- Remove the obsolete `handlebars`, `basic-ftp` and `follow-redirects` overrides: the current dependency graph no longer resolves vulnerable versions of them
+- Ignore SNYK-JS-FLAT-22148819 for 14 days: no fixed `flat` release exists for the `flat ^5.0.2` range required by `webpack-merge` 6.0.1
+
+## 2.2.0
+
+### Changed
+
+- Remove the deprecated flat contact fields `contactEmailAddress` and `contactPhone` from `BusinessPartner`; contact data is now read only from the nested `contact` object
+
 ## 2.1.9
 
 ### Changed
@@ -43,6 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 2.1.5
 
 ### Added
+
 - The Business Partner detail page now displays an additional notification after a DID is initialized. This behavior is triggered by the notification query parameter in the link included in the success notification email.
 
 ## 2.1.4
