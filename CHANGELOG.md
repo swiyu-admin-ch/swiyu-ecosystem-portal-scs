@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.2.7
+
+### Fixed
+
+- Name the Core Business Service consistently in the health check log messages of the portal service; the final error log no longer claimed that the check was for the management business service, which pointed operators at the wrong service when the Core Business Service health check failed
+
+## 2.2.6
+
+### Fixed
+
+- Override `undici` 7.30.2 inside `@angular/build`: it pins `undici` 7.30.1, which is affected by five high and critical advisories (SNYK-JS-UNDICI-22290988/-22291066/-22291102/-22291127/-22370261; CVE-2026-116592 is the critical one). The override is deliberately scoped to `@angular/build`: a global `undici` override clashes with `jsdom` 30, which requires `undici` 8
+- Override `basic-ftp` 6.2.6 inside `get-uri`: `@openapitools/openapi-generator-cli` > `proxy-agent` > `pac-proxy-agent` > `get-uri` resolves `basic-ftp` 5.3.1 (SNYK-JS-BASICFTP-20419408, CVE-2026-102990), and `get-uri` 8.0.1 still declares `basic-ftp ^5.3.1`, so there is no upstream upgrade path. 6.2.6 additionally closes the path traversal in `downloadToDir` (GHSA-2w5v-vj22-jp27) and the other issues fixed in 6.2.2 to 6.2.6
+- Refresh the expired `SNYK-JS-BRACES-19963945` ignore (CVE-2026-93687): `braces` 3.0.3 is the latest published release, so there is nothing to upgrade to, and the vulnerable paths only expand glob patterns taken from project configuration
+- Refresh the 11 expired RHEL9 base-image ignores for `curl-minimal`/`libcurl-minimal` 7.76.1-40.el9_8.9 to 2027-02-09: no fix is available for them in `eclipse-temurin:25-jre-ubi9-minimal`
+
+## 2.2.5
+
+### Changed
+
+- Upgrade the jEAP Spring Boot parent from 41.33.0 to 41.34.0
+- Remove the obsolete `@angular-devkit/build-angular` npm override: the Angular build tooling still resolves to 21.2.29 without it
+
 ## 2.2.4
 
 ### Changed

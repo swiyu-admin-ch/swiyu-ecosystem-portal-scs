@@ -45,7 +45,7 @@ public class HealthIndicatorConfiguration {
         Exception lastException = null;
         for (var attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
             try {
-                log.debug("checking health of core business service (attempt {}/{})...", attempt, MAX_ATTEMPTS);
+                log.debug("checking health of Core Business Service (attempt {}/{})...", attempt, MAX_ATTEMPTS);
                 var health = coreBusinessServiceActuatorApi.health();
                 validateIsUp(health);
                 return Health.up().build();
@@ -53,7 +53,7 @@ public class HealthIndicatorConfiguration {
                 lastException = e;
                 if (attempt < MAX_ATTEMPTS) {
                     log.warn(
-                        "health check of core business service failed on attempt {}/{}, retrying...",
+                        "health check of Core Business Service failed on attempt {}/{}, retrying...",
                         attempt,
                         MAX_ATTEMPTS,
                         e
@@ -62,7 +62,7 @@ public class HealthIndicatorConfiguration {
                 }
             }
         }
-        log.error("health check failed for management business service", lastException);
+        log.error("health check failed for Core Business Service", lastException);
         return Health.down().withException(lastException).build();
     }
 

@@ -65,7 +65,7 @@ ignore:
           New CVE-2026-93687 with no fixed version of braces available (registry
           mirrors only up to 3.0.3). Not shipped to production. Track upstream
           build-angular/Angular 22 upgrade (EID-6915).
-        expires: 2026-11-09T09:00:00.000Z
+        expires: 2027-02-09T09:00:00.000Z
         created: 2026-09-21T00:00:00.000Z
   SNYK-JS-PICOMATCH-21248802:
     - '*':
