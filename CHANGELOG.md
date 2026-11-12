@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.2.9
+
+### Fixed
+
+- Fix route of overview button in trust onboarding if auto approval is disabled
+- Add data-cy for tests on back to BP overview button
+
+## 2.2.8
+
+### Changed
+
+- Upgrade the jEAP Spring Boot parent from 41.34.0 to 41.36.0
+- Drop the Snyk ignores that no longer match any finding: the ubi9 base-image curl/libacl entries, plus vite,
+  image-size, fasturi, undici, picomatch, uri-js and http-cache-semantics - the dependency upgrades and the
+  `undici` override in the UI's package.json cover them now
+- Override undici to 8.12.4 inside jsdom: jsdom 30.1.3 resolves undici 8.12.3, which is affected by the critical
+  SNYK-JS-UNDICI-22291102 and the five high SNYK-JS-UNDICI findings
+- Renew the flat ignore in both policy files for 14 days: webpack-merge still requires the unfixed flat 5.x
+
 ## 2.2.7
 
 ### Fixed

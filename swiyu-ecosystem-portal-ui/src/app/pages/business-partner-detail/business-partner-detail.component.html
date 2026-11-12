@@ -1,7 +1,13 @@
 <div>
   @if (businessPartner() !== undefined) {
     <nav class="sectionNavigation">
-      <a [routerLink]="AppRoutes.businessPartnerOverviewV2()" mat-button obButton="tertiary" tabindex="0">
+      <a
+        [routerLink]="AppRoutes.businessPartnerOverviewV2()"
+        data-cy="btnBackToBusinessPartnerOverview"
+        mat-button
+        obButton="tertiary"
+        tabindex="0"
+      >
         <mat-icon svgIcon="chevron_left" />
         {{ "eportal_global_btn_backToAdminOverview" | translate }}
       </a>
@@ -24,8 +30,8 @@
       </app-stateful-alert>
       <app-stateful-alert
         [visible]="alertTrustOnboardingInformationRequestedVisible()"
-        storageKey="alertTrustOnboardingInformationRequested"
         storage="session"
+        storageKey="alertTrustOnboardingInformationRequested"
         type="warning"
       >
         <ng-container notification-content>
@@ -48,12 +54,12 @@
         </div>
       </div>
       <app-business-partner-detail-actions
+        [businessPartnerId]="businessPartnerId()"
         [businessPartner]="businessPartner()"
         [identifiers]="dataSource.data"
+        [remainingDidSlots]="remainingDidSlots()"
         [trustOnboardingSubmission]="trustOnboardingSubmission()"
         [verificationProgress]="verificationProgress()"
-        [businessPartnerId]="businessPartnerId()"
-        [remainingDidSlots]="remainingDidSlots()"
       />
     </div>
 
@@ -67,8 +73,8 @@
     <div class="ob-flex did-alerts">
       <app-stateful-alert
         [visible]="didAddedNotificationVisible()"
-        storageKey="didAddedNotificationVisible"
         storage="session"
+        storageKey="didAddedNotificationVisible"
         type="success"
       >
         <ng-container notification-content>
@@ -170,8 +176,8 @@
         <mat-paginator
           [pageSizeOptions]="[5, 10, 25, 100]"
           [pageSize]="10"
-          [style.visibility]="totalDIDs() > 10 ? 'visible' : 'hidden'"
           [showFirstLastButtons]="true"
+          [style.visibility]="totalDIDs() > 10 ? 'visible' : 'hidden'"
           aria-label="{{ 'eportal_global_adminDID_paginator_aria_label' | translate }}"
           class="ob-grow-2"
         />

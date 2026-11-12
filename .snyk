@@ -2,62 +2,6 @@
 version: v1.25.1
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
-
-  SNYK-RHEL9-LIBCURLMINIMAL-17878844:
-    - '*':
-        reason: No fix available in ubi9 JRE base image yet
-        expires: 2027-02-09T09:00:00.000Z
-        created: 2026-08-26T11:45:25.164Z
-  SNYK-RHEL9-LIBCURLMINIMAL-17878854:
-    - '*':
-        reason: No fix available in ubi9 JRE base image yet
-        expires: 2027-02-09T09:00:00.000Z
-        created: 2026-08-26T11:45:25.164Z
-  SNYK-RHEL9-LIBCURLMINIMAL-17878878:
-    - '*':
-        reason: No fix available in ubi9 JRE base image yet
-        expires: 2027-02-09T09:00:00.000Z
-        created: 2026-08-26T11:45:25.164Z
-  SNYK-RHEL9-LIBCURLMINIMAL-17878902:
-    - '*':
-        reason: No fix available in ubi9 JRE base image yet
-        expires: 2027-02-09T09:00:00.000Z
-        created: 2026-08-26T11:45:25.164Z
-  SNYK-RHEL9-LIBCURLMINIMAL-17878931:
-    - '*':
-        reason: No fix available in ubi9 JRE base image yet
-        expires: 2027-02-09T09:00:00.000Z
-        created: 2026-08-26T11:45:25.164Z
-  SNYK-RHEL9-CURLMINIMAL-17878836:
-    - '*':
-        reason: No fix available in ubi9 JRE base image yet
-        expires: 2027-02-09T09:00:00.000Z
-        created: 2026-08-26T11:45:25.164Z
-  SNYK-RHEL9-CURLMINIMAL-17878850:
-    - '*':
-        reason: No fix available in ubi9 JRE base image yet
-        expires: 2027-02-09T09:00:00.000Z
-        created: 2026-08-26T11:45:25.164Z
-  SNYK-RHEL9-CURLMINIMAL-17878882:
-    - '*':
-        reason: No fix available in ubi9 JRE base image yet
-        expires: 2027-02-09T09:00:00.000Z
-        created: 2026-08-26T11:45:25.164Z
-  SNYK-RHEL9-CURLMINIMAL-17878900:
-    - '*':
-        reason: No fix available in ubi9 JRE base image yet
-        expires: 2027-02-09T09:00:00.000Z
-        created: 2026-08-26T11:45:25.164Z
-  SNYK-RHEL9-CURLMINIMAL-17878929:
-    - '*':
-        reason: No fix available in ubi9 JRE base image yet
-        expires: 2027-02-09T09:00:00.000Z
-        created: 2026-08-26T11:45:25.164Z
-  SNYK-RHEL9-LIBACL-17713920:
-    - '*':
-        reason: No fix available in ubi9 JRE base image yet
-        expires: 2027-02-09T09:00:00.000Z
-        created: 2026-07-01T12:25:16.970Z
   SNYK-JS-BRACES-19963945:
     - '*':
         reason: >-
@@ -69,57 +13,6 @@ ignore:
           never part of the shipped bundle.
         expires: 2027-02-09T09:00:00.000Z
         created: 2026-11-09T09:45:00.000Z
-  SNYK-JS-IMAGESIZE-17295814:
-    - '*':
-        reason: >-
-          Transitive build-time-only dependency via
-          @angular-devkit/build-angular > less. The fix requires image-size 1.x,
-          which is API-incompatible with less 4.4.2 (less calls it as a function).
-          Track upstream less/build-angular update.
-        expires: 2026-11-09T09:00:00.000Z
-        created: 2026-08-31T00:00:00.000Z
-  SNYK-JS-IMAGESIZE-17295816:
-    - '*':
-        reason: >-
-          Transitive build-time-only dependency via
-          @angular-devkit/build-angular > less. The fix requires image-size 1.x,
-          which is API-incompatible with less 4.4.2 (less calls it as a function).
-          Track upstream less/build-angular update.
-        expires: 2026-11-09T09:00:00.000Z
-        created: 2026-08-31T00:00:00.000Z
-  SNYK-JS-PICOMATCH-21248802:
-    - '*':
-        reason: >-
-          No fixed version exists yet (CVE-2026-112366); the advisory states no fixed release and the
-          vulnerable code is still present in the latest picomatch 4.0.7. Reached through Angular
-          schematics/build tooling (@angular-devkit/core), which matches glob patterns from project
-          configuration rather than untrusted runtime input. Track the upstream fix.
-        expires: 2026-11-11T09:00:00.000Z
-        created: 2026-10-28T09:00:00.000Z
-  SNYK-JS-URIJS-19963963:
-    - '*':
-        reason: >-
-          No fixed uri-js release exists (4.4.1 is the latest). Pulled in transitively
-          via eslint > ajv 6; lint/build tooling only, never shipped in the bundle.
-          Track the upstream fix.
-        expires: 2026-11-13T09:00:00.000Z
-        created: 2026-10-30T00:00:00.000Z
-  SNYK-JS-HTTPCACHESEMANTICS-19964064:
-    - '*':
-        reason: >-
-          No fixed http-cache-semantics release exists; the vulnerable copy is pulled in
-          by the @angular/cli tooling and is only replaced by the Angular CLI 22 major
-          upgrade (EID-6533). Build-time only.
-        expires: 2026-11-13T09:00:00.000Z
-        created: 2026-10-30T00:00:00.000Z
-  SNYK-JS-HTTPCACHESEMANTICS-19964068:
-    - '*':
-        reason: >-
-          No fixed http-cache-semantics release exists; the vulnerable copy is pulled in
-          by the @angular/cli tooling and is only replaced by the Angular CLI 22 major
-          upgrade (EID-6533). Build-time only.
-        expires: 2026-11-13T09:00:00.000Z
-        created: 2026-10-30T00:00:00.000Z
   SNYK-JS-FLAT-22148819:
     - '*':
         reason: >-
@@ -128,6 +21,6 @@ ignore:
           webpack-merge. Reached only through the Angular build tooling
           (@angular-devkit/build-angular > webpack-merge), never shipped in the bundle.
           Track the upstream fix.
-        expires: 2026-11-17T09:00:00.000Z
+        expires: 2026-11-25T09:00:00.000Z
         created: 2026-11-03T09:00:00.000Z
 patch:

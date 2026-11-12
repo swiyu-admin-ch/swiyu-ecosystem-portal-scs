@@ -2,61 +2,6 @@
 version: v1.25.1
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
-  SNYK-JS-VITE-17353904:
-    - '*':
-        reason: 'Need to upgrade to angular 22; ticket created: EID-6533'
-        expires: 2026-11-09T09:00:00.000Z
-        created: 2026-08-31T00:00:00.000Z
-  SNYK-JS-IMAGESIZE-17295816:
-    - '*':
-        reason: 'Transitive build-time-only dep via build-angular > less; no upgrade/patch available. Track upstream less/build-angular update (EID-6533).'
-        expires: 2026-11-09T09:00:00.000Z
-        created: 2026-08-31T00:00:00.000Z
-  SNYK-JS-IMAGESIZE-17295814:
-    - '*':
-        reason: 'Transitive build-time-only dep via build-angular > less; no upgrade/patch available. Track upstream less/build-angular update (EID-6533).'
-        expires: 2026-11-09T09:00:00.000Z
-        created: 2026-08-31T00:00:00.000Z
-  SNYK-JS-FASTURI-17675102:
-    - '*':
-        reason: 'Need to upgrade to oblique 14; ticket created: EID-6533'
-        expires: 2026-11-09T09:00:00.000Z
-        created: 2026-08-31T00:00:00.000Z
-  SNYK-JS-UNDICI-19635206:
-    - '*':
-        reason: 'undici@7.29.0 pulled by @angular/build@21.2.22; only fixed by the Angular 22 upgrade. Ticket: EID-6533'
-        expires: 2026-11-09T09:00:00.000Z
-        created: 2026-09-07T00:00:00.000Z
-  SNYK-JS-UNDICI-19635208:
-    - '*':
-        reason: 'undici@7.29.0 pulled by @angular/build@21.2.22; only fixed by the Angular 22 upgrade. Ticket: EID-6533'
-        expires: 2026-11-09T09:00:00.000Z
-        created: 2026-09-07T00:00:00.000Z
-  SNYK-JS-UNDICI-19635210:
-    - '*':
-        reason: 'undici@7.29.0 pulled by @angular/build@21.2.22; only fixed by the Angular 22 upgrade. Ticket: EID-6533'
-        expires: 2026-11-09T09:00:00.000Z
-        created: 2026-09-07T00:00:00.000Z
-  SNYK-JS-UNDICI-19635216:
-    - '*':
-        reason: 'undici@7.29.0 pulled by @angular/build@21.2.22; only fixed by the Angular 22 upgrade. Ticket: EID-6533'
-        expires: 2026-11-09T09:00:00.000Z
-        created: 2026-09-07T00:00:00.000Z
-  SNYK-JS-UNDICI-19635218:
-    - '*':
-        reason: 'undici@7.29.0 pulled by @angular/build@21.2.22; only fixed by the Angular 22 upgrade. Ticket: EID-6533'
-        expires: 2026-11-09T09:00:00.000Z
-        created: 2026-09-07T00:00:00.000Z
-  SNYK-JS-UNDICI-19635222:
-    - '*':
-        reason: 'undici@7.29.0 pulled by @angular/build@21.2.22; only fixed by the Angular 22 upgrade. Ticket: EID-6533'
-        expires: 2026-11-09T09:00:00.000Z
-        created: 2026-09-07T00:00:00.000Z
-  SNYK-JS-UNDICI-19635226:
-    - '*':
-        reason: 'undici@7.29.0 pulled by @angular/build@21.2.22; only fixed by the Angular 22 upgrade. Ticket: EID-6533'
-        expires: 2026-11-09T09:00:00.000Z
-        created: 2026-09-07T00:00:00.000Z
   SNYK-JS-BRACES-19963945:
     - '*':
         reason: >-
@@ -67,44 +12,6 @@ ignore:
           build-angular/Angular 22 upgrade (EID-6915).
         expires: 2027-02-09T09:00:00.000Z
         created: 2026-09-21T00:00:00.000Z
-  SNYK-JS-PICOMATCH-21248802:
-    - '*':
-        reason: >-
-          Transitive build-time-only dependency via @angular/build,
-          @angular-builders/jest > @angular-devkit/build-angular and
-          webpack-dev-server. New CVE-2026-112366 with no fixed version of
-          picomatch available (4.0.7 is the latest and is affected, the flaw is
-          in analyzeRepeatedExtglob, the code added to fix CVE-2026-33671); the
-          @angular-devkit/build-angular 22.2.3 upgrade Snyk suggests pins
-          picomatch 4.0.7 as well. Glob patterns come from our own build config,
-          never from untrusted input, and picomatch is not shipped to
-          production. Track upstream picomatch fix (EID-6992).
-        expires: 2026-11-09T09:00:00.000Z
-        created: 2026-10-20T00:00:00.000Z
-  SNYK-JS-URIJS-19963963:
-    - '*':
-        reason: >-
-          No fixed uri-js release exists (4.4.1 is the latest). Pulled in transitively
-          via eslint > ajv 6; lint/build tooling only, never shipped in the bundle.
-          Track the upstream fix.
-        expires: 2026-11-13T09:00:00.000Z
-        created: 2026-10-30T00:00:00.000Z
-  SNYK-JS-HTTPCACHESEMANTICS-19964064:
-    - '*':
-        reason: >-
-          No fixed http-cache-semantics release exists; the vulnerable copy is pulled in
-          by the @angular/cli tooling and is only replaced by the Angular CLI 22 major
-          upgrade (EID-6533). Build-time only.
-        expires: 2026-11-13T09:00:00.000Z
-        created: 2026-10-30T00:00:00.000Z
-  SNYK-JS-HTTPCACHESEMANTICS-19964068:
-    - '*':
-        reason: >-
-          No fixed http-cache-semantics release exists; the vulnerable copy is pulled in
-          by the @angular/cli tooling and is only replaced by the Angular CLI 22 major
-          upgrade (EID-6533). Build-time only.
-        expires: 2026-11-13T09:00:00.000Z
-        created: 2026-10-30T00:00:00.000Z
   SNYK-JS-FLAT-22148819:
     - '*':
         reason: >-
@@ -113,6 +20,6 @@ ignore:
           webpack-merge. Reached only through the Angular build tooling
           (@angular-devkit/build-angular > webpack-merge), never shipped in the bundle.
           Track the upstream fix.
-        expires: 2026-11-17T09:00:00.000Z
+        expires: 2026-11-25T09:00:00.000Z
         created: 2026-11-03T09:00:00.000Z
 patch: {}

@@ -56,8 +56,12 @@
   </div>
   <div class="actions">
     <div class="actions-2">
-      <a [routerLink]="AppRoutes.businessPartnerOverviewV2()" data-cy="btnBackToOverview" mat-button obButton="primary"
-        >{{ "eportal_onboardingTR_awaitVerification_btnPrim_adminOverview" | translate }}
+      <a
+        [routerLink]="AppRoutes.businessPartnerDetail(wizardService.partnerId!)"
+        data-cy="btnBackToProfileOverview"
+        mat-button
+        obButton="primary"
+        >{{ "eportal_global_btn_ToProfileOverview" | translate }}
       </a>
     </div>
   </div>
