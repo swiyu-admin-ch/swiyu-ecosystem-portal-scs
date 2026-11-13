@@ -145,7 +145,7 @@
   "eportal_adminOverview_action_verifyProfile_title": "Vérifier le profil",
   "eportal_adminOverview_alertContinue": "Tous vos justificatifs de propriété ont été enregistrés avec succès. Vous pouvez désormais soumettre votre demande de vérification de profil.",
   "eportal_adminOverview_alertDIDsetup": "Aucun DID n'a encore été configuré pour ce profil. Cliquez sur « Configurer DID » pour obtenir plus d'instructions.",
-  "eportal_adminOverview_alertSuccess": "Votre profil swiyu a été enregistré avec succès dans le registre de confiance. La vérification est valable pendant 5 ans.",
+  "eportal_adminOverview_alertSuccess": "Votre profil swiyu a été enregistré avec succès dans le registre de confiance. La vérification est valable pendant 3 ans.",
   "eportal_adminOverview_alert_didAdded": "Un nouveau DID a été ajouté avec succès.",
   "eportal_adminOverview_alert_informationRequested": "Votre demande de vérification de profil doit être corrigée.",
   "eportal_adminOverview_card_profileupdate_btn": "Poursuivre la mise à jour",

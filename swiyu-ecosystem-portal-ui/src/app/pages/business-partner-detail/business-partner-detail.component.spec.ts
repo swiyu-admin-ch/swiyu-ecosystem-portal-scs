@@ -6,7 +6,7 @@ import {ActivatedRoute, convertToParamMap, ParamMap, Router, RouterModule} from 
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {provideObliqueTestingConfiguration} from '@oblique/oblique';
 import {BehaviorSubject} from 'rxjs';
-import {BusinessPartner} from '../../api/generated';
+import {BusinessPartner, TrustOnboardingSubmission, VerificationProgressStatus} from '../../api/generated';
 import {BusinessPartnerDetailComponent} from './business-partner-detail.component';
 
 describe('BusinessPartnerDetailComponent', () => {
@@ -83,6 +83,46 @@ describe('BusinessPartnerDetailComponent', () => {
     translateService.use('fr');
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('h1')?.textContent?.trim()).toBe('Français');
+  });
+
+  describe('trust onboarding success alert', () => {
+    const withSubmissionStatus = (status: TrustOnboardingSubmission.StatusEnum) =>
+      component.trustOnboardingSubmission.set({status} as TrustOnboardingSubmission);
+
+    it.each([VerificationProgressStatus.VerificationSucceeded, VerificationProgressStatus.ReVerificationSucceeded])(
+      'is visible when the latest submission succeeded and the verification progress is %s',
+      status => {
+        withSubmissionStatus(TrustOnboardingSubmission.StatusEnum.Succeeded);
+        component.verificationProgress.set({status});
+
+        expect(component.alertTrustOnboardingSuccessfulVisible()).toBe(true);
+      }
+    );
+
+    it.each([
+      VerificationProgressStatus.ReVerificationRequired,
+      VerificationProgressStatus.ReVerificationStarted,
+      VerificationProgressStatus.ReVerificationInProgress,
+      VerificationProgressStatus.ReVerificationRejected
+    ])('is hidden for an expiring verification, even though the last submission succeeded (%s)', status => {
+      withSubmissionStatus(TrustOnboardingSubmission.StatusEnum.Succeeded);
+      component.verificationProgress.set({status});
+
+      expect(component.alertTrustOnboardingSuccessfulVisible()).toBe(false);
+    });
+
+    it('is hidden while the verification progress is not loaded', () => {
+      withSubmissionStatus(TrustOnboardingSubmission.StatusEnum.Succeeded);
+
+      expect(component.alertTrustOnboardingSuccessfulVisible()).toBe(false);
+    });
+
+    it('is hidden when the latest submission did not succeed', () => {
+      withSubmissionStatus(TrustOnboardingSubmission.StatusEnum.Unsubmitted);
+      component.verificationProgress.set({status: VerificationProgressStatus.VerificationSucceeded});
+
+      expect(component.alertTrustOnboardingSuccessfulVisible()).toBe(false);
+    });
   });
 
   it('does nothing when other url parms than notification are set', async () => {

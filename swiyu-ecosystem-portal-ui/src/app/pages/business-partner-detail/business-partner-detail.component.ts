@@ -31,7 +31,8 @@ import {
   TrustOnboardingAlert,
   TrustOnboardingApi,
   TrustOnboardingSubmission,
-  VerificationProgress
+  VerificationProgress,
+  VerificationProgressStatus
 } from '../../api/generated';
 import {AppRoutes} from '../../app.routes';
 import {SUPPRESS_ERROR_ALERT_STATUSES} from '../../core/interceptor/error-http-interceptor';
@@ -103,8 +104,11 @@ export class BusinessPartnerDetailComponent implements OnInit {
   );
   alertTrustOnboardingSuccessfulVisible = computed(
     () =>
-      // if TrustOnboardingSubmission is Unsubmitted
-      this.trustOnboardingSubmission()?.status === TrustOnboardingSubmission.StatusEnum.Succeeded
+      // if the latest TrustOnboardingSubmission succeeded
+      this.trustOnboardingSubmission()?.status === TrustOnboardingSubmission.StatusEnum.Succeeded &&
+      // and the verification is still current - an expiring one needs a re-verification instead
+      (this.verificationProgress()?.status === VerificationProgressStatus.VerificationSucceeded ||
+        this.verificationProgress()?.status === VerificationProgressStatus.ReVerificationSucceeded)
   );
   // Alerts are evaluated by the backend (see TrustOnboardingAlertEvaluator) and rendered here as-is.
   alertTrustOnboardingInformationRequestedVisible = computed(

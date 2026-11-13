@@ -145,7 +145,7 @@
   "eportal_adminOverview_action_verifyProfile_title": "Verify profile",
   "eportal_adminOverview_alertContinue": "All your proof of ownership has been successfully registered. Now submit your profile verification request.",
   "eportal_adminOverview_alertDIDsetup": "No DIDs have been set up for this profile yet. Click on “Set up DID” for further instructions.",
-  "eportal_adminOverview_alertSuccess": "Your swiyu profile has been successfully entered in the trust register. The verification is valid for 5 years.",
+  "eportal_adminOverview_alertSuccess": "Your swiyu profile has been successfully entered in the trust register. The verification is valid for 3 years.",
   "eportal_adminOverview_alert_didAdded": "A new DID has been successfully added.",
   "eportal_adminOverview_alert_informationRequested": "Your profile verification request requires revision.",
   "eportal_adminOverview_card_profileupdate_btn": "Continue update",

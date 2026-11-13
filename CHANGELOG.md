@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.2.11
+
+### Changed
+
+- Re-verify the backend dependency tree, the UI dependencies and the container image with Snyk: no open high or
+  critical findings. The jEAP Spring Boot parent 41.36.0 is already the latest release, so no dependency update
+  was required
+- Drop the now redundant `jsdom > undici` npm override: jsdom 30.1.3 requires undici `^8.12.1`, which already
+  resolves to the fixed 8.12.4 recorded in the lock file
+- Keep the braces and flat Snyk ignores: both still match a finding and remain unfixed upstream
+
+## 2.2.10
+
+### Fixed
+
+- The success notice on a business partner's page no longer tells an organisation whose verification is about to expire, or is being re-verified, that it was successfully entered in the trust register; it is only shown while the verification is current. Its text now states the validity the system actually grants: three years instead of five, and the Italian version, which was in French, is now in Italian
+
 ## 2.2.9
 
 ### Fixed

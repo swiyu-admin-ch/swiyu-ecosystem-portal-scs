@@ -145,7 +145,7 @@
   "eportal_adminOverview_action_verifyProfile_title": "Profil verifizieren",
   "eportal_adminOverview_alertContinue": "Alle Ihre Besitznachweise wurden erfolgreich registriert. Reichen Sie nun den Antrag auf Profilverifizierung ein.",
   "eportal_adminOverview_alertDIDsetup": "Für dieses Profil wurden noch keine DIDs eingerichtet. Klicken Sie auf “DID einrichten” für weitere Instruktionen.",
-  "eportal_adminOverview_alertSuccess": "Ihr swiyu-Profil wurde erfolgreich im Vertrauensregister eingetragen. Die Verifizierung ist 5 Jahre gültig.",
+  "eportal_adminOverview_alertSuccess": "Ihr swiyu-Profil wurde erfolgreich im Vertrauensregister eingetragen. Die Verifizierung ist 3 Jahre gültig.",
   "eportal_adminOverview_alert_didAdded": "Ein neuer DID wurde erfolgreich hinzugefügt.",
   "eportal_adminOverview_alert_informationRequested": "Ihr Antrag auf Profilverifizierung benötigt Nachbesserung",
   "eportal_adminOverview_card_profileupdate_btn": "Aktualisierung fortsetzen",
