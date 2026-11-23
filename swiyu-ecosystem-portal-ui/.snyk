@@ -2,16 +2,6 @@
 version: v1.25.1
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
-  SNYK-JS-BRACES-19963945:
-    - '*':
-        reason: >-
-          Transitive build-time-only dependency via
-          @angular-devkit/build-angular > http-proxy-middleware > micromatch.
-          New CVE-2026-93687 with no fixed version of braces available (registry
-          mirrors only up to 3.0.3). Not shipped to production. Track upstream
-          build-angular/Angular 22 upgrade (EID-6915).
-        expires: 2027-02-09T09:00:00.000Z
-        created: 2026-09-21T00:00:00.000Z
   SNYK-JS-FLAT-22148819:
     - '*':
         reason: >-
@@ -20,6 +10,6 @@ ignore:
           webpack-merge. Reached only through the Angular build tooling
           (@angular-devkit/build-angular > webpack-merge), never shipped in the bundle.
           Track the upstream fix.
-        expires: 2026-11-25T09:00:00.000Z
+        expires: 2026-12-01T09:00:00.000Z
         created: 2026-11-03T09:00:00.000Z
 patch: {}

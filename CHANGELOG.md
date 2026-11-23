@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.2.13
+
+### Changed
+
+- Re-verify the backend dependency tree, the UI dependency tree and the container image with Snyk: no open
+  high or critical findings. The jEAP Spring Boot parent 41.37.0 is already the latest release, so no
+  dependency update was required
+- Drop the SNYK-JS-BRACES-19963945 ignore from the Snyk policies: the UI scan no longer reports that
+  finding
+- Renew the ignore for the unfixed flat finding SNYK-JS-FLAT-22148819 until 2026-12-01: webpack-merge 6.0.1
+  still requires flat ^5.0.2
+
 ## 2.2.12
 
 ### Changed
