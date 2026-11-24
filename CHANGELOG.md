@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.2.14
+
+### Changed
+
+- Update maven from 3.9.16 to 3.10.2
+- Update org.codehaus.mojo:build-helper-maven-plugin from 3.6.2 to 3.8.0
+- Update org.openapitools:openapi-generator-maven-plugin from 7.25.0 to 7.27.0
+- Update org.openapitools:jackson-databind-nullable from 0.2.11 to 0.2.13
+- Update com.diffplug.spotless:spotless-maven-plugin from 3.10.2 to 3.12.0
+- Update com.tngtech.archunit:archunit-junit5 from 1.5.0 to 1.5.1
+- Update ch.admin.bit.jeap:jeap-spring-boot-parent from 41.37.0 to 41.41.0
+
+
 ## 2.2.13
 
 ### Changed
