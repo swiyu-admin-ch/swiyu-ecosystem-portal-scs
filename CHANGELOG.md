@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update ngx-extended-pdf-viewer from 25.6.4 to 32.0.1
+- Update stylelint from 16.26.1 to 18.1.0
+- Update stylelint-config-standard-scss from 13.1.0 to 18.0.0
+- Update stylelint-scss from 6.14.0 to 7.5.0
 - Update maven from 3.9.16 to 3.10.2
 - Update org.codehaus.mojo:build-helper-maven-plugin from 3.6.2 to 3.8.0
 - Update org.openapitools:openapi-generator-maven-plugin from 7.25.0 to 7.27.0
@@ -16,7 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update com.diffplug.spotless:spotless-maven-plugin from 3.10.2 to 3.12.0
 - Update com.tngtech.archunit:archunit-junit5 from 1.5.0 to 1.5.1
 - Update ch.admin.bit.jeap:jeap-spring-boot-parent from 41.37.0 to 41.41.0
-
 
 ## 2.2.13
 
